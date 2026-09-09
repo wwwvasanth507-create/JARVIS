@@ -69,11 +69,26 @@ class VoiceSettings(BaseModel):
     audio: AudioSettings = Field(default_factory=AudioSettings)
 
 
+class WakeWordSettings(BaseModel):
+    enabled: bool = True
+    engine: str = "local"
+    phrase: str = "JARVIS"
+    secondary_phrases: list[str] = Field(default_factory=lambda: ["Hey JARVIS"])
+    model_path: str = "models/wakeword/jarvis.onnx"
+    sensitivity: float = 0.5
+    cooldown_seconds: float = 1.0
+    command_timeout_seconds: float = 8.0
+    acknowledgement: bool = True
+    acknowledgement_text: str = "Yes, Boss?"
+    same_utterance_support: bool = True
+
+
 class JarvisConfig(BaseModel):
     system: SystemSettings = Field(default_factory=SystemSettings)
     model_provider: ModelProviderSettings = Field(default_factory=ModelProviderSettings)
     security: SecuritySettings = Field(default_factory=SecuritySettings)
     voice: VoiceSettings = Field(default_factory=VoiceSettings)
+    wakeword: WakeWordSettings = Field(default_factory=WakeWordSettings)
     raw_config: Dict[str, Any] = Field(default_factory=dict)
 
     @classmethod
@@ -99,6 +114,14 @@ class JarvisConfig(BaseModel):
             with open(voice_path, "r", encoding="utf-8") as vf:
                 voice_data = yaml.safe_load(vf) or {}
 
+        # Load wakeword config if config/wakeword.yaml exists alongside
+        wakeword_path = path.parent / "wakeword.yaml"
+        wakeword_data = {}
+        if wakeword_path.exists():
+            with open(wakeword_path, "r", encoding="utf-8") as wf:
+                w_raw = yaml.safe_load(wf) or {}
+                wakeword_data = w_raw.get("wakeword", {})
+
         return cls(
             system=SystemSettings(**system_data),
             model_provider=ModelProviderSettings(**model_data),
@@ -111,6 +134,8 @@ class JarvisConfig(BaseModel):
                 text_to_speech=TextToSpeechSettings(**voice_data.get("text_to_speech", {})),
                 audio=AudioSettings(**voice_data.get("audio", {})),
             ),
+            wakeword=WakeWordSettings(**wakeword_data),
             raw_config=data,
         )
+
 
