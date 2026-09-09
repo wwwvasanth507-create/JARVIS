@@ -1,0 +1,60 @@
+# JARVIS Security & Permission Policy Framework
+
+categories:
+  READ_FILES:
+    description: "Reading files and inspecting directories in authorized locations"
+    default_risk: "LOW"
+    allowed_paths:
+      - "./"
+      - "%USERPROFILE%/Documents"
+      - "%USERPROFILE%/Downloads"
+      - "%USERPROFILE%/Desktop"
+
+  WRITE_FILES:
+    description: "Creating or modifying existing files"
+    default_risk: "MEDIUM"
+
+  DELETE_FILES:
+    description: "Deleting files or directories"
+    default_risk: "HIGH"
+
+  RUN_COMMANDS:
+    description: "Executing system shell commands or terminal scripts"
+    default_risk: "HIGH"
+
+  BROWSER_CONTROL:
+    description: "Navigating websites, filling forms, and automating web browser interactions"
+    default_risk: "MEDIUM"
+
+  NETWORK_ACCESS:
+    description: "Outbound network HTTP requests or API calls"
+    default_risk: "MEDIUM"
+
+  APPLICATION_CONTROL:
+    description: "Opening, closing, or controlling desktop applications"
+    default_risk: "LOW"
+
+  SYSTEM_CONTROL:
+    description: "System power, registry modifications, device management, security software configuration"
+    default_risk: "CRITICAL"
+
+risk_levels:
+  LOW:
+    description: "Read-only or safe non-destructive actions. Pre-approved for execution."
+    require_confirmation: false
+  MEDIUM:
+    description: "Standard action with localized state changes. Auto-executed with logging."
+    require_confirmation: false
+  HIGH:
+    description: "Destructive or sensitive action (e.g. command execution, file deletion). Requires explicit Boss approval."
+    require_confirmation: true
+  CRITICAL:
+    description: "High-impact system state alteration. Requires explicit interactive confirmation and authentication."
+    require_confirmation: true
+
+policies:
+  prohibited_actions:
+    - "disable_security_software"
+    - "unrestricted_credential_harvesting"
+    - "stealth_persistence"
+    - "unauthorized_remote_access"

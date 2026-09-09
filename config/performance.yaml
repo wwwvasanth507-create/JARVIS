@@ -1,0 +1,64 @@
+# JARVIS Performance & Hardware Adaptation Rules
+
+default_profile_override: null  # Set to ULTRA_LOW, LOW, MEDIUM, HIGH, or GPU_ACCELERATED to override auto-detection
+
+profiles:
+  ULTRA_LOW:
+    description: "Resource-constrained CPU system (<=4GB RAM or <=2 cores)"
+    quantization: "Q3_K_M"
+    preferred_model_size: "1.5B"
+    max_context_tokens: 1024
+    enable_vision: false
+    background_indexing: false
+    lazy_loading: true
+    max_concurrent_workers: 1
+
+  LOW:
+    description: "Standard CPU-only system (8GB RAM or 4 cores)"
+    quantization: "Q4_K_M"
+    preferred_model_size: "3B"
+    max_context_tokens: 2048
+    enable_vision: false
+    background_indexing: true
+    background_indexing_interval_sec: 300
+    lazy_loading: true
+    max_concurrent_workers: 2
+
+  MEDIUM:
+    description: "Capable CPU system (16GB RAM or 8 cores)"
+    quantization: "Q5_K_M"
+    preferred_model_size: "7B"
+    max_context_tokens: 4096
+    enable_vision: true
+    background_indexing: true
+    background_indexing_interval_sec: 120
+    lazy_loading: true
+    max_concurrent_workers: 4
+
+  HIGH:
+    description: "High-end CPU workstation (32GB+ RAM)"
+    quantization: "Q6_K"
+    preferred_model_size: "14B"
+    max_context_tokens: 8192
+    enable_vision: true
+    background_indexing: true
+    background_indexing_interval_sec: 60
+    lazy_loading: true
+    max_concurrent_workers: 8
+
+  GPU_ACCELERATED:
+    description: "System with dedicated NVIDIA/CUDA/VRAM hardware acceleration"
+    quantization: "Q8_0"
+    preferred_model_size: "14B_or_larger"
+    max_context_tokens: 16384
+    enable_vision: true
+    background_indexing: true
+    background_indexing_interval_sec: 30
+    lazy_loading: false
+    max_concurrent_workers: 8
+
+performance_optimizations:
+  fast_path_enabled: true
+  screenshot_on_demand_only: true
+  reuse_browser_context: true
+  tts_streaming_enabled: true

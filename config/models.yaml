@@ -1,0 +1,38 @@
+# JARVIS Local Model & Inference Runtime Configuration
+
+models:
+  default:
+    path: "models/language/default.gguf"
+    context_size: 2048
+    threads: "auto"          # 'auto' calculates optimal CPU threads leaving headroom for OS/UI
+    batch_size: 512
+    temperature: 0.2
+    top_p: 0.95
+    gpu_layers: 0            # Explicit 0 for CPU-only inference (no CUDA required)
+    use_mlock: false
+    use_mmap: true
+
+performance_modes:
+  active_mode: "auto"        # Options: auto, battery_saver, balanced, performance
+
+  battery_saver:
+    threads_modifier: 0.5    # Uses 50% of available CPU cores
+    context_size: 1024
+    gpu_layers: 0
+
+  balanced:
+    threads_modifier: 0.75   # Uses 75% of available CPU cores
+    context_size: 2048
+    gpu_layers: 0
+
+  performance:
+    threads_modifier: 1.0    # Uses all assigned CPU inference cores
+    context_size: 4096
+    gpu_layers: 0
+
+memory_safety:
+  min_free_ram_gb: 1.5       # Prevents loading model if free physical RAM < 1.5GB
+  ram_headroom_factor: 1.2    # Requires estimated RAM = model_file_size * 1.2
+
+debug:
+  enabled: false             # Set true to print model load timings, token latencies, context assembly
