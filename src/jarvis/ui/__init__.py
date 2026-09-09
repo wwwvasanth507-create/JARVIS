@@ -1,1 +1,7 @@
-"""User interface components (CLI & Overlay). Placeholder for Phase 3."""
+"""
+JARVIS UI & User Interface Subsystem.
+"""
+
+from jarvis.ui.chat import JarvisTerminalInterface
+
+__all__ = ["JarvisTerminalInterface"]

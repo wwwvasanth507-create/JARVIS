@@ -32,17 +32,54 @@ class SecuritySettings(BaseModel):
     audit_logging: bool = True
 
 
+class SpeechToTextSettings(BaseModel):
+    enabled: bool = True
+    engine: str = "whisper"
+    model: str = "tiny"
+    language: str = "auto"
+    device: str = "cpu"
+    compute_type: str = "int8"
+
+
+class TextToSpeechSettings(BaseModel):
+    enabled: bool = True
+    engine: str = "pyttsx3"
+    voice: str = "auto"
+    speed: float = 1.0
+    volume: float = 1.0
+    streaming: bool = True
+
+
+class AudioSettings(BaseModel):
+    input_device: str = "default"
+    output_device: str = "default"
+    sample_rate: int = 16000
+    channels: int = 1
+    chunk_size: int = 1024
+    vad_energy_threshold: int = 300
+    vad_silence_duration: float = 1.5
+
+
+class VoiceSettings(BaseModel):
+    mode: str = "hybrid"
+    push_to_talk: bool = True
+    push_to_talk_key: str = "space"
+    speech_to_text: SpeechToTextSettings = Field(default_factory=SpeechToTextSettings)
+    text_to_speech: TextToSpeechSettings = Field(default_factory=TextToSpeechSettings)
+    audio: AudioSettings = Field(default_factory=AudioSettings)
+
+
 class JarvisConfig(BaseModel):
     system: SystemSettings = Field(default_factory=SystemSettings)
     model_provider: ModelProviderSettings = Field(default_factory=ModelProviderSettings)
     security: SecuritySettings = Field(default_factory=SecuritySettings)
+    voice: VoiceSettings = Field(default_factory=VoiceSettings)
     raw_config: Dict[str, Any] = Field(default_factory=dict)
 
     @classmethod
     def load_from_yaml(cls, config_path: str | Path) -> "JarvisConfig":
         path = Path(config_path)
         if not path.is_absolute():
-            # Resolve relative to project root (assuming standard execution)
             path = path.resolve()
         
         if not path.exists():
@@ -55,9 +92,25 @@ class JarvisConfig(BaseModel):
         model_data = data.get("model_provider", {})
         security_data = data.get("security", {})
 
+        # Load voice config if config/voice.yaml exists alongside
+        voice_path = path.parent / "voice.yaml"
+        voice_data = {}
+        if voice_path.exists():
+            with open(voice_path, "r", encoding="utf-8") as vf:
+                voice_data = yaml.safe_load(vf) or {}
+
         return cls(
             system=SystemSettings(**system_data),
             model_provider=ModelProviderSettings(**model_data),
             security=SecuritySettings(**security_data),
+            voice=VoiceSettings(
+                mode=voice_data.get("mode", "hybrid"),
+                push_to_talk=voice_data.get("push_to_talk", True),
+                push_to_talk_key=voice_data.get("push_to_talk_key", "space"),
+                speech_to_text=SpeechToTextSettings(**voice_data.get("speech_to_text", {})),
+                text_to_speech=TextToSpeechSettings(**voice_data.get("text_to_speech", {})),
+                audio=AudioSettings(**voice_data.get("audio", {})),
+            ),
             raw_config=data,
         )
+

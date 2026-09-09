@@ -1,0 +1,31 @@
+# Voice Interface Configuration for JARVIS
+# CPU-first local speech recognition and synthesis settings
+
+mode: "hybrid"            # Operational mode: "chat", "voice", "hybrid"
+push_to_talk: true        # Enable push-to-talk key fallback
+push_to_talk_key: "space" # Key shortcut for push-to-talk interaction
+
+speech_to_text:
+  enabled: true
+  engine: "whisper"       # STT engine: "whisper", "faster-whisper", "mock", "sapi"
+  model: "tiny"           # CPU-optimized whisper model: "tiny", "base", "small"
+  language: "auto"        # Language: "auto", "en", "ta", etc. Supports Tamil/English mix
+  device: "cpu"           # Hardware target: "cpu", "cuda", "auto"
+  compute_type: "int8"    # Quantization type for CPU inference: "int8", "float32"
+
+text_to_speech:
+  enabled: true
+  engine: "pyttsx3"       # TTS engine: "pyttsx3", "sapi5", "mock"
+  voice: "auto"           # Voice ID or preference: "auto" selects female voice (Zira/Hazel)
+  speed: 1.0              # Speech rate multiplier (1.0 = normal)
+  volume: 1.0             # Volume output level (0.0 to 1.0)
+  streaming: true         # Enable sentence-level streaming synthesis
+
+audio:
+  input_device: "default"   # Microphone name or "default"
+  output_device: "default"  # Speaker name or "default"
+  sample_rate: 16000        # Audio sample rate in Hz
+  channels: 1               # Mono recording
+  chunk_size: 1024          # Audio buffer size
+  vad_energy_threshold: 300 # Energy cutoff for Voice Activity Detection
+  vad_silence_duration: 1.5 # Seconds of trailing silence before ending capture
