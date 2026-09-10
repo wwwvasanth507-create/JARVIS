@@ -5,17 +5,19 @@ Recovery and Loop Detection Manager for JARVIS orchestration.
 from typing import Any, Dict, List, Optional
 from jarvis.core.orchestration.errors import LoopDetectedError
 from jarvis.core.orchestration.plan import Plan, PlanStep, PlanStepStatus
+from jarvis.core.recovery.recovery import JarvisRecoveryManager
 from jarvis.security.permissions import RiskLevel
 
 
 class RecoveryManager:
-    """Handles step retries, replanning, and loop prevention."""
+    """Handles step retries, replanning, diagnostic recovery, and loop prevention."""
 
     def __init__(self, max_retries_per_step: int = 1, max_replans: int = 2):
         self.max_retries_per_step = max_retries_per_step
         self.max_replans = max_replans
         self.replan_count = 0
         self.history_signatures: List[str] = []
+        self.diagnostic_manager = JarvisRecoveryManager()
 
     def can_retry_step(self, step: PlanStep) -> bool:
         # High risk actions never auto-retry

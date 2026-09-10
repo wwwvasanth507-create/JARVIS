@@ -1,17 +1,14 @@
-# Recovery, Retries & Loop Detection
+# JARVIS Self-Recovery, Diagnostics & Replanning
 
-The Recovery subsystem (`src/jarvis/core/orchestration/recovery.py`) provides bounded fault handling and prevents infinite execution loops.
+## Overview
+The Self-Recovery subsystem (`src/jarvis/core/recovery/`) upgrades JARVIS's orchestration recovery mechanism from simple retries into a structured diagnostic, root-cause analysis, and security-governed replanning engine.
 
----
-
-## Recovery Policies
-
-1. **Step-Level Retries**:
-   * Low and Medium risk steps allow `max_retries_per_step = 1`.
-   * High and Critical risk steps **never** auto-retry.
-2. **Replanning Bounds**:
-   * `max_replans = 2`.
-   * Any new plan generated during replanning must pass full static validation (`PlanValidator`).
-3. **Loop Detection**:
-   * Tracks tool action signatures (`tool_name:arguments:error`).
-   * If 3 identical tool execution failures occur sequentially, `LoopDetectedError` is raised and execution stops immediately.
+## Core Features
+- **Deterministic Diagnostics First**: Fast, lightweight subsystem diagnostic checks before invoking local LLM reasoning.
+- **Extensible Failure Taxonomy**: Standardized classification into categories (`NOT_FOUND`, `AMBIGUOUS`, `PERMISSION_DENIED`, `TIMEOUT`, `APPLICATION_NOT_READY`, `VISUAL_TARGET_NOT_FOUND`, `VERIFICATION_FAILED`, etc.).
+- **Structured Root-Cause Analysis**: `RootCause` with confidence scoring (`LIKELY`, `POSSIBLE`, `UNKNOWN`) and domain-specific evidence (`DiagnosticEvidence`).
+- **Targeted Recovery Strategies**: Pre-registered strategies (`RETRY_ONCE`, `REFRESH_STATE`, `REFRESH_APPLICATION_REGISTRY`, `RELOAD_BROWSER_PAGE`, `REQUERY_FILESYSTEM`, `REBUILD_PLAN`, `REQUEST_USER`).
+- **Strict Permission Re-Check**: Every recovery action is re-evaluated by `PermissionEvaluator`. Recovery actions do not inherit implicit authorization.
+- **Human Intervention Protocol**: Raises `HumanInterventionRequiredError` for HIGH/CRITICAL risk escalation, low confidence, or policy restrictions.
+- **Loop Protection**: Detects 3 identical consecutive failures and raises `RecoveryLoopDetectedError`.
+- **Bounded Budget**: Enforces limits via `RecoveryLimits` (`max_diagnostic_steps: 3`, `max_recovery_steps: 3`, `max_replans: 2`, `max_total_recovery_time: 60s`).

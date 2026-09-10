@@ -54,8 +54,9 @@ This document outlines the authoritative 20-phase incremental development roadma
 ### Phase 16: Document Intelligence & Local Processing (COMPLETED - Prompt 013 Document Processing)
 - Developed `src/jarvis/documents/` subpackage (`DocumentManager`, `DocumentDetector`, `DocumentMetadataExtractor`, `DocumentNormalizer`, `DocumentChunker`, `DocumentCache`, `DocumentRegistry`, `DocumentReader`, `TableExtractor`, `DocumentSummarizer`, `DocumentAnalyzer`, `DocumentComparer`, `DocumentCreator`, `DocumentConverter`, `DocumentSecurityPolicy`, `DocumentPrivacyManager`, `DocumentVerificationManager`).
 
-### Phase 17: Closed-Loop Self-Recovery & Replanning (PLANNED)
-- Advanced closed-loop diagnostic engine analyzing action failures, capturing diagnostic logs, and performing multi-strategy replanning.
+### Phase 17: Closed-Loop Self-Recovery & Replanning (COMPLETED - Prompt 015)
+- Developed `src/jarvis/core/recovery/` subpackage (`JarvisRecoveryManager`, `FailureClassifier`, `DiagnosticEngine`, `RecoveryPlanner`, `RecoveryExecutor`, `RecoveryPolicy`, `DiagnosticReplanner`, `EvidenceCollector`, `StrategyRegistry`).
+- Built extensible failure classification, confidence-scored root-cause analysis (`RootCause`), deterministic subsystem diagnostics (`DiagnosticEvidence`), pre-registered recovery strategies (`RETRY_ONCE`, `REFRESH_STATE`, `REQUERY_FILESYSTEM`, `RELOAD_BROWSER_PAGE`, `REBUILD_PLAN`, `REQUEST_USER`), mandatory permission re-checking, human intervention protocol (`HumanInterventionRequiredError`), loop protection (`RecoveryLoopDetectedError`), and diagnostic replanning.
 
 ### Phase 18: Task Scheduling & Background Cron Jobs (PLANNED)
 - Local background cron/timer scheduler for recurring or deferred tasks requested by the Boss.
