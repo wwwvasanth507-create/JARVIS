@@ -34,6 +34,14 @@ categories:
     description: "Opening, closing, or controlling desktop applications"
     default_risk: "LOW"
 
+  COMPUTER_CONTROL:
+    description: "Simulating mouse movements, clicks, scrolling, and keyboard actions"
+    default_risk: "LOW"
+
+  SCREEN_READ:
+    description: "Taking desktop screenshots or reading window state"
+    default_risk: "LOW"
+
   SYSTEM_CONTROL:
     description: "System power, registry modifications, device management, security software configuration"
     default_risk: "CRITICAL"

@@ -1,30 +1,58 @@
-# Controlled Application Registry Mapping
+# JARVIS Application Registry Configuration
+# Maps application aliases to executable names and default launch commands
 
 applications:
-  browser:
+  chrome:
     name: "Google Chrome"
+    aliases:
+      - "chrome"
+      - "google chrome"
+      - "browser"
+      - "web browser"
     executable: "chrome.exe"
-    launch_command: "start chrome"
-    risk_level: "MEDIUM"
-    permission: "BROWSER_CONTROL"
-
-  editor:
-    name: "Visual Studio Code"
-    executable: "Code.exe"
-    launch_command: "code"
-    risk_level: "LOW"
-    permission: "APPLICATION_CONTROL"
+    common_paths:
+      - "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+      - "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
 
   notepad:
     name: "Notepad"
+    aliases:
+      - "notepad"
+      - "text editor"
+      - "editor"
     executable: "notepad.exe"
-    launch_command: "notepad"
-    risk_level: "LOW"
-    permission: "APPLICATION_CONTROL"
+    common_paths:
+      - "C:\\Windows\\System32\\notepad.exe"
 
-  terminal:
-    name: "Windows Terminal"
-    executable: "wt.exe"
-    launch_command: "wt"
-    risk_level: "HIGH"
-    permission: "RUN_COMMANDS"
+  calc:
+    name: "Calculator"
+    aliases:
+      - "calculator"
+      - "calc"
+      - "calculatorapp.exe"
+      - "applicationframehost.exe"
+    executable: "calc.exe"
+    common_paths:
+      - "C:\\Windows\\System32\\calc.exe"
+
+  vscode:
+    name: "Visual Studio Code"
+    aliases:
+      - "vscode"
+      - "code"
+      - "vs code"
+      - "editor"
+    executable: "Code.exe"
+    common_paths:
+      - "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe"
+      - "C:\\Program Files\\Microsoft VS Code\\Code.exe"
+
+  cmd:
+    name: "Command Prompt"
+    aliases:
+      - "cmd"
+      - "command prompt"
+      - "terminal"
+    executable: "cmd.exe"
+    common_paths:
+      - "C:\\Windows\\System32\\cmd.exe"
