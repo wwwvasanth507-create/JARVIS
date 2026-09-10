@@ -110,6 +110,7 @@ JARVIS/
 - Master 20-phase roadmap defined.
 - CPU-first local AI inference, chat, voice, wake-word, computer control, and browser automation established.
 - **Prompt 007 Completed**: Fully integrated Filesystem & File Management Layer (`src/jarvis/filesystem/`) with path safety, 16 structured tools, permission policy checks, atomic writes, targeted edits, multi-criteria search, staged duplicate detection, file organization, storage reporting, and verified integration testing.
+- **Prompt 008 Completed**: Fully integrated Controlled Shell & Terminal Layer (`src/jarvis/shell/`) with 9 structured tools, command parsing, dangerous operation blocking, zero autonomous privilege escalation, environment secret redaction, output capping, background `ShellJob` handles, process management, and audit logging.
 
 ---
 

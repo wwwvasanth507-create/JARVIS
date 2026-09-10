@@ -48,9 +48,10 @@ This document outlines the 20-phase incremental development roadmap for **JARVIS
 - Developed `filesystem.*` toolset (16 structured tools) for semantic searching, file reading, atomic writing, targeted editing, duplicate detection, storage reporting, organization planning, and directory tree navigation.
 - Enforced strict permission boundaries (`READ_FILES`, `WRITE_FILES`, `DELETE_FILES`), path safety confinement, and empirical verification.
 
-### Phase 12: Terminal / Tool Execution
-- Develop `shell.*` toolset for executing controlled terminal commands (PowerShell / Command Prompt).
-- Add command whitelist/blacklist validation, timeout safety, output capturing, and risk tiering.
+### Phase 12: Terminal / Tool Execution (COMPLETED - Prompt 008)
+- Developed `shell.*` toolset (9 structured tools) for safe terminal command execution, environment variable secret redaction, output capping, background job management, and process control.
+- Enforced strict allowlist/denylist validation, dangerous pattern blocking, zero autonomous privilege escalation, working directory confinement, and audit logging.
+
 
 ### Phase 13: Screen Understanding & Computer Vision
 - Integrate local vision models (e.g., Moondream / LLaVA / Florence-2 CPU) for screen analysis.
