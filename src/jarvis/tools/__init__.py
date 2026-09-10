@@ -25,6 +25,7 @@ from jarvis.tools.application_tools import (
     IsApplicationRunningTool,
 )
 from jarvis.tools.browser_tools import BROWSER_TOOLS
+from jarvis.tools.filesystem_tools import FILESYSTEM_TOOLS, ListDirectoryTool, ReadFileTool, CreateFileTool, WriteFileTool, EditFileTool, CopyFileTool, MoveFileTool, RenameFileTool, CreateDirectoryTool, DeleteFileTool, DeleteDirectoryTool, SearchFilesTool, GetMetadataTool, FindDuplicatesTool, GetStorageInfoTool, OrganizeDirectoryTool
 
 ALL_TOOLS = [
     MoveMouseTool(),
@@ -45,6 +46,7 @@ ALL_TOOLS = [
     CloseApplicationTool(),
     IsApplicationRunningTool(),
     *BROWSER_TOOLS,
+    *FILESYSTEM_TOOLS,
 ]
 
 __all__ = [
@@ -53,6 +55,7 @@ __all__ = [
     "ToolResult",
     "ALL_TOOLS",
     "BROWSER_TOOLS",
+    "FILESYSTEM_TOOLS",
     "MoveMouseTool",
     "ClickTool",
     "DoubleClickTool",
@@ -70,5 +73,22 @@ __all__ = [
     "OpenApplicationTool",
     "CloseApplicationTool",
     "IsApplicationRunningTool",
+    "ListDirectoryTool",
+    "ReadFileTool",
+    "CreateFileTool",
+    "WriteFileTool",
+    "EditFileTool",
+    "CopyFileTool",
+    "MoveFileTool",
+    "RenameFileTool",
+    "CreateDirectoryTool",
+    "DeleteFileTool",
+    "DeleteDirectoryTool",
+    "SearchFilesTool",
+    "GetMetadataTool",
+    "FindDuplicatesTool",
+    "GetStorageInfoTool",
+    "OrganizeDirectoryTool",
 ]
+
 

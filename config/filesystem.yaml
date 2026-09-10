@@ -1,0 +1,55 @@
+# JARVIS Filesystem Subsystem Configuration
+
+filesystem:
+  enabled: true
+
+  # Allowed root directories for filesystem operations.
+  # Paths using ~ or environment variables (%USERPROFILE%, $HOME) are expanded dynamically.
+  allowed_roots:
+    - "./"
+    - "~/Documents"
+    - "~/Downloads"
+    - "~/Desktop"
+
+  # Protected root paths and patterns that cannot be modified or deleted without authorization.
+  protected_roots:
+    - "C:\\Windows"
+    - "C:\\Program Files"
+    - "C:\\Program Files (x86)"
+    - "/etc"
+    - "/usr"
+    - "/var"
+    - "/boot"
+    - "/sys"
+    - "/proc"
+
+  # Operation flags
+  allow_read: true
+  allow_create: true
+  allow_write: true
+  allow_move: true
+  allow_copy: true
+  allow_delete: false  # Default to false; must be explicitly enabled or approved
+
+  # Dynamic resource and payload safety limits
+  max_read_bytes: 10485760       # 10 MB limit for full file reads
+  max_search_results: 1000       # Max file entries per search
+  max_directory_entries: 2000    # Max directory listing entries
+  max_recursive_depth: 20        # Depth limit for recursive traversal
+  max_edit_size: 5242880          # 5 MB max file size for interactive text edits
+
+  # Sensitive file and directory patterns (matched against basenames or paths)
+  sensitive_patterns:
+    - "*.pem"
+    - "*.key"
+    - "*.id_rsa"
+    - "*.id_ed25519"
+    - "*.env"
+    - "*credentials*"
+    - "*password*"
+    - "*secret*"
+    - "*token*"
+    - "*.kdbx"
+    - "*.wallet"
+    - "id_rsa*"
+    - "id_ed25519*"
