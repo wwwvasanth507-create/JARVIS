@@ -1,17 +1,28 @@
 """
 Core bootstrap and configuration module for JARVIS.
+
+Provides validated configuration loader, platform-neutral path resolution,
+and safe defaults across all subsystems.
 """
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
+import logging
 import yaml
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
+
+logger = logging.getLogger(__name__)
+
+
+class ConfigurationError(Exception):
+    """Raised when configuration validation fails."""
+    pass
 
 
 class SystemSettings(BaseModel):
     name: str = "JARVIS"
     version: str = "0.1.0"
-    environment: str = "development"
+    environment: str = "production"
     user_alias: str = "Boss"
     local_first: bool = True
     allow_external_apis: bool = False
@@ -73,7 +84,7 @@ class WakeWordSettings(BaseModel):
     enabled: bool = True
     engine: str = "local"
     phrase: str = "JARVIS"
-    secondary_phrases: list[str] = Field(default_factory=lambda: ["Hey JARVIS"])
+    secondary_phrases: List[str] = Field(default_factory=lambda: ["Hey JARVIS"])
     model_path: str = "models/wakeword/jarvis.onnx"
     sensitivity: float = 0.5
     cooldown_seconds: float = 1.0
@@ -95,7 +106,7 @@ class BrowserSettings(BaseModel):
     max_extraction_chars: int = 10000
     max_links_extracted: int = 30
     search_engine_url: str = "https://html.duckduckgo.com/html/?q="
-    allowed_schemes: list[str] = Field(default_factory=lambda: ["http", "https"])
+    allowed_schemes: List[str] = Field(default_factory=lambda: ["http", "https"])
 
 
 class JarvisConfig(BaseModel):
@@ -107,17 +118,30 @@ class JarvisConfig(BaseModel):
     browser: BrowserSettings = Field(default_factory=BrowserSettings)
     raw_config: Dict[str, Any] = Field(default_factory=dict)
 
+    def validate_schema(self) -> bool:
+        """Validate configuration settings and check for critical misconfigurations."""
+        if self.system.local_first and self.system.allow_external_apis:
+            logger.warning("Local-first policy is enabled, but allow_external_apis is set to True.")
+        if self.model_provider.context_size < 512:
+            raise ConfigurationError("model_provider.context_size must be at least 512 tokens")
+        if self.model_provider.n_threads < 1:
+            raise ConfigurationError("model_provider.n_threads must be at least 1")
+        return True
+
     @classmethod
     def load_from_yaml(cls, config_path: str | Path) -> "JarvisConfig":
         path = Path(config_path)
         if not path.is_absolute():
             path = path.resolve()
         
-        if not path.exists():
-            return cls()
-
-        with open(path, "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f) or {}
+        data = {}
+        if path.exists():
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    data = yaml.safe_load(f) or {}
+            except Exception as e:
+                logger.error(f"Error reading configuration file {path}: {e}")
+                raise ConfigurationError(f"Malformed YAML in {path}: {e}")
 
         system_data = data.get("system", {})
         model_data = data.get("model_provider", {})
@@ -127,41 +151,55 @@ class JarvisConfig(BaseModel):
         voice_path = path.parent / "voice.yaml"
         voice_data = {}
         if voice_path.exists():
-            with open(voice_path, "r", encoding="utf-8") as vf:
-                voice_data = yaml.safe_load(vf) or {}
+            try:
+                with open(voice_path, "r", encoding="utf-8") as vf:
+                    voice_data = yaml.safe_load(vf) or {}
+            except Exception as e:
+                logger.warning(f"Could not load voice.yaml: {e}")
 
-        # Load wakeword config if config/wakeword.yaml exists alongside
+        # Load wakeword config if config/wakeword.yaml exists
         wakeword_path = path.parent / "wakeword.yaml"
         wakeword_data = {}
         if wakeword_path.exists():
-            with open(wakeword_path, "r", encoding="utf-8") as wf:
-                w_raw = yaml.safe_load(wf) or {}
-                wakeword_data = w_raw.get("wakeword", {})
+            try:
+                with open(wakeword_path, "r", encoding="utf-8") as wf:
+                    w_raw = yaml.safe_load(wf) or {}
+                    wakeword_data = w_raw.get("wakeword", {})
+            except Exception as e:
+                logger.warning(f"Could not load wakeword.yaml: {e}")
 
-        # Load browser config if config/browser.yaml exists alongside
+        # Load browser config if config/browser.yaml exists
         browser_path = path.parent / "browser.yaml"
         browser_data = {}
         if browser_path.exists():
-            with open(browser_path, "r", encoding="utf-8") as bf:
-                b_raw = yaml.safe_load(bf) or {}
-                browser_data = b_raw.get("browser", {})
+            try:
+                with open(browser_path, "r", encoding="utf-8") as bf:
+                    b_raw = yaml.safe_load(bf) or {}
+                    browser_data = b_raw.get("browser", {})
+            except Exception as e:
+                logger.warning(f"Could not load browser.yaml: {e}")
 
-        return cls(
-            system=SystemSettings(**system_data),
-            model_provider=ModelProviderSettings(**model_data),
-            security=SecuritySettings(**security_data),
-            voice=VoiceSettings(
-                mode=voice_data.get("mode", "hybrid"),
-                push_to_talk=voice_data.get("push_to_talk", True),
-                push_to_talk_key=voice_data.get("push_to_talk_key", "space"),
-                speech_to_text=SpeechToTextSettings(**voice_data.get("speech_to_text", {})),
-                text_to_speech=TextToSpeechSettings(**voice_data.get("text_to_speech", {})),
-                audio=AudioSettings(**voice_data.get("audio", {})),
-            ),
-            wakeword=WakeWordSettings(**wakeword_data),
-            browser=BrowserSettings(**browser_data),
-            raw_config=data,
-        )
+        try:
+            config = cls(
+                system=SystemSettings(**system_data),
+                model_provider=ModelProviderSettings(**model_data),
+                security=SecuritySettings(**security_data),
+                voice=VoiceSettings(
+                    mode=voice_data.get("mode", "hybrid"),
+                    push_to_talk=voice_data.get("push_to_talk", True),
+                    push_to_talk_key=voice_data.get("push_to_talk_key", "space"),
+                    speech_to_text=SpeechToTextSettings(**voice_data.get("speech_to_text", {})),
+                    text_to_speech=TextToSpeechSettings(**voice_data.get("text_to_speech", {})),
+                    audio=AudioSettings(**voice_data.get("audio", {})),
+                ),
+                wakeword=WakeWordSettings(**wakeword_data),
+                browser=BrowserSettings(**browser_data),
+                raw_config=data,
+            )
+            config.validate_schema()
+            return config
+        except ValidationError as ve:
+            raise ConfigurationError(f"Configuration validation failed: {ve}")
 
 
 _settings_instance: Optional[JarvisConfig] = None
@@ -174,5 +212,7 @@ def get_settings(config_path: str | Path = "config/config.yaml") -> JarvisConfig
     return _settings_instance
 
 
-
-
+def reset_settings() -> None:
+    """Reset cached global settings instance (useful for testing)."""
+    global _settings_instance
+    _settings_instance = None

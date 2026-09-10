@@ -48,3 +48,23 @@ class DatabaseManager:
                 conn.commit()
             except sqlite3.Error as e:
                 raise DatabaseError(f"Failed to execute SQL script: {e}")
+
+    def health_check(self) -> bool:
+        """Check if SQLite database is responsive."""
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT 1;")
+                return cursor.fetchone() is not None
+        except Exception:
+            return False
+
+    def close(self) -> None:
+        """Close shared in-memory connection if active."""
+        if self._shared_conn is not None:
+            try:
+                self._shared_conn.close()
+            except Exception:
+                pass
+            self._shared_conn = None
+

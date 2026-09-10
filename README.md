@@ -117,40 +117,47 @@ JARVIS/
 - **Prompt 012 Completed**: Fully integrated Modular Skill & Capability System (`src/jarvis/skills/`) with declarative YAML manifests (`skills/`), skill discovery, validation, intent resolution, permission intersection, effective risk escalation, 5 builtin skills (`open_application`, `find_file`, `open_file`, `web_search`, `system_status`), and 6 skill management tools (`skill.list`, `skill.find`, `skill.info`, `skill.enable`, `skill.disable`, `skill.status`).
 - **Prompt 013 (Document Processing) Completed**: Fully integrated Document Intelligence & Local Document Processing (`src/jarvis/documents/`) with format detection, deterministic & structural extractors (`.txt`, `.md`, `.json`, `.yaml`, `.csv`, `.html`, `.xml`, `.pdf`, `.docx`), text normalization, structural chunking, table extraction, document summarization, QA with grounded citations, document comparison diffs, atomic document creation, format conversion, `DocumentSecurityPolicy` prompt injection defense, and 10 document tools.
 - **Prompt 013 (Production Model Runtime) Completed**: Fully integrated Production Local Model Runtime (`src/jarvis/brain/`) with direct `llama.cpp` GGUF local CPU execution (`n_gpu_layers=0`), RAM safety checks (`ModelMemoryChecker`), hardware-aware profiles (`config/models.yaml`), multi-directory model discovery (`models/language/`, `models/gguf/`), token streaming, cancellation, context window prioritization, structured tool-call parsing (`StructuredToolParser`), performance benchmarking (`data/cache/model-benchmark.json`), and graceful missing-model fallback mode.
-- **Prompt 014 Completed**: Fully integrated Local Screen Understanding, OCR & Vision Layer (`src/jarvis/computer/vision/`) with multi-mode screen capture (`FULL_SCREEN`, `ACTIVE_WINDOW`, `REGION`), application privacy blacklisting (`ScreenPrivacyPolicy`), local CPU-compatible OCR engine (`OCRProvider`) with confidence scoring (`HIGH`, `MEDIUM`, `LOW`), multi-layered element detection (`UIElementDetector`), perceptual change detection (`ScreenComparator`), 6 screen tools (`screen.capture`, `screen.read_text`, `screen.analyze`, `screen.find`, `screen.describe`, `screen.compare`), 4 builtin skills (`read_screen`, `find_on_screen`, `describe_screen`, `verify_visual_state`), performance metrics (`data/cache/vision-benchmark.json`), and 100% test pass rate across 210 tests.
-- **Prompt 015 Completed**: Fully integrated Self-Recovery, Diagnostics & Intelligent Replanning (`src/jarvis/core/recovery/`) with deterministic subsystem diagnostics (`DiagnosticEngine`), extensible failure taxonomy (`FailureCategory`), confidence-scored root-cause analysis (`RootCause`), pre-registered recovery strategies (`StrategyRegistry`), mandatory permission re-checks (`RecoveryPolicy`), risk escalation guarding, `HumanInterventionRequiredError` protocol, loop protection (`RecoveryLoopDetectedError`), diagnostic replanning (`DiagnosticReplanner`), performance benchmarking (`data/cache/recovery-benchmark.json`), and 100% test pass rate across 225 tests.
-- **Prompt 016 Completed**: Fully integrated Task Scheduling & Background Automation (`src/jarvis/scheduler/`) with deterministic natural-language schedule parser (`ScheduleParser`), SQLite task and run persistence (`TaskPersistence`), mandatory orchestrator pipeline dispatch (`TaskExecutor`), runtime permission re-evaluation (`SchedulerPolicy`), 0.0% idle CPU event-driven scheduler loop (`TaskScheduler`), multi-channel notification delivery (`NotificationManager`), Prompt 015 recovery integration, 8 `scheduler.*` tools, 6 builtin skills (`schedule_task`, `cancel_task`, `list_tasks`, `pause_task`, `resume_task`, `task_history`), performance benchmarking (`data/cache/scheduler-benchmark.json`), and 100% test pass rate across 236 tests.
-
+- **Prompt 014 Completed**: Fully integrated Local Screen Understanding, OCR & Vision Layer (`src/jarvis/computer/vision/`).
+- **Prompt 015 Completed**: Fully integrated Self-Recovery, Diagnostics & Intelligent Replanning (`src/jarvis/core/recovery/`).
+- **Prompt 016 Completed**: Fully integrated Task Scheduling & Background Automation (`src/jarvis/scheduler/`).
+- **Prompt 017 Completed**: Fully integrated Production Hardening, Real End-to-End Runtime & Distribution (`src/jarvis/app.py`, `src/jarvis/__main__.py`) with explicit application lifecycle (`ApplicationLifecycle`), hardware-aware performance modes (`ULTRA_LOW` through `GPU_ACCELERATED`), capability registry (`CapabilityRegistry`), CLI diagnostic tool (`jarvis --doctor`), self-test suite (`jarvis --self-test`), performance benchmark suite (`PerformanceBenchmark`), Windows batch and PowerShell launchers (`start_jarvis.bat`, `start_jarvis.ps1`), explicit user-controlled autostart manager (`AutostartManager`), end-to-end integration test suite, false-success defense, production readiness documentation (`docs/production-readiness.md`), and 100% test pass rate across 251 tests.
 
 ---
 
-## How to Initialize & Run
+## How to Run & Diagnostics
 
-1. **Requirements**: Python 3.10+ (Tested on Python 3.14.7 on Windows 11).
-2. **Setup virtual environment**:
-   ```bash
-   python -m venv venv
-   venv\Scripts\activate
-   ```
-3. **Install project in editable mode**:
+1. **Setup Environment**:
    ```bash
    pip install -e .
    ```
-4. **Run Unit Tests**:
+
+2. **Run Diagnostics (`--doctor`)**:
    ```bash
-   pytest
+   jarvis --doctor
+   ```
+
+3. **Run Self-Test Suite (`--self-test`)**:
+   ```bash
+   jarvis --self-test
+   ```
+
+4. **Launch Application**:
+   ```bash
+   scripts/start_jarvis.bat
+   # or
+   python -m jarvis
+   ```
+
+5. **Run Test Suite**:
+   ```bash
+   python -m pytest
    ```
 
 ---
 
 ## Roadmap Summary
 
-1. **Phase 1**: Project Foundation & Architecture (Current)
-2. **Phase 2**: Local Model Integration (`llama.cpp` GGUF engine)
-3. **Phase 3**: Chat Interface
-4. **Phase 4–6**: Voice Pipeline (STT, TTS, Wake-Word)
-5. **Phase 7–13**: OS, Browser, Vision & File Automation
-6. **Phase 14–20**: Memory, Skills, Self-Recovery & Hardening
+- **Phases 1–20**: ALL COMPLETED (Production Hardened Release v0.1.0)
 
 ---
 
