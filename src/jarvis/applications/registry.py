@@ -1,81 +1,98 @@
 """
-Application Registry for JARVIS.
-Loads config/applications.yaml, maintains application metadata, and resolves query aliases.
+Application Registry maintaining metadata, alias resolution, category groups, and cache indexing for JARVIS.
 """
 
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 import yaml
-import logging
 
-from jarvis.applications.models import ApplicationEntry
-
-logger = logging.getLogger("jarvis.applications.registry")
+from jarvis.applications.aliases import AliasResolver
+from jarvis.applications.discovery import ApplicationDiscovery
+from jarvis.applications.errors import ApplicationNotFound, AmbiguousApplication
+from jarvis.applications.platform import ApplicationPlatform
+from jarvis.applications.state import ApplicationInfo
 
 
 class ApplicationRegistry:
-    """Registry maintaining application alias mappings and executable metadata."""
+    """Central application registry holding profile mappings and category groups."""
 
-    def __init__(self, config_path: Optional[str | Path] = None):
+    def __init__(
+        self,
+        config_path: Optional[Union[str, Path]] = None,
+        cache_path: Optional[Union[str, Path]] = None,
+    ):
         self.config_path = Path(config_path) if config_path else Path("config/applications.yaml")
-        self.entries: Dict[str, ApplicationEntry] = {}
-        self._load_registry()
+        self.entries: Dict[str, ApplicationInfo] = {}
+        self.groups: Dict[str, List[str]] = {}
+        self.protected_apps: List[str] = []
+        self.discovery = ApplicationDiscovery(cache_file=Path(cache_path) if cache_path else None)
 
-    def _load_registry(self) -> None:
+        self._load_config()
+        self._sync_discovery_cache()
+
+    def _load_config(self) -> None:
         if not self.config_path.exists():
-            logger.warning(f"Application registry file not found at '{self.config_path}'")
             return
 
         try:
             with open(self.config_path, "r", encoding="utf-8") as f:
                 data = yaml.safe_load(f) or {}
-                apps_data = data.get("applications", {})
+                apps_cfg = data.get("applications", {})
+                self.groups = data.get("groups", {})
+                self.protected_apps = data.get("protected_applications", [])
 
-                for key, app_info in apps_data.items():
-                    entry = ApplicationEntry(
-                        name=app_info.get("name", key),
-                        aliases=app_info.get("aliases", [key]),
-                        executable=app_info.get("executable", f"{key}.exe"),
-                        common_paths=app_info.get("common_paths", []),
+                for key, info in apps_cfg.items():
+                    key_lower = key.lower()
+                    app_info = ApplicationInfo(
+                        name=info.get("name", key),
+                        display_name=info.get("display_name", info.get("name", key)),
+                        category=info.get("category", "utilities"),
+                        aliases=info.get("aliases", [key_lower]),
+                        executable=info.get("executable", f"{key}.exe"),
+                        common_paths=info.get("common_paths", []),
+                        startup_timeout=info.get("startup_timeout", 15),
+                        platform=ApplicationPlatform.get_platform_name(),
                     )
-                    self.entries[key.lower()] = entry
-        except Exception as e:
-            logger.error(f"Failed to load application registry: {e}")
+                    # Resolve path if available
+                    exp_path = ApplicationPlatform.resolve_executable_path(app_info)
+                    if exp_path:
+                        app_info.executable_path = str(exp_path)
 
-    def resolve(self, query: str) -> Optional[ApplicationEntry]:
-        """Resolves application query or alias (e.g. 'chrome' or 'google chrome') to ApplicationEntry."""
-        if not query:
-            return None
+                    self.entries[key_lower] = app_info
+        except Exception:
+            pass
 
-        clean_query = query.strip().lower()
+    def _sync_discovery_cache(self) -> None:
+        cache = self.discovery.load_cache()
+        if cache and cache.applications:
+            for cached_app in cache.applications:
+                k = cached_app.name.lower()
+                if k in self.entries:
+                    if cached_app.executable_path:
+                        self.entries[k].executable_path = cached_app.executable_path
 
-        # Direct key match
-        if clean_query in self.entries:
-            return self.entries[clean_query]
-
-        # Alias match
-        for entry in self.entries.values():
-            if clean_query == entry.name.lower() or clean_query == entry.executable.lower():
-                return entry
-            for alias in entry.aliases:
-                if clean_query == alias.lower():
-                    return entry
-
-        # Partial match
-        for entry in self.entries.values():
-            if clean_query in entry.name.lower() or clean_query in entry.executable.lower():
-                return entry
-            for alias in entry.aliases:
-                if clean_query in alias.lower():
-                    return entry
-
-        # Fallback entry for generic executable query
-        return ApplicationEntry(
-            name=query,
-            aliases=[clean_query],
-            executable=clean_query if clean_query.endswith(".exe") else f"{clean_query}.exe",
-            common_paths=[],
-        )
-
-    def list_applications(self) -> List[ApplicationEntry]:
+    def refresh_discovery(self) -> List[ApplicationInfo]:
+        """Triggers OS application discovery scan and updates cache."""
+        discovered = self.discovery.discover_applications(list(self.entries.values()))
+        for disc in discovered:
+            k = disc.name.lower()
+            if k in self.entries:
+                self.entries[k] = disc
         return list(self.entries.values())
+
+    def resolve(self, query: str) -> ApplicationInfo:
+        """Resolves application query or alias using AliasResolver."""
+        return AliasResolver.resolve(query, self.entries)
+
+    def list_applications(self) -> List[ApplicationInfo]:
+        """Lists all registered applications."""
+        return list(self.entries.values())
+
+    def get_group_applications(self, group_name: str) -> List[ApplicationInfo]:
+        """Returns applications belonging to a group (e.g. 'development', 'browsers')."""
+        group_keys = self.groups.get(group_name.lower(), [])
+        result = []
+        for k in group_keys:
+            if k.lower() in self.entries:
+                result.append(self.entries[k.lower()])
+        return result

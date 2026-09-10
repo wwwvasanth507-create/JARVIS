@@ -19,10 +19,19 @@ from jarvis.tools.computer_tools import (
     CloseWindowTool,
 )
 from jarvis.tools.application_tools import (
+    APPLICATION_TOOLS,
     ListApplicationsTool,
+    FindApplicationTool,
     OpenApplicationTool,
     CloseApplicationTool,
+    RestartApplicationTool,
     IsApplicationRunningTool,
+    ListRunningApplicationsTool,
+    FocusApplicationTool,
+    CheckApplicationHealthTool,
+    OpenApplicationFileTool,
+    OpenApplicationUrlTool,
+    ListStartupApplicationsTool,
 )
 from jarvis.tools.browser_tools import BROWSER_TOOLS
 from jarvis.tools.filesystem_tools import FILESYSTEM_TOOLS, ListDirectoryTool, ReadFileTool, CreateFileTool, WriteFileTool, EditFileTool, CopyFileTool, MoveFileTool, RenameFileTool, CreateDirectoryTool, DeleteFileTool, DeleteDirectoryTool, SearchFilesTool, GetMetadataTool, FindDuplicatesTool, GetStorageInfoTool, OrganizeDirectoryTool
@@ -42,10 +51,7 @@ ALL_TOOLS = [
     ListWindowsTool(),
     FocusWindowTool(),
     CloseWindowTool(),
-    ListApplicationsTool(),
-    OpenApplicationTool(),
-    CloseApplicationTool(),
-    IsApplicationRunningTool(),
+    *APPLICATION_TOOLS,
     *BROWSER_TOOLS,
     *FILESYSTEM_TOOLS,
     *SHELL_TOOLS,
@@ -56,6 +62,7 @@ __all__ = [
     "ToolMetadata",
     "ToolResult",
     "ALL_TOOLS",
+    "APPLICATION_TOOLS",
     "BROWSER_TOOLS",
     "FILESYSTEM_TOOLS",
     "SHELL_TOOLS",
@@ -73,9 +80,17 @@ __all__ = [
     "FocusWindowTool",
     "CloseWindowTool",
     "ListApplicationsTool",
+    "FindApplicationTool",
     "OpenApplicationTool",
     "CloseApplicationTool",
+    "RestartApplicationTool",
     "IsApplicationRunningTool",
+    "ListRunningApplicationsTool",
+    "FocusApplicationTool",
+    "CheckApplicationHealthTool",
+    "OpenApplicationFileTool",
+    "OpenApplicationUrlTool",
+    "ListStartupApplicationsTool",
     "ListDirectoryTool",
     "ReadFileTool",
     "CreateFileTool",
@@ -102,6 +117,7 @@ __all__ = [
     "JobOutputTool",
     "CancelJobTool",
 ]
+
 
 
 

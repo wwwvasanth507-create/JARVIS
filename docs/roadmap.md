@@ -28,9 +28,10 @@ This document outlines the 20-phase incremental development roadmap for **JARVIS
 - Add low-power background wake-word engine (listening for "JARVIS").
 - Implement seamless transition from wake-word detection to STT listening mode.
 
-### Phase 7: Application Control
-- Develop `application.*` toolset to launch, focus, list, inspect, and gracefully close Windows desktop applications.
-- Build application mapping registry (`config/applications.yaml`).
+### Phase 7: Application Control (COMPLETED - Prompt 009)
+- Developed `application.*` toolset (12 structured tools) to discover, launch, focus, monitor, restart, and gracefully close desktop applications across Windows, Linux, and macOS.
+- Built application registry (`config/applications.yaml`), index cache (`data/indexes/applications.json`), alias & ambiguity resolution, unsaved-work guarding, readiness polling, and health checking.
+
 
 ### Phase 8: Keyboard and Mouse Control
 - Develop `computer.*` toolset for simulated input actions (mouse movement, clicking, dragging, typing, key combinations).
