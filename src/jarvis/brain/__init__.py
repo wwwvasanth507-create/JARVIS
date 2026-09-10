@@ -1,49 +1,72 @@
-"""Brain package exports for JARVIS Local AI Inference Layer."""
+"""
+JARVIS Brain Subsystem: Local LLM Model Runtime & Agent Loop Architecture.
+"""
 
-from jarvis.brain.provider import (
-    ModelProvider,
-    MockModelProvider,
-    MockLocalModelProvider,
-    LlamaCppModelProvider,
+from jarvis.brain.errors import (
+    ModelError,
+    ModelNotFoundError,
+    ModelLoadFailedError,
+    ModelFormatUnsupportedError,
+    ModelMemoryUnavailableError,
+    BackendUnavailableError,
+    GenerationFailedError,
+    GenerationCancelledError,
+    ContextLimitExceededError,
+    ToolCallParseError,
+    ModelHealthCheckFailedError,
+)
+from jarvis.brain.models import (
     ChatMessage,
     GenerationRequest,
     GenerationResponse,
-    ModelGenerationRequest,
-    ModelGenerationResponse,
+    ModelInfo,
+    ModelHealth,
+    PerformanceMode,
+    HardwareProfile,
 )
-from jarvis.brain.loop import (
-    AgentLoopStage,
-    AgentLoopContext,
-    AgentLoopTracker,
-    PlanStep,
+from jarvis.brain.provider import (
+    ModelProvider,
+    MockModelProvider,
+    LlamaCppModelProvider,
+    MockLocalModelProvider,
 )
-from jarvis.brain.fast_path import FastIntentRouter, FastIntentMatch
-from jarvis.brain.registry import ModelRegistry, ModelInfo
+from jarvis.brain.registry import ModelRegistry
 from jarvis.brain.context import ContextManager
-from jarvis.brain.health import ModelHealthCheck, ModelHealthCheckResult
-from jarvis.brain.benchmark import ModelBenchmark, BenchmarkMetrics
+from jarvis.brain.tool_parser import StructuredToolParser
+from jarvis.brain.safety import ModelMemoryChecker
+from jarvis.brain.benchmark import ModelBenchmarkUtility, ModelBenchmark
+from jarvis.brain.health import ModelHealthChecker, ModelHealthCheck
 
 __all__ = [
-    "ModelProvider",
-    "MockModelProvider",
-    "MockLocalModelProvider",
-    "LlamaCppModelProvider",
+    "ModelError",
+    "ModelNotFoundError",
+    "ModelLoadFailedError",
+    "ModelFormatUnsupportedError",
+    "ModelMemoryUnavailableError",
+    "BackendUnavailableError",
+    "GenerationFailedError",
+    "GenerationCancelledError",
+    "ContextLimitExceededError",
+    "ToolCallParseError",
+    "ModelHealthCheckFailedError",
     "ChatMessage",
     "GenerationRequest",
     "GenerationResponse",
-    "ModelGenerationRequest",
-    "ModelGenerationResponse",
-    "AgentLoopStage",
-    "AgentLoopContext",
-    "AgentLoopTracker",
-    "PlanStep",
-    "FastIntentRouter",
-    "FastIntentMatch",
-    "ModelRegistry",
     "ModelInfo",
+    "ModelHealth",
+    "PerformanceMode",
+    "HardwareProfile",
+    "ModelProvider",
+    "MockModelProvider",
+    "LlamaCppModelProvider",
+    "MockLocalModelProvider",
+    "ModelRegistry",
     "ContextManager",
-    "ModelHealthCheck",
-    "ModelHealthCheckResult",
+    "StructuredToolParser",
+    "ModelMemoryChecker",
+    "ModelBenchmarkUtility",
     "ModelBenchmark",
-    "BenchmarkMetrics",
+    "ModelHealthChecker",
+    "ModelHealthCheck",
 ]
+

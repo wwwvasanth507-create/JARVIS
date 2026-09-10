@@ -63,3 +63,7 @@ class ModelHealthCheck:
             latency_ms=round(elapsed_ms, 2),
             error=err_msg,
         )
+
+
+ModelHealthChecker = ModelHealthCheck
+
