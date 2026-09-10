@@ -59,6 +59,27 @@ from jarvis.tools.screen_tools import (
     ScreenFindTool,
     ScreenCompareTool,
 )
+from jarvis.tools.scheduler_tools import (
+    SchedulerCreateTool,
+    SchedulerListTool,
+    SchedulerGetTool,
+    SchedulerCancelTool,
+    SchedulerPauseTool,
+    SchedulerResumeTool,
+    SchedulerHistoryTool,
+    SchedulerStatusTool,
+)
+
+SCHEDULER_TOOLS = [
+    SchedulerCreateTool(),
+    SchedulerListTool(),
+    SchedulerGetTool(),
+    SchedulerCancelTool(),
+    SchedulerPauseTool(),
+    SchedulerResumeTool(),
+    SchedulerHistoryTool(),
+    SchedulerStatusTool(),
+]
 
 ALL_TOOLS = [
     MoveMouseTool(),
@@ -81,6 +102,7 @@ ALL_TOOLS = [
     *SKILL_TOOLS,
     *DOCUMENT_TOOLS,
     *SCREEN_TOOLS,
+    *SCHEDULER_TOOLS,
 ]
 
 __all__ = [

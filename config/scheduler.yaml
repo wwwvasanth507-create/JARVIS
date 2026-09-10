@@ -1,0 +1,8 @@
+scheduler:
+  enabled: true
+  max_concurrent_tasks: 2
+  max_queue_size: 50
+  missed_task_policy: "skip"
+  recurring_failure_threshold: 3
+  overlap_policy: "skip"
+  timezone: "auto"

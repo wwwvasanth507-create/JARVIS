@@ -1,0 +1,20 @@
+skill:
+  id: list_tasks
+  name: List Tasks
+  version: 1.0.0
+  description: List scheduled tasks and reminders.
+  category: builtin
+  author: JARVIS Core
+  intents:
+    - scheduler.list
+  tools:
+    - scheduler.list
+  permissions:
+    - SYSTEM_CONTROL
+  risk_level: LOW
+  enabled: true
+
+workflow:
+  - id: list_schedules
+    action: scheduler.list
+    description: List scheduled tasks and reminders

@@ -3,8 +3,7 @@ Tool Dispatcher for JARVIS orchestration.
 """
 
 from typing import Any, Dict, Optional
-from jarvis.tools import ALL_TOOLS, BaseTool
-from jarvis.tools.base import ToolResult, ToolResultStatus
+from jarvis.tools.base import BaseTool, ToolResult, ToolResultStatus
 
 
 class ToolDispatcher:
@@ -14,6 +13,7 @@ class ToolDispatcher:
         if registry is not None:
             self.tools = registry
         else:
+            from jarvis.tools import ALL_TOOLS
             self.tools = {tool.name: tool for tool in ALL_TOOLS}
 
     def get_tool(self, name: str) -> Optional[BaseTool]:

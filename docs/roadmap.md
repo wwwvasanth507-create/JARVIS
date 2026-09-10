@@ -58,8 +58,9 @@ This document outlines the authoritative 20-phase incremental development roadma
 - Developed `src/jarvis/core/recovery/` subpackage (`JarvisRecoveryManager`, `FailureClassifier`, `DiagnosticEngine`, `RecoveryPlanner`, `RecoveryExecutor`, `RecoveryPolicy`, `DiagnosticReplanner`, `EvidenceCollector`, `StrategyRegistry`).
 - Built extensible failure classification, confidence-scored root-cause analysis (`RootCause`), deterministic subsystem diagnostics (`DiagnosticEvidence`), pre-registered recovery strategies (`RETRY_ONCE`, `REFRESH_STATE`, `REQUERY_FILESYSTEM`, `RELOAD_BROWSER_PAGE`, `REBUILD_PLAN`, `REQUEST_USER`), mandatory permission re-checking, human intervention protocol (`HumanInterventionRequiredError`), loop protection (`RecoveryLoopDetectedError`), and diagnostic replanning.
 
-### Phase 18: Task Scheduling & Background Cron Jobs (PLANNED)
-- Local background cron/timer scheduler for recurring or deferred tasks requested by the Boss.
+### Phase 18: Task Scheduling & Background Automation (COMPLETED - Prompt 016)
+- Developed `src/jarvis/scheduler/` subpackage (`SchedulerManager`, `ScheduleParser`, `TaskPersistence`, `TaskScheduler`, `TaskWorkerPool`, `TaskExecutor`, `NotificationManager`, `SchedulerPolicy`, `TaskCanceller`, `SchedulerRecovery`, `BoundedSchedulerQueue`).
+- Built natural-language schedule parser, timezone-aware recurrence engine, SQLite persistence (`scheduled_tasks`, `task_runs`), 0.0% idle CPU event loop, mandatory orchestrator dispatch pipeline, runtime permission re-evaluation, multi-channel notification fallback (Text -> Desktop -> Voice), Prompt 015 recovery integration, 8 `scheduler.*` tools, and 6 builtin skills (`schedule_task`, `cancel_task`, `list_tasks`, `pause_task`, `resume_task`, `task_history`).
 
 ### Phase 19: Automated Evaluation & Performance Benchmarking (COMPLETED - Evaluation Baseline)
 - Automated evaluation suite (`tests/evaluation/`) testing task completion rate, tool call precision, and resource utilization.

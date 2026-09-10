@@ -1,0 +1,20 @@
+skill:
+  id: schedule_task
+  name: Schedule Task
+  version: 1.0.0
+  description: Schedule a one-time or recurring task or reminder for JARVIS.
+  category: builtin
+  author: JARVIS Core
+  intents:
+    - scheduler.create
+  tools:
+    - scheduler.create
+  permissions:
+    - SYSTEM_CONTROL
+  risk_level: LOW
+  enabled: true
+
+workflow:
+  - id: create_schedule
+    action: scheduler.create
+    description: Create scheduled task or reminder

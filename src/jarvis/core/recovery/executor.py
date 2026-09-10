@@ -6,7 +6,6 @@ Executes recovery steps with mandatory permission re-checks and verification.
 import time
 import logging
 from typing import Dict, Any, Tuple
-from jarvis.core.orchestration.dispatcher import ToolDispatcher
 from jarvis.core.recovery.policy import RecoveryPolicy
 from jarvis.core.recovery.planner import RecoveryPlan, RecoveryStep
 from jarvis.core.recovery.root_cause import RootCause
@@ -18,8 +17,12 @@ logger = logging.getLogger("jarvis.core.recovery.executor")
 class RecoveryExecutor:
     """Executes recovery plan steps with security re-checks."""
 
-    def __init__(self, dispatcher: Optional[ToolDispatcher] = None, policy: Optional[RecoveryPolicy] = None):
-        self.dispatcher = dispatcher or ToolDispatcher()
+    def __init__(self, dispatcher: Optional[Any] = None, policy: Optional[RecoveryPolicy] = None):
+        if dispatcher is None:
+            from jarvis.core.orchestration.dispatcher import ToolDispatcher
+            self.dispatcher = ToolDispatcher()
+        else:
+            self.dispatcher = dispatcher
         self.policy = policy or RecoveryPolicy()
 
     def execute_recovery_plan(

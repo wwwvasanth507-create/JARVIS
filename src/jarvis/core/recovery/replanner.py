@@ -4,8 +4,7 @@ Constructs revised plans incorporating diagnostic evidence while respecting perm
 """
 
 import logging
-from typing import Optional, List
-from jarvis.core.orchestration.plan import Plan, PlanStep
+from typing import Optional, List, Any
 from jarvis.core.recovery.evidence import DiagnosticEvidence
 from jarvis.core.recovery.failure import FailureEvent
 from jarvis.core.recovery.root_cause import RootCause
@@ -27,6 +26,8 @@ class DiagnosticReplanner:
         """
         Builds a modified plan incorporating diagnostic evidence.
         """
+        from jarvis.core.orchestration.plan import Plan, PlanStep
+
         if not original_plan or not original_plan.steps:
             return None
 
