@@ -53,7 +53,7 @@ class IntentParser:
         # Filesystem
         (r"^(?:list|show)\s+(?:files in|directory|folder)?\s*(.*)$", "filesystem.list_directory", "path"),
         (r"^search\s+(?:for\s+)?([a-zA-Z0-9_\-\.\*]+)(?:\s+in\s+(.*))?$", "filesystem.search", "query"),
-        (r"^read\s+file\s+(.*)$", "filesystem.read_file", "path"),
+        (r"^(?:read|open)\s+(?:this\s+)?file\s+(.*)$", "filesystem.read_file", "path"),
         
         # Computer
         (r"^list windows\??$", "computer.list_windows", None),
@@ -67,19 +67,43 @@ class IntentParser:
         (r"^open url\s+(https?://\S+)$", "browser.open", "url"),
     ]
 
+    POLITE_PREFIXES = [
+        r"^(?:boss,?\s+)",
+        r"^(?:can you\s+please\s+)",
+        r"^(?:could you\s+please\s+)",
+        r"^(?:can you\s+)",
+        r"^(?:could you\s+)",
+        r"^(?:please\s+)",
+        r"^(?:kindly\s+)",
+        r"^(?:jarvis,?\s+)",
+    ]
+
+    POLITE_SUFFIXES = [
+        r"(?:\s+for me)$",
+        r"(?:\s+please)$",
+        r"(?:\s+boss)$",
+    ]
+
     def __init__(self, brain: Optional[Any] = None):
         self.brain = brain
 
     def parse(self, request: str) -> Intent:
         normalized = request.strip().rstrip(".!?").strip()
 
+        # Strip polite prefixes & suffixes for intent normalization
+        clean_text = normalized
+        for pref in self.POLITE_PREFIXES:
+            clean_text = re.sub(pref, "", clean_text, flags=re.IGNORECASE).strip()
+        for suff in self.POLITE_SUFFIXES:
+            clean_text = re.sub(suff, "", clean_text, flags=re.IGNORECASE).strip()
+
         # Check direct fast path
-        fast_intent = self._try_fast_path(normalized)
+        fast_intent = self._try_fast_path(clean_text)
         if fast_intent:
             return fast_intent
 
         # General LLM or rule fallback
-        return self._fallback_parse(normalized)
+        return self._fallback_parse(clean_text)
 
     def _try_fast_path(self, text: str) -> Optional[Intent]:
         for pattern, tool_name, primary_param in self.FAST_PATH_PATTERNS:

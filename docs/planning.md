@@ -17,12 +17,16 @@ Each `Plan` contains a list of `PlanStep` items:
 * `permission`: Required permission category
 * `status`: Step lifecycle state (`PENDING`, `WAITING_FOR_CONFIRMATION`, `EXECUTING`, `COMPLETED`, `FAILED`, `CANCELLED`, `SKIPPED`)
 
+## Plan Quality Scoring (`PlanQualityScorer`)
+
+`PlanQualityScorer.score_plan(plan)` evaluates multi-step plans before execution:
+- Checks dependency completeness (missing dependencies deduct 0.3).
+- Validates tool specificity (unspecified or generic tools deduct 0.2).
+- Rejects plans with quality scores below 0.6.
+
 ---
 
-## Validation & Prohibited Tool Combinations
+## Dynamic Adaptation & Loop Defense
 
-Before execution, `PlanValidator` verifies:
-1. **Tool Existence**: Tool is registered in `ALL_TOOLS`.
-2. **Dependency Resolution**: All dependency step IDs exist in the plan.
-3. **Security Policy**: Action parameters satisfy `PermissionEvaluator`.
-4. **Prohibited Chaining**: Prevents dangerous tool combinations (such as reading sensitive files and immediately piping into shell execution to bypass filesystem root bounds).
+- **Observation-Based Adaptation**: Plans re-evaluate next steps based on runtime observations (e.g. focusing an already open browser rather than launching another instance).
+- **Semantic Loop Defense**: `ObservationManager.detect_semantic_loop()` detects repeated identical or semantically duplicate tool invocations and triggers recovery before execution gets stuck.

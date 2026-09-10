@@ -113,3 +113,37 @@ class Planner:
             goal_id=goal.goal_id,
             steps=steps,
         )
+
+
+class PlanQualityScorer:
+    """Scores multi-step plans for completeness, tool validity, and risk safety."""
+
+    @classmethod
+    def score_plan(cls, plan: Plan) -> Dict[str, Any]:
+        if not plan.steps:
+            return {"score": 0.0, "valid": False, "reason": "Plan contains no execution steps"}
+
+        score = 1.0
+        reasons = []
+
+        # Check step dependencies
+        step_ids = {s.step_id for s in plan.steps}
+        for s in plan.steps:
+            for dep in s.dependencies:
+                if dep not in step_ids:
+                    score -= 0.3
+                    reasons.append(f"Step '{s.description}' has missing dependency '{dep}'")
+
+        # Check tool validation
+        for s in plan.steps:
+            if not s.tool_name or s.tool_name == "general.task":
+                score -= 0.2
+                reasons.append(f"Step '{s.description}' has unspecified or generic tool")
+
+        valid = score >= 0.6
+        return {
+            "score": round(max(0.0, score), 2),
+            "valid": valid,
+            "reasons": reasons
+        }
+

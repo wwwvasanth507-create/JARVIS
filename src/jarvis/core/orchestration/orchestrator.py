@@ -65,9 +65,27 @@ class JarvisOrchestrator:
         if self.cancellation_mgr.is_cancellation_request(request):
             return self.cancellation_mgr.cancel_execution(state, reason="User issued cancellation keyword")
 
-        # 2. Intent Parsing
+        # 2. Prompt Injection Defense Scan
+        from jarvis.security.injection_defense import PromptInjectionDefense
+        scan_res = PromptInjectionDefense.scan_content(request, source_origin="user_request")
+        processed_request = scan_res.sanitized_content
+
+        # 3. Contextual Reference Resolution
+        from jarvis.core.orchestration.reference_resolver import ReferenceResolver
+        rr = ReferenceResolver()
+        ref_res = rr.resolve(processed_request)
+        resolved_text = ref_res.resolved_text
+
+        # 4. Check for Pending Ambiguity Clarification Resolution
+        from jarvis.core.orchestration.ambiguity import AmbiguityHandler
+        amb_handler = AmbiguityHandler()
+        resolved_cand = amb_handler.resolve_pending_clarification(resolved_text)
+        if resolved_cand:
+            resolved_text = f"open file {resolved_cand}"
+
+        # 5. Intent Parsing
         try:
-            intent = self.intent_parser.parse(request)
+            intent = self.intent_parser.parse(resolved_text)
         except AmbiguousRequestError as amb:
             state.status = ExecutionStatus.NEEDS_CLARIFICATION
             state.error = str(amb)
@@ -82,18 +100,23 @@ class JarvisOrchestrator:
 
         state.fast_path_used = intent.is_fast_path
 
-        # 3. Goal Construction
+        # 6. Goal Construction
         goal = self.goal_resolver.resolve(intent)
         state.goal = goal
 
-        # 4. Planning (Check skill resolver first)
+        # 7. Planning (Check skill resolver first)
         resolved_skill = self.skill_mgr.resolve_skill(intent) if self.skill_mgr else None
         if resolved_skill:
             plan = self.skill_planner.create_skill_plan(resolved_skill, intent, self.dispatcher.tools)
         else:
             plan = self.planner.create_plan(intent, goal)
 
-        # 5. Plan Validation
+        # 8. Plan Quality Scoring & Validation
+        from jarvis.core.orchestration.planner import PlanQualityScorer
+        score_res = PlanQualityScorer.score_plan(plan)
+        if not score_res["valid"]:
+            logger.warning(f"Plan quality score low ({score_res['score']}): {score_res['reasons']}")
+
         try:
             self.validator.validate(plan, self.dispatcher.tools)
         except PlanValidationError as pve:
@@ -102,7 +125,7 @@ class JarvisOrchestrator:
             self._record_history(state, intent_action=intent.action)
             return state
 
-        # 6. Execution
+        # 9. Execution
         state = self.executor.execute_plan(plan, state, confirmation_token=confirmation_token)
 
         self._record_history(state, intent_action=intent.action)

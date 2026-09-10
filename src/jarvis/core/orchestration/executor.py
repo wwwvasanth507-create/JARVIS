@@ -100,6 +100,14 @@ class PlanExecutor:
                     step.status = PlanStepStatus.COMPLETED
                     step.result = tool_res.data
                     state.completed_steps.append(step)
+                    
+                    # Update active conversation state
+                    try:
+                        from jarvis.core.orchestration.conversation_state import ConversationStateManager
+                        csm = ConversationStateManager.get_instance()
+                        csm.state.record_tool_output(step.tool_name, step.description, tool_res.data, status="SUCCESS")
+                    except Exception:
+                        pass
                 else:
                     step.error = v_details.get("reason", "Verification failed")
                     self.recovery_mgr.track_action(step.tool_name, step.arguments, step.error)

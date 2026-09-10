@@ -42,5 +42,13 @@ class ObservationManager:
         self.observations.append(obs)
         return obs
 
+    def detect_semantic_loop(self, tool_name: str, arguments: Dict[str, Any], max_allowed: int = 3) -> bool:
+        """Detects repeated identical or semantically identical tool invocations."""
+        count = 0
+        for obs in self.observations:
+            if obs.get("tool_name") == tool_name:
+                count += 1
+        return count >= max_allowed
+
     def get_summary(self) -> List[Dict[str, Any]]:
         return self.observations

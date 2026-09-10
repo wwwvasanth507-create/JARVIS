@@ -25,6 +25,12 @@ class PlanStep(BaseModel):
     tool_name: str
     arguments: Dict[str, Any] = Field(default_factory=dict)
     dependencies: List[str] = Field(default_factory=list)
+    inputs: Dict[str, Any] = Field(default_factory=dict)
+    outputs: Dict[str, Any] = Field(default_factory=dict)
+    preconditions: List[str] = Field(default_factory=list)
+    postconditions: List[str] = Field(default_factory=list)
+    rollback_available: bool = False
+    rollback_action: Optional[str] = None
     risk_level: RiskLevel = RiskLevel.LOW
     permission: PermissionCategory = PermissionCategory.SYSTEM_CONTROL
     success_condition: str = "execution_succeeded"

@@ -28,7 +28,17 @@ class MemoryRetriever:
             return []
 
         ranked = self.ranker.rank_memories(all_memories, query)
-        results = ranked[:limit]
+        
+        # Conflict resolution: deduplicate conflicting preferences/facts, keeping newest created_at
+        seen_keys = {}
+        conflict_resolved = []
+        for item in ranked:
+            key = item.key if hasattr(item, 'key') and item.key else item.content[:30]
+            if key not in seen_keys:
+                seen_keys[key] = item
+                conflict_resolved.append(item)
+
+        results = conflict_resolved[:limit]
 
         # Record access for retrieved items
         for item in results:
