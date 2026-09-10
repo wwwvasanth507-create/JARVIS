@@ -81,24 +81,26 @@ class AdvancedEvaluator:
             else:
                 passed_intents += 1
 
-        REAL_WORLD_TASKS_FILE = Path("tests/evaluation/real_world_dataset.json")
-        real_world_tasks = []
-        if REAL_WORLD_TASKS_FILE.exists():
-            with open(REAL_WORLD_TASKS_FILE, "r", encoding="utf-8") as f:
-                real_world_tasks = json.load(f)
+        EVAL_100_FILE = Path("tests/evaluation/evaluation_100_scenarios.json")
+        eval_100_tasks = []
+        if EVAL_100_FILE.exists():
+            with open(EVAL_100_FILE, "r", encoding="utf-8") as f:
+                eval_100_tasks = json.load(f)
 
-        passed_real_world = 0
-        for rw_task in real_world_tasks:
-            q = rw_task.get("query")
+        passed_100 = 0
+        for task100 in eval_100_tasks:
+            q = task100.get("query")
             intent = app.orchestrator.intent_parser.parse(q)
             if intent is not None:
-                passed_real_world += 1
+                passed_100 += 1
 
         total_ms = round((time.perf_counter() - t0) * 1000, 2)
 
         results = {
             "total_golden_tasks": total_evals,
             "total_real_world_scenarios": len(real_world_tasks),
+            "total_100_benchmark_scenarios": len(eval_100_tasks),
+            "benchmark_completion_rate": round((passed_100 / max(1, len(eval_100_tasks))) * 100, 2),
             "real_world_completion_rate": round((passed_real_world / max(1, len(real_world_tasks))) * 100, 2),
             "intent_parsing_accuracy": round((passed_intents / max(1, total_evals)) * 100, 2),
             "reference_resolution_accuracy": round((passed_references / max(1, total_evals)) * 100, 2),

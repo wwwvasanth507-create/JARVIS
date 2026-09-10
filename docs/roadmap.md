@@ -92,6 +92,21 @@ This document outlines the authoritative 20-phase incremental development roadma
 - Developed desktop `PrivacyDashboardManager` (`src/jarvis/system/privacy_dashboard.py`), user-facing `ActionJournal` (`src/jarvis/observability/action_journal.py`) with secret masking, and 5 system tools (`system.get_info`, `system.check_cleanup`, `system.network_status`, `system.batch_preview`, `system.replay_task`).
 - Created 50-scenario real-world evaluation dataset (`tests/evaluation/real_world_dataset.json`) and verified 100% test pass rate across 316 unit and integration tests.
 
+### Phase 24: Advanced Perception, Application Semantics, Long-Running Supervision & Reliable Agent Memory (COMPLETED - Prompt 021)
+- Implemented `LongRunningTaskManager` (`src/jarvis/core/tasks/task_manager.py`) and `TaskHeartbeat` supporting 13 governed task statuses (`CREATED` through `EXPIRED`).
+- Developed `TaskSupervisorEngine` (`src/jarvis/core/tasks/supervisor.py`) and `StallDetector` (`src/jarvis/core/tasks/stall_detector.py`) with post-restart orphan task reconciliation.
+- Built lightweight `EnvironmentFingerprint` and Checkpoints 2.0 with pre-resume environment, state, and permission re-validation.
+- Developed `ApplicationSemanticState` and `BaseApplicationSemanticAdapter` (`src/jarvis/applications/application_semantics.py`) across 6 app families (Browser, File Explorer, Text Editor, Terminal, Document Viewer, Office).
+- Developed `UIStateModel` and `UIStateDiffEngine` (`src/jarvis/computer/vision/ui_state_model.py`) with confidence-aware perception (`HIGH`, `MEDIUM`, `LOW`) and multi-tier target resolution (`SemanticTargetResolver`).
+- Built bounded `ObservationCache` (`src/jarvis/core/orchestration/observation_cache.py`) with TTL freshness and mandatory pre-action re-observation (`ActiveReobserver`).
+- Developed local typed `JarvisEventBus` (`src/jarvis/system/event_bus.py`) with event deduplication/coalescing across 15 event types and task event streaming.
+- Developed `StrategyMemory` and failure pattern learning (`src/jarvis/memory/strategy_memory.py`) for long-term task strategy tracking without blind replay.
+- Developed central `ResourceArbitrator` (`src/jarvis/system/resource_arbitrator.py`) for bounded resource allocation across Model, Browser, Vision, Voice, and Microphone leases.
+- Developed `UserTakeoverDetector` (`src/jarvis/system/user_takeover.py`) for background task state change detection and clean "Safe Handoff" user interaction handling.
+- Extended PySide6 desktop app (`src/jarvis/ui/`) with user-facing Task Supervision Panel, Live Event Stream, and Task Detail Views.
+- Created 100-scenario evaluation dataset (`tests/evaluation/evaluation_100_scenarios.json`), chaos test suite, security adversarial test suite, and performance benchmarks.
+- Verified 100% test pass rate across 341 unit and integration tests.
+
 ---
 
 *Master Roadmap approved for JARVIS.*
