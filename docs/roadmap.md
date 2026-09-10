@@ -83,6 +83,15 @@ This document outlines the authoritative 20-phase incremental development roadma
 - Implemented `AdvancedEvaluator` with `golden_tasks.json` evaluation dataset and zero-latency benchmark execution (`data/cache/agent-intelligence-benchmark.json`).
 - Verified 100% test pass rate across 293 unit and integration tests.
 
+### Phase 23: Real-World Computer Agent Capabilities, Proactive Context & Advanced Workflow Automation (COMPLETED - Prompt 020)
+- Implemented `CapabilityInventory` (`src/jarvis/core/capabilities/capability_inventory.py`) tracking machine-readable runtime capability metadata across 12 categories (`APPLICATION`, `COMPUTER`, `BROWSER`, `FILESYSTEM`, `DOCUMENT`, `SHELL`, `VOICE`, `VISION`, `MEMORY`, `SCHEDULER`, `NOTIFICATION`, `SYSTEM`).
+- Developed `WorkflowEngine` (`src/jarvis/core/workflows/engine.py`) and parameterized `WorkflowTemplateRegistry` (`templates.py`) supporting 11 workflow states (`DRAFT` through `COMPLETED`).
+- Built controlled system clipboard controller (`src/jarvis/computer/clipboard.py`) and 4 clipboard tools (`computer.read_clipboard`, `computer.write_clipboard`, `computer.clear_clipboard`, `computer.inspect_clipboard`) with credential redaction and zero continuous background logging.
+- Developed internal event `NotificationCenter` (`src/jarvis/system/notification_center.py`) managing alerts across 7 categories.
+- Built conservative `ProactiveContextEngine` (`src/jarvis/core/orchestration/proactive_context.py`) and governed background `MonitorManager` (`src/jarvis/system/monitors.py`) for user-defined condition watching with resource budgets.
+- Developed desktop `PrivacyDashboardManager` (`src/jarvis/system/privacy_dashboard.py`), user-facing `ActionJournal` (`src/jarvis/observability/action_journal.py`) with secret masking, and 5 system tools (`system.get_info`, `system.check_cleanup`, `system.network_status`, `system.batch_preview`, `system.replay_task`).
+- Created 50-scenario real-world evaluation dataset (`tests/evaluation/real_world_dataset.json`) and verified 100% test pass rate across 316 unit and integration tests.
+
 ---
 
 *Master Roadmap approved for JARVIS.*

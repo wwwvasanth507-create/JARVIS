@@ -70,6 +70,14 @@ from jarvis.tools.scheduler_tools import (
     SchedulerStatusTool,
 )
 
+from jarvis.tools.clipboard_tools import (
+    CLIPBOARD_TOOLS,
+    ReadClipboardTool,
+    WriteClipboardTool,
+    ClearClipboardTool,
+    InspectClipboardTool,
+)
+
 SCHEDULER_TOOLS = [
     SchedulerCreateTool(),
     SchedulerListTool(),
@@ -80,6 +88,15 @@ SCHEDULER_TOOLS = [
     SchedulerHistoryTool(),
     SchedulerStatusTool(),
 ]
+
+from jarvis.tools.system_tools import (
+    SYSTEM_TOOLS,
+    SystemGetInfoTool,
+    SystemCheckCleanupTool,
+    SystemNetworkStatusTool,
+    SystemBatchPreviewTool,
+    SystemReplayTaskTool,
+)
 
 ALL_TOOLS = [
     MoveMouseTool(),
@@ -103,6 +120,8 @@ ALL_TOOLS = [
     *DOCUMENT_TOOLS,
     *SCREEN_TOOLS,
     *SCHEDULER_TOOLS,
+    *CLIPBOARD_TOOLS,
+    *SYSTEM_TOOLS,
 ]
 
 __all__ = [
