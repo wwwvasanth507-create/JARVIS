@@ -66,6 +66,11 @@ This document outlines the 20-phase incremental development roadmap for **JARVIS
 - Developed `src/jarvis/skills/` subpackage (`SkillManager`, `SkillRegistry`, `SkillLoader`, `SkillDiscovery`, `SkillResolver`, `SkillPlanner`, `SkillExecutor`, `SkillValidator`, `SkillPermissionChecker`, `SkillSafetyPolicy`, `SkillLifecycleManager`, `SkillDependencyManager`, `SkillVersionManager`).
 - Built declarative YAML manifest format (`skills/`), skill discovery, validation, intent resolution, permission intersection, effective risk escalation, 5 builtin skills (`open_application`, `find_file`, `open_file`, `web_search`, `system_status`), and 6 skill management tools (`skill.list`, `skill.find`, `skill.info`, `skill.enable`, `skill.disable`, `skill.status`).
 
+### Phase 16: Document Intelligence & Local Document Processing (COMPLETED - Prompt 013)
+- Developed `src/jarvis/documents/` subpackage (`DocumentManager`, `DocumentDetector`, `DocumentMetadataExtractor`, `DocumentNormalizer`, `DocumentChunker`, `DocumentCache`, `DocumentRegistry`, `DocumentReader`, `TableExtractor`, `DocumentSummarizer`, `DocumentAnalyzer`, `DocumentComparer`, `DocumentCreator`, `DocumentConverter`, `DocumentSecurityPolicy`, `DocumentPrivacyManager`, `DocumentVerificationManager`).
+- Built format-specific extractors (`.txt`, `.md`, `.json`, `.yaml`, `.csv`, `.html`, `.xml`, `.pdf`, `.docx`), structural chunking, table extraction, document summarization, QA with grounded citations, document comparison diffs, atomic document creation, format conversion, prompt injection defense, 7 builtin skills, and 10 document tools (`document.*`).
+
+
 ### Phase 16: Self-Recovery & Replanning
 - Implement closed-loop error diagnostic engine.
 - When an action verification fails, capture diagnostics, analyze root cause, update planner context, and generate recovery steps.

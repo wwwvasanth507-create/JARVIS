@@ -1,0 +1,34 @@
+skill:
+  id: read_document
+  name: Read Document
+  version: 1.0.0
+  description: Inspect and read document content locally with structural extraction.
+  category: builtin
+  author: JARVIS Core
+
+  aliases:
+    - read document
+    - open document
+    - extract document text
+
+  intents:
+    - document.read
+
+  tools:
+    - document.read
+    - document.inspect
+
+  permissions:
+    - READ_FILES
+
+  risk_level: LOW
+  enabled: true
+
+workflow:
+  - id: inspect_doc
+    action: document.inspect
+    description: Inspect document metadata and format
+
+  - id: read_doc
+    action: document.read
+    description: Extract structured document content

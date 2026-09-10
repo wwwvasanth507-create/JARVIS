@@ -37,6 +37,19 @@ from jarvis.tools.browser_tools import BROWSER_TOOLS
 from jarvis.tools.filesystem_tools import FILESYSTEM_TOOLS, ListDirectoryTool, ReadFileTool, CreateFileTool, WriteFileTool, EditFileTool, CopyFileTool, MoveFileTool, RenameFileTool, CreateDirectoryTool, DeleteFileTool, DeleteDirectoryTool, SearchFilesTool, GetMetadataTool, FindDuplicatesTool, GetStorageInfoTool, OrganizeDirectoryTool
 from jarvis.tools.shell_tools import SHELL_TOOLS, ExecuteShellCommandTool, GetShellEnvironmentTool, GetShellInfoTool, ListProcessesTool, GetProcessTool, TerminateProcessTool, JobStatusTool, JobOutputTool, CancelJobTool
 from jarvis.tools.skill_tools import SKILL_TOOLS
+from jarvis.tools.document_tools import (
+    DOCUMENT_TOOLS,
+    DocumentInspectTool,
+    DocumentReadTool,
+    DocumentExtractTextTool,
+    DocumentSearchTool,
+    DocumentSummarizeTool,
+    DocumentAskTool,
+    DocumentCompareTool,
+    DocumentExtractTableTool,
+    DocumentCreateTool,
+    DocumentConvertTool,
+)
 
 ALL_TOOLS = [
     MoveMouseTool(),
@@ -57,6 +70,7 @@ ALL_TOOLS = [
     *FILESYSTEM_TOOLS,
     *SHELL_TOOLS,
     *SKILL_TOOLS,
+    *DOCUMENT_TOOLS,
 ]
 
 __all__ = [
@@ -68,6 +82,8 @@ __all__ = [
     "BROWSER_TOOLS",
     "FILESYSTEM_TOOLS",
     "SHELL_TOOLS",
+    "SKILL_TOOLS",
+    "DOCUMENT_TOOLS",
     "MoveMouseTool",
     "ClickTool",
     "DoubleClickTool",
@@ -118,8 +134,14 @@ __all__ = [
     "JobStatusTool",
     "JobOutputTool",
     "CancelJobTool",
+    "DocumentInspectTool",
+    "DocumentReadTool",
+    "DocumentExtractTextTool",
+    "DocumentSearchTool",
+    "DocumentSummarizeTool",
+    "DocumentAskTool",
+    "DocumentCompareTool",
+    "DocumentExtractTableTool",
+    "DocumentCreateTool",
+    "DocumentConvertTool",
 ]
-
-
-
-
