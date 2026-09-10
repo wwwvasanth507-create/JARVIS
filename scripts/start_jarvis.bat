@@ -27,7 +27,13 @@ if exist "venv\Scripts\activate.bat" (
     call ".venv\Scripts\activate.bat"
 )
 
-:: 4. Run Doctor Check optional argument
+:: 4. Option Flags
+if "%1"=="--release-check" (
+    echo [INFO] Running Production Release Gate Check...
+    python -m jarvis --release-check
+    exit /b %errorlevel%
+)
+
 if "%1"=="--doctor" (
     echo [INFO] Running JARVIS Subsystem Doctor...
     python -m jarvis --doctor
@@ -40,8 +46,8 @@ if "%1"=="--self-test" (
     exit /b %errorlevel%
 )
 
-:: 5. Launch JARVIS Application
-echo [INFO] Launching JARVIS...
+:: 5. Launch JARVIS Desktop Application
+echo [INFO] Launching JARVIS Desktop Application...
 python -m jarvis %*
 
 endlocal

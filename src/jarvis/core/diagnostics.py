@@ -12,8 +12,6 @@ from jarvis.core.hardware import HardwareDetector
 from jarvis.core.capabilities import CapabilityRegistry, CapabilityStatus
 from jarvis.memory.database import DatabaseManager
 from jarvis.security.permissions import PermissionEvaluator
-from jarvis.core.orchestration.orchestrator import JarvisOrchestrator
-from jarvis.scheduler.manager import SchedulerManager
 
 logger = logging.getLogger(__name__)
 
@@ -75,8 +73,9 @@ class JarvisDoctor:
 
         # 5. Tool Registry Check
         try:
-            from jarvis.tools.registry import default_registry
-            tool_count = len(default_registry.list_tools())
+            from jarvis.core.orchestration.dispatcher import ToolDispatcher
+            td = ToolDispatcher()
+            tool_count = len(td.tools)
             results.append(DiagnosticResult("Tool Registry", DiagnosticStatus.PASS, f"{tool_count} tools registered"))
         except Exception as e:
             results.append(DiagnosticResult("Tool Registry", DiagnosticStatus.FAIL, f"Tool registry error: {e}"))
@@ -85,8 +84,8 @@ class JarvisDoctor:
         try:
             from jarvis.skills.registry import SkillRegistry
             sr = SkillRegistry()
-            skill_count = len(sr.list_manifests())
-            results.append(DiagnosticResult("Skill Subsystem", DiagnosticStatus.PASS, f"{skill_count} skill manifests loaded"))
+            skill_count = len(sr.list_skills())
+            results.append(DiagnosticResult("Skill Subsystem", DiagnosticStatus.PASS, f"{skill_count} skills loaded in registry"))
         except Exception as e:
             results.append(DiagnosticResult("Skill Subsystem", DiagnosticStatus.FAIL, f"Skill subsystem error: {e}"))
 
@@ -99,7 +98,7 @@ class JarvisDoctor:
 
         # 8. Model Runtime Check
         try:
-            from jarvis.brain.gguf_provider import LocalGGUFProvider
+            from jarvis.brain.provider import LlamaCppModelProvider
             results.append(DiagnosticResult("Local Model Runtime", DiagnosticStatus.PASS, "GGUF provider available (lazy loading active)"))
         except Exception as e:
             results.append(DiagnosticResult("Local Model Runtime", DiagnosticStatus.WARN, f"Model runtime note: {e}"))
