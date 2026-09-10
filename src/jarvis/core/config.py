@@ -83,12 +83,28 @@ class WakeWordSettings(BaseModel):
     same_utterance_support: bool = True
 
 
+class BrowserSettings(BaseModel):
+    engine: str = "chromium"
+    headless: bool = True
+    reuse_session: bool = True
+    persistent_profile: bool = True
+    user_data_dir: str = "data/browser_profile"
+    download_dir: str = "data/downloads"
+    default_timeout_ms: int = 10000
+    navigation_timeout_ms: int = 15000
+    max_extraction_chars: int = 10000
+    max_links_extracted: int = 30
+    search_engine_url: str = "https://html.duckduckgo.com/html/?q="
+    allowed_schemes: list[str] = Field(default_factory=lambda: ["http", "https"])
+
+
 class JarvisConfig(BaseModel):
     system: SystemSettings = Field(default_factory=SystemSettings)
     model_provider: ModelProviderSettings = Field(default_factory=ModelProviderSettings)
     security: SecuritySettings = Field(default_factory=SecuritySettings)
     voice: VoiceSettings = Field(default_factory=VoiceSettings)
     wakeword: WakeWordSettings = Field(default_factory=WakeWordSettings)
+    browser: BrowserSettings = Field(default_factory=BrowserSettings)
     raw_config: Dict[str, Any] = Field(default_factory=dict)
 
     @classmethod
@@ -122,6 +138,14 @@ class JarvisConfig(BaseModel):
                 w_raw = yaml.safe_load(wf) or {}
                 wakeword_data = w_raw.get("wakeword", {})
 
+        # Load browser config if config/browser.yaml exists alongside
+        browser_path = path.parent / "browser.yaml"
+        browser_data = {}
+        if browser_path.exists():
+            with open(browser_path, "r", encoding="utf-8") as bf:
+                b_raw = yaml.safe_load(bf) or {}
+                browser_data = b_raw.get("browser", {})
+
         return cls(
             system=SystemSettings(**system_data),
             model_provider=ModelProviderSettings(**model_data),
@@ -135,7 +159,20 @@ class JarvisConfig(BaseModel):
                 audio=AudioSettings(**voice_data.get("audio", {})),
             ),
             wakeword=WakeWordSettings(**wakeword_data),
+            browser=BrowserSettings(**browser_data),
             raw_config=data,
         )
+
+
+_settings_instance: Optional[JarvisConfig] = None
+
+
+def get_settings(config_path: str | Path = "config/config.yaml") -> JarvisConfig:
+    global _settings_instance
+    if _settings_instance is None:
+        _settings_instance = JarvisConfig.load_from_yaml(config_path)
+    return _settings_instance
+
+
 
 

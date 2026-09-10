@@ -24,6 +24,7 @@ from jarvis.tools.application_tools import (
     CloseApplicationTool,
     IsApplicationRunningTool,
 )
+from jarvis.tools.browser_tools import BROWSER_TOOLS
 
 ALL_TOOLS = [
     MoveMouseTool(),
@@ -43,6 +44,7 @@ ALL_TOOLS = [
     OpenApplicationTool(),
     CloseApplicationTool(),
     IsApplicationRunningTool(),
+    *BROWSER_TOOLS,
 ]
 
 __all__ = [
@@ -50,6 +52,7 @@ __all__ = [
     "ToolMetadata",
     "ToolResult",
     "ALL_TOOLS",
+    "BROWSER_TOOLS",
     "MoveMouseTool",
     "ClickTool",
     "DoubleClickTool",
@@ -68,3 +71,4 @@ __all__ = [
     "CloseApplicationTool",
     "IsApplicationRunningTool",
 ]
+

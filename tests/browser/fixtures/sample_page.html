@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JARVIS Test Page</title>
+</head>
+<body>
+    <h1>JARVIS Browser Automation Test Page</h1>
+    <p>Welcome, Boss. This is a local HTML test page for browser automation.</p>
+
+    <div id="search-section">
+        <h2>Web Search Form</h2>
+        <form id="test-form" action="/search" method="GET">
+            <label for="q">Query:</label>
+            <input type="text" id="q" name="q" placeholder="Enter search term" role="textbox">
+            <button type="submit" id="submit-btn" role="button" aria-label="Search Button">Search</button>
+        </form>
+    </div>
+
+    <div id="links-section">
+        <h2>Navigation Links</h2>
+        <a href="https://www.youtube.com" id="youtube-link">YouTube</a>
+        <a href="https://html.duckduckgo.com" id="ddg-link">DuckDuckGo</a>
+    </div>
+
+    <div id="download-section">
+        <h2>Sample Download</h2>
+        <a href="data:text/plain;charset=utf-8,JARVIS%20Test%20File%20Content" download="jarvis_sample.txt" id="download-link">Download Sample File</a>
+    </div>
+</body>
+</html>
