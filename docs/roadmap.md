@@ -58,9 +58,9 @@ This document outlines the 20-phase incremental development roadmap for **JARVIS
 - Integrate local vision models (e.g., Moondream / LLaVA / Florence-2 CPU) for screen analysis.
 - Enable visual element detection, OCR extraction, and UI layout interpretation.
 
-### Phase 14: Memory System
-- Implement short-term context buffer and long-term persistent memory (`data/database/`).
-- Enable episodic interaction recall, preference storage, and semantic vector indexing.
+### Phase 14: Memory & Knowledge System (COMPLETED - Prompt 011)
+- Developed `src/jarvis/memory/` subpackage (`MemoryManager`, `DatabaseManager`, `SchemaMigrator`, `MemoryStorage`, `MemoryPrivacyPolicy`, `MemoryDeduplicator`, `PreferenceManager`, `FactManager`, `EpisodeManager`, `ProjectManager`, `TaskManager`, `MemoryExtractor`, `RetentionManager`, `KnowledgeIndexer`, `MemoryRetriever`, `KnowledgeRetriever`).
+- Built local SQLite database (`data/database/memory.db`), explicit memory categories, pattern-matched privacy policy blocking credential storage, conflict deduplication, incremental Markdown knowledge indexing (SHA256), multi-signal ranking, and context builder.
 
 ### Phase 15: Skill System
 - Build dynamic modular skill loader (`src/jarvis/skills/`).

@@ -17,6 +17,9 @@ from jarvis.core.orchestration.state import ExecutionHistoryEntry, ExecutionStat
 from jarvis.security.permissions import PermissionEvaluator
 
 
+from jarvis.memory.manager import MemoryManager
+
+
 class JarvisOrchestrator:
     """Primary orchestration manager coordinating intent parsing, planning, validation, execution, and verification."""
 
@@ -29,6 +32,7 @@ class JarvisOrchestrator:
         dispatcher: Optional[ToolDispatcher] = None,
         executor: Optional[PlanExecutor] = None,
         cancellation_mgr: Optional[CancellationManager] = None,
+        memory_mgr: Optional[MemoryManager] = None,
     ):
         self.intent_parser = intent_parser or IntentParser()
         self.goal_resolver = goal_resolver or GoalResolver()
@@ -37,11 +41,21 @@ class JarvisOrchestrator:
         self.dispatcher = dispatcher or ToolDispatcher()
         self.executor = executor or PlanExecutor(dispatcher=self.dispatcher)
         self.cancellation_mgr = cancellation_mgr or CancellationManager()
+        self.memory_mgr = memory_mgr
         self.history: list[ExecutionHistoryEntry] = []
 
     def handle(self, request: str, confirmation_token: Optional[str] = None) -> ExecutionState:
         execution_id = str(uuid.uuid4())
         state = ExecutionState(execution_id=execution_id, request=request)
+
+        # 0. Check for explicit memory statements
+        if self.memory_mgr:
+            stored_mem = self.memory_mgr.process_user_text_for_memories(request)
+            if stored_mem:
+                state.status = ExecutionStatus.COMPLETED
+                state.observations.append({"stored_memory": stored_mem.model_dump()})
+                self._record_history(state, intent_action="memory.remember")
+                return state
 
         # 1. Check for cancellation signals
         if self.cancellation_mgr.is_cancellation_request(request):
