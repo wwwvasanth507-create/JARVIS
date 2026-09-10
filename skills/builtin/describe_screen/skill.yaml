@@ -1,0 +1,30 @@
+skill:
+  id: describe_screen
+  name: Describe Screen
+  version: 1.0.0
+  description: Generate a natural language summary of currently visible screen layout.
+  category: builtin
+  author: JARVIS Core
+
+  aliases:
+    - describe screen
+    - what is on my screen
+    - screen summary
+
+  intents:
+    - screen.describe
+
+  tools:
+    - screen.describe
+    - screen.analyze
+
+  permissions:
+    - SCREEN_READ
+
+  risk_level: LOW
+  enabled: true
+
+workflow:
+  - id: describe_sc
+    action: screen.describe
+    description: Generate natural language description of screen content

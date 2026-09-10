@@ -50,6 +50,15 @@ from jarvis.tools.document_tools import (
     DocumentCreateTool,
     DocumentConvertTool,
 )
+from jarvis.tools.screen_tools import (
+    SCREEN_TOOLS,
+    ScreenCaptureTool,
+    ScreenReadTextTool,
+    ScreenAnalyzeTool,
+    ScreenDescribeTool,
+    ScreenFindTool,
+    ScreenCompareTool,
+)
 
 ALL_TOOLS = [
     MoveMouseTool(),
@@ -71,6 +80,7 @@ ALL_TOOLS = [
     *SHELL_TOOLS,
     *SKILL_TOOLS,
     *DOCUMENT_TOOLS,
+    *SCREEN_TOOLS,
 ]
 
 __all__ = [
@@ -84,6 +94,7 @@ __all__ = [
     "SHELL_TOOLS",
     "SKILL_TOOLS",
     "DOCUMENT_TOOLS",
+    "SCREEN_TOOLS",
     "MoveMouseTool",
     "ClickTool",
     "DoubleClickTool",
@@ -144,4 +155,10 @@ __all__ = [
     "DocumentExtractTableTool",
     "DocumentCreateTool",
     "DocumentConvertTool",
+    "ScreenCaptureTool",
+    "ScreenReadTextTool",
+    "ScreenAnalyzeTool",
+    "ScreenDescribeTool",
+    "ScreenFindTool",
+    "ScreenCompareTool",
 ]

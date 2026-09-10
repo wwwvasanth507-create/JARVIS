@@ -1,0 +1,29 @@
+skill:
+  id: verify_visual_state
+  name: Verify Visual State
+  version: 1.0.0
+  description: Verify visual state changes before and after an action.
+  category: builtin
+  author: JARVIS Core
+
+  aliases:
+    - verify visual state
+    - check visual change
+    - verify screen change
+
+  intents:
+    - screen.compare
+
+  tools:
+    - screen.compare
+
+  permissions:
+    - SCREEN_READ
+
+  risk_level: LOW
+  enabled: true
+
+workflow:
+  - id: verify_change
+    action: screen.compare
+    description: Compare before/after screen states via perceptual hash

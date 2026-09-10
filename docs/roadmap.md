@@ -41,8 +41,9 @@ This document outlines the authoritative 20-phase incremental development roadma
 ### Phase 12: Controlled Shell & Terminal (COMPLETED - Prompt 008)
 - Developed `shell.*` toolset (9 structured tools) for safe terminal command execution, environment variable secret redaction, output capping, background job management, and process control.
 
-### Phase 13: Screen Understanding & Computer Vision (PLANNED)
-- Integrate local vision models (e.g. Moondream / LLaVA / Florence-2 CPU) for screen analysis and visual UI interpretation.
+### Phase 13: Local Screen Understanding, OCR & Vision Layer (COMPLETED - Prompt 014)
+- Developed `src/jarvis/computer/vision/` subpackage (`ScreenVisionManager`, `ScreenCapture`, `ScreenPrivacyPolicy`, `OCRProvider`, `UIElementDetector`, `ScreenComparator`, `VisionProvider`, `SpatialLayoutAnalyzer`, `VisualTargetMatcher`, `ScreenState`, `ImagePreprocessor`, `OCRResultCache`, `VisualStateVerifier`).
+- Built multi-mode screen capture (`FULL_SCREEN`, `ACTIVE_WINDOW`, `REGION`), application blacklisting, CPU-compatible local OCR with confidence thresholds (`HIGH`, `MEDIUM`, `LOW`), multi-layered visual element detection, before/after screen change comparison, 6 screen tools (`screen.capture`, `screen.read_text`, `screen.analyze`, `screen.find`, `screen.describe`, `screen.compare`), and 4 builtin skills (`read_screen`, `find_on_screen`, `describe_screen`, `verify_visual_state`).
 
 ### Phase 14: Persistent Memory & Knowledge System (COMPLETED - Prompt 011)
 - Developed `src/jarvis/memory/` subpackage (`MemoryManager`, `DatabaseManager`, `SchemaMigrator`, `MemoryStorage`, `MemoryPrivacyPolicy`, `MemoryDeduplicator`, `FactManager`, `KnowledgeIndexer`, `MemoryRetriever`).
