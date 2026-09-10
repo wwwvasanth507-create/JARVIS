@@ -114,6 +114,7 @@ JARVIS/
 - **Prompt 009 Completed**: Fully integrated Application Control & System Integration Layer (`src/jarvis/applications/`) with 12 structured tools, OS discovery, alias & ambiguity resolution, cache indexing (`data/indexes/applications.json`), graceful closing with unsaved-work guarding, window focus integration, readiness polling, and health checking.
 - **Prompt 010 Completed**: Fully integrated Intent Understanding, Planning & Tool Orchestration Layer (`src/jarvis/core/orchestration/`) with fast-path parsing, goal resolution, plan generation & static validation, security policy enforcement, tokenized confirmation handling, post-condition verification, bounded recovery, and real-time cancellation.
 - **Prompt 011 Completed**: Fully integrated Persistent Memory & Knowledge Architecture (`src/jarvis/memory/`) with SQLite storage (`data/database/memory.db`), explicit memory categories, pattern-matched privacy policy blocking credential storage, conflict deduplication, incremental Markdown knowledge indexing (SHA256), multi-signal ranking, and context builder.
+- **Prompt 012 Completed**: Fully integrated Modular Skill & Capability System (`src/jarvis/skills/`) with declarative YAML manifests (`skills/`), skill discovery, validation, intent resolution, permission intersection, effective risk escalation, 5 builtin skills (`open_application`, `find_file`, `open_file`, `web_search`, `system_status`), and 6 skill management tools (`skill.list`, `skill.find`, `skill.info`, `skill.enable`, `skill.disable`, `skill.status`).
 
 ---
 

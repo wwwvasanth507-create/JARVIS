@@ -1,0 +1,36 @@
+skill:
+  id: open_file
+  name: Open File
+  version: 1.0.0
+  description: Validates file metadata and opens file in default system application.
+  category: builtin
+  author: JARVIS Core
+
+  aliases:
+    - view file
+    - open document
+
+  intents:
+    - application.open_file
+
+  tools:
+    - filesystem.get_metadata
+    - application.open_file
+
+  permissions:
+    - READ_FILES
+    - APPLICATION_CONTROL
+
+  risk_level: MEDIUM
+  enabled: true
+
+workflow:
+  - id: check_metadata
+    action: filesystem.get_metadata
+    description: Validate file path and metadata safety
+
+  - id: launch_file
+    action: application.open_file
+    description: Open file with associated default application
+    depends_on:
+      - check_metadata

@@ -62,9 +62,9 @@ This document outlines the 20-phase incremental development roadmap for **JARVIS
 - Developed `src/jarvis/memory/` subpackage (`MemoryManager`, `DatabaseManager`, `SchemaMigrator`, `MemoryStorage`, `MemoryPrivacyPolicy`, `MemoryDeduplicator`, `PreferenceManager`, `FactManager`, `EpisodeManager`, `ProjectManager`, `TaskManager`, `MemoryExtractor`, `RetentionManager`, `KnowledgeIndexer`, `MemoryRetriever`, `KnowledgeRetriever`).
 - Built local SQLite database (`data/database/memory.db`), explicit memory categories, pattern-matched privacy policy blocking credential storage, conflict deduplication, incremental Markdown knowledge indexing (SHA256), multi-signal ranking, and context builder.
 
-### Phase 15: Skill System
-- Build dynamic modular skill loader (`src/jarvis/skills/`).
-- Enable loading external domain-specific workflows and procedure recipes without core code modifications.
+### Phase 15: Skill System (COMPLETED - Prompt 012)
+- Developed `src/jarvis/skills/` subpackage (`SkillManager`, `SkillRegistry`, `SkillLoader`, `SkillDiscovery`, `SkillResolver`, `SkillPlanner`, `SkillExecutor`, `SkillValidator`, `SkillPermissionChecker`, `SkillSafetyPolicy`, `SkillLifecycleManager`, `SkillDependencyManager`, `SkillVersionManager`).
+- Built declarative YAML manifest format (`skills/`), skill discovery, validation, intent resolution, permission intersection, effective risk escalation, 5 builtin skills (`open_application`, `find_file`, `open_file`, `web_search`, `system_status`), and 6 skill management tools (`skill.list`, `skill.find`, `skill.info`, `skill.enable`, `skill.disable`, `skill.status`).
 
 ### Phase 16: Self-Recovery & Replanning
 - Implement closed-loop error diagnostic engine.

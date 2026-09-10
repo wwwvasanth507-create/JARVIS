@@ -1,0 +1,30 @@
+skill:
+  id: find_file
+  name: Find File
+  version: 1.0.0
+  description: Searches filesystem for matching files and inspects metadata.
+  category: builtin
+  author: JARVIS Core
+
+  aliases:
+    - search files
+    - locate file
+    - find document
+
+  intents:
+    - filesystem.search
+
+  tools:
+    - filesystem.search
+    - filesystem.get_metadata
+
+  permissions:
+    - READ_FILES
+
+  risk_level: LOW
+  enabled: true
+
+workflow:
+  - id: search_filesystem
+    action: filesystem.search
+    description: Search allowed directory tree for matching file pattern

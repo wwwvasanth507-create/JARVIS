@@ -1,0 +1,29 @@
+skill:
+  id: web_search
+  name: Web Search
+  version: 1.0.0
+  description: Executes web search query using local browser subsystem.
+  category: builtin
+  author: JARVIS Core
+
+  aliases:
+    - search internet
+    - search web
+    - google search
+
+  intents:
+    - browser.search
+
+  tools:
+    - browser.search
+
+  permissions:
+    - BROWSER_CONTROL
+
+  risk_level: LOW
+  enabled: true
+
+workflow:
+  - id: execute_search
+    action: browser.search
+    description: Open local browser and execute web search query

@@ -17,7 +17,8 @@ from jarvis.core.orchestration.state import ExecutionHistoryEntry, ExecutionStat
 from jarvis.security.permissions import PermissionEvaluator
 
 
-from jarvis.memory.manager import MemoryManager
+from jarvis.skills.manager import SkillManager
+from jarvis.skills.planner import SkillPlanner
 
 
 class JarvisOrchestrator:
@@ -33,6 +34,7 @@ class JarvisOrchestrator:
         executor: Optional[PlanExecutor] = None,
         cancellation_mgr: Optional[CancellationManager] = None,
         memory_mgr: Optional[MemoryManager] = None,
+        skill_mgr: Optional[SkillManager] = None,
     ):
         self.intent_parser = intent_parser or IntentParser()
         self.goal_resolver = goal_resolver or GoalResolver()
@@ -42,6 +44,8 @@ class JarvisOrchestrator:
         self.executor = executor or PlanExecutor(dispatcher=self.dispatcher)
         self.cancellation_mgr = cancellation_mgr or CancellationManager()
         self.memory_mgr = memory_mgr
+        self.skill_mgr = skill_mgr
+        self.skill_planner = SkillPlanner()
         self.history: list[ExecutionHistoryEntry] = []
 
     def handle(self, request: str, confirmation_token: Optional[str] = None) -> ExecutionState:
@@ -82,8 +86,12 @@ class JarvisOrchestrator:
         goal = self.goal_resolver.resolve(intent)
         state.goal = goal
 
-        # 4. Planning
-        plan = self.planner.create_plan(intent, goal)
+        # 4. Planning (Check skill resolver first)
+        resolved_skill = self.skill_mgr.resolve_skill(intent) if self.skill_mgr else None
+        if resolved_skill:
+            plan = self.skill_planner.create_skill_plan(resolved_skill, intent, self.dispatcher.tools)
+        else:
+            plan = self.planner.create_plan(intent, goal)
 
         # 5. Plan Validation
         try:
