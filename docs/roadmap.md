@@ -41,9 +41,9 @@ This document outlines the 20-phase incremental development roadmap for **JARVIS
 - Develop `browser.*` toolset utilizing Playwright / Chromium in local headful/headless mode.
 - Support page navigation, form filling, element selection, screenshot capturing, and web search extraction.
 
-### Phase 10: Autonomous Planning
-- Implement multi-step goal decomposition engine in `src/jarvis/brain/loop.py`.
-- Support plan creation, dynamic task DAG resolution, and step execution monitoring.
+### Phase 10: Intent Understanding, Planning & Tool Orchestration (COMPLETED - Prompt 010)
+- Developed `src/jarvis/core/orchestration/` subsystem (`JarvisOrchestrator`, `IntentParser`, `GoalResolver`, `Planner`, `PlanValidator`, `PlanExecutor`, `ToolDispatcher`, `ObservationManager`, `VerificationManager`, `ConfirmationManager`, `RecoveryManager`, `CancellationManager`).
+- Built deterministic fast-path routing, multi-step plan generation with static policy validation, tokenized confirmation handling, post-condition verification, single-retry step recovery, loop detection, and real-time cancellation.
 
 ### Phase 11: Filesystem Intelligence (COMPLETED - Prompt 007)
 - Developed `filesystem.*` toolset (16 structured tools) for semantic searching, file reading, atomic writing, targeted editing, duplicate detection, storage reporting, organization planning, and directory tree navigation.

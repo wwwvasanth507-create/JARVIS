@@ -3,6 +3,7 @@ Generic Tool Abstraction Interface for JARVIS.
 """
 
 from abc import ABC, abstractmethod
+from enum import Enum
 from typing import Any, Dict, Optional
 from pydantic import BaseModel, Field
 from jarvis.security.permissions import PermissionCategory, RiskLevel
@@ -17,11 +18,27 @@ class ToolMetadata(BaseModel):
     verification_strategy: str = Field(default="state_check", description="Strategy used to verify state change")
 
 
+class ToolResultStatus(str, Enum):
+    SUCCESS = "SUCCESS"
+    FAILED = "FAILED"
+    DENIED = "DENIED"
+    CONFIRMATION_REQUIRED = "CONFIRMATION_REQUIRED"
+    AMBIGUOUS = "AMBIGUOUS"
+    NOT_FOUND = "NOT_FOUND"
+    TIMEOUT = "TIMEOUT"
+    CANCELLED = "CANCELLED"
+    VERIFICATION_FAILED = "VERIFICATION_FAILED"
+
+
 class ToolResult(BaseModel):
     success: bool
+    status: ToolResultStatus = ToolResultStatus.SUCCESS
     data: Optional[Any] = None
     error: Optional[str] = None
+    observations: Optional[Dict[str, Any]] = None
+    verification: Optional[Dict[str, Any]] = None
     verification_details: Optional[Dict[str, Any]] = None
+    duration_ms: float = 0.0
 
 
 class BaseTool(ABC):
