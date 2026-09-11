@@ -107,6 +107,17 @@ from jarvis.tools.semantic_tools import (
     FillFormTool,
 )
 
+from jarvis.tools.memory_tools import (
+    MEMORY_TOOLS,
+    MemoryListTool,
+    MemorySearchTool,
+    MemoryGetTool,
+    MemoryForgetTool,
+    MemoryExplainTool,
+    MemoryExportTool,
+    MemoryImportTool,
+)
+
 ALL_TOOLS = [
     MoveMouseTool(),
     ClickTool(),
@@ -132,6 +143,7 @@ ALL_TOOLS = [
     *CLIPBOARD_TOOLS,
     *SYSTEM_TOOLS,
     *SEMANTIC_TOOLS,
+    *MEMORY_TOOLS,
 ]
 
 __all__ = [

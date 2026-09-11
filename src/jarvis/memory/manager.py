@@ -35,6 +35,14 @@ from jarvis.memory.tasks import TaskManager
 class MemoryManager:
     """Central unified Memory & Knowledge Subsystem facade."""
 
+    _instance: Optional["MemoryManager"] = None
+
+    @classmethod
+    def get_instance(cls, db_path: Optional[str | Path] = None) -> "MemoryManager":
+        if cls._instance is None:
+            cls._instance = cls(db_path=db_path)
+        return cls._instance
+
     def __init__(self, db_path: Optional[str | Path] = None):
         self.db_mgr = DatabaseManager(db_path=db_path)
         self.migrator = SchemaMigrator(self.db_mgr)
@@ -142,3 +150,41 @@ class MemoryManager:
 
     def search_knowledge(self, query: str, category: Optional[str] = None, limit: int = 5) -> List[KnowledgeQueryResult]:
         return self.knowledge_retriever.search(query=query, category=category, limit=limit)
+
+    def search_memory(self, query: str, limit: int = 10) -> List[MemoryItem]:
+        return self.retrieve(query=query, limit=limit)
+
+    def get_all_memories(self, category: Optional[str] = None, limit: int = 100) -> List[MemoryItem]:
+        items = self.list_all_memories(limit=limit)
+        if category:
+            return [i for i in items if i.type.value.lower() == category.lower()]
+        return items
+
+    def get_memory_by_key(self, key: str) -> Optional[MemoryItem]:
+        items = self.storage.list_memories(limit=500)
+        norm = self.deduplicator.normalize_key(key)
+        for i in items:
+            if i.key == norm or i.key == key:
+                return i
+        return None
+
+    def get_memory_by_id(self, item_id: str) -> Optional[MemoryItem]:
+        items = self.storage.list_memories(limit=500)
+        for i in items:
+            if i.id == item_id:
+                return i
+        return None
+
+    def forget_memory(self, key_or_id: str) -> bool:
+        item = self.get_memory_by_key(key_or_id) or self.get_memory_by_id(key_or_id)
+        if item:
+            return self.forget(item.key)
+        return self.forget(key_or_id)
+
+    def forget_by_category(self, category: str) -> int:
+        items = self.get_all_memories(category=category, limit=500)
+        count = 0
+        for i in items:
+            if self.forget(i.key):
+                count += 1
+        return count
