@@ -1,0 +1,1005 @@
+{
+  "total_scenarios": 100,
+  "scenarios": [
+    {
+      "scenario_id": "GOAL_EVAL_001",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 1",
+      "input_directive": "Test prompt for goal creation & proposal scenario 1",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_002",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 2",
+      "input_directive": "Test prompt for goal creation & proposal scenario 2",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_003",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 3",
+      "input_directive": "Test prompt for goal creation & proposal scenario 3",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_004",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 4",
+      "input_directive": "Test prompt for goal creation & proposal scenario 4",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_005",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 5",
+      "input_directive": "Test prompt for goal creation & proposal scenario 5",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_006",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 6",
+      "input_directive": "Test prompt for goal creation & proposal scenario 6",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_007",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 7",
+      "input_directive": "Test prompt for goal creation & proposal scenario 7",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_008",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 8",
+      "input_directive": "Test prompt for goal creation & proposal scenario 8",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_009",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 9",
+      "input_directive": "Test prompt for goal creation & proposal scenario 9",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_010",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 10",
+      "input_directive": "Test prompt for goal creation & proposal scenario 10",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_011",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 11",
+      "input_directive": "Test prompt for goal creation & proposal scenario 11",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_012",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 12",
+      "input_directive": "Test prompt for goal creation & proposal scenario 12",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_013",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 13",
+      "input_directive": "Test prompt for goal creation & proposal scenario 13",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_014",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 14",
+      "input_directive": "Test prompt for goal creation & proposal scenario 14",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_015",
+      "category": "goal_creation",
+      "title": "Goal Creation & Proposal Scenario 15",
+      "input_directive": "Test prompt for goal creation & proposal scenario 15",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_016",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 1",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 1",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_017",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 2",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 2",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_018",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 3",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 3",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_019",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 4",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 4",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_020",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 5",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 5",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_021",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 6",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 6",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_022",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 7",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 7",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_023",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 8",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 8",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_024",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 9",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 9",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_025",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 10",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 10",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_026",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 11",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 11",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_027",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 12",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 12",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_028",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 13",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 13",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_029",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 14",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 14",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_030",
+      "category": "objectives_dependencies",
+      "title": "Objectives & Dependency Resolution Scenario 15",
+      "input_directive": "Test prompt for objectives & dependency resolution scenario 15",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_031",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 1",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 1",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_032",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 2",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 2",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_033",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 3",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 3",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_034",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 4",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 4",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_035",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 5",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 5",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_036",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 6",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 6",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_037",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 7",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 7",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_038",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 8",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 8",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_039",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 9",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 9",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_040",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 10",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 10",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_041",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 11",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 11",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_042",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 12",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 12",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_043",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 13",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 13",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_044",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 14",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 14",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_045",
+      "category": "priority_starvation",
+      "title": "Priority Queue & Starvation Protection Scenario 15",
+      "input_directive": "Test prompt for priority queue & starvation protection scenario 15",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_046",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 1",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 1",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_047",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 2",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 2",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_048",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 3",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 3",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_049",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 4",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 4",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_050",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 5",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 5",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_051",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 6",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 6",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_052",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 7",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 7",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_053",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 8",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 8",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_054",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 9",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 9",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_055",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 10",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 10",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_056",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 11",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 11",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_057",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 12",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 12",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_058",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 13",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 13",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_059",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 14",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 14",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_060",
+      "category": "autonomy_levels",
+      "title": "Autonomy Levels 0-3 & Safety Policy Scenario 15",
+      "input_directive": "Test prompt for autonomy levels 0-3 & safety policy scenario 15",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_061",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 1",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 1",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_062",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 2",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 2",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_063",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 3",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 3",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_064",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 4",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 4",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_065",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 5",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 5",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_066",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 6",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 6",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_067",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 7",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 7",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_068",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 8",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 8",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_069",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 9",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 9",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_070",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 10",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 10",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_071",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 11",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 11",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_072",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 12",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 12",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_073",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 13",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 13",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_074",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 14",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 14",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_075",
+      "category": "blockers_checkpoints",
+      "title": "Blockers & Checkpoint State Recovery Scenario 15",
+      "input_directive": "Test prompt for blockers & checkpoint state recovery scenario 15",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "SUCCESS",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_076",
+      "category": "cancellation_expiration",
+      "title": "Cancellation, Expiration & Startup Reconciliation Scenario 1",
+      "input_directive": "Test prompt for cancellation, expiration & startup reconciliation scenario 1",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "CANCELLED_OR_EXPIRED",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_077",
+      "category": "cancellation_expiration",
+      "title": "Cancellation, Expiration & Startup Reconciliation Scenario 2",
+      "input_directive": "Test prompt for cancellation, expiration & startup reconciliation scenario 2",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "CANCELLED_OR_EXPIRED",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_078",
+      "category": "cancellation_expiration",
+      "title": "Cancellation, Expiration & Startup Reconciliation Scenario 3",
+      "input_directive": "Test prompt for cancellation, expiration & startup reconciliation scenario 3",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "CANCELLED_OR_EXPIRED",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_079",
+      "category": "cancellation_expiration",
+      "title": "Cancellation, Expiration & Startup Reconciliation Scenario 4",
+      "input_directive": "Test prompt for cancellation, expiration & startup reconciliation scenario 4",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "CANCELLED_OR_EXPIRED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_080",
+      "category": "cancellation_expiration",
+      "title": "Cancellation, Expiration & Startup Reconciliation Scenario 5",
+      "input_directive": "Test prompt for cancellation, expiration & startup reconciliation scenario 5",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "CANCELLED_OR_EXPIRED",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_081",
+      "category": "cancellation_expiration",
+      "title": "Cancellation, Expiration & Startup Reconciliation Scenario 6",
+      "input_directive": "Test prompt for cancellation, expiration & startup reconciliation scenario 6",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "CANCELLED_OR_EXPIRED",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_082",
+      "category": "cancellation_expiration",
+      "title": "Cancellation, Expiration & Startup Reconciliation Scenario 7",
+      "input_directive": "Test prompt for cancellation, expiration & startup reconciliation scenario 7",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "CANCELLED_OR_EXPIRED",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_083",
+      "category": "cancellation_expiration",
+      "title": "Cancellation, Expiration & Startup Reconciliation Scenario 8",
+      "input_directive": "Test prompt for cancellation, expiration & startup reconciliation scenario 8",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "CANCELLED_OR_EXPIRED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_084",
+      "category": "cancellation_expiration",
+      "title": "Cancellation, Expiration & Startup Reconciliation Scenario 9",
+      "input_directive": "Test prompt for cancellation, expiration & startup reconciliation scenario 9",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "CANCELLED_OR_EXPIRED",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_085",
+      "category": "cancellation_expiration",
+      "title": "Cancellation, Expiration & Startup Reconciliation Scenario 10",
+      "input_directive": "Test prompt for cancellation, expiration & startup reconciliation scenario 10",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "CANCELLED_OR_EXPIRED",
+      "requires_confirmation": false
+    },
+    {
+      "scenario_id": "GOAL_EVAL_086",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 1",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 1",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_087",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 2",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 2",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_088",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 3",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 3",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_089",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 4",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 4",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_090",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 5",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 5",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_091",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 6",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 6",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_092",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 7",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 7",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_093",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 8",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 8",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_094",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 9",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 9",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_095",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 10",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 10",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_096",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 11",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 11",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_097",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 12",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 12",
+      "autonomy_level": 0,
+      "priority": "LOW",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_098",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 13",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 13",
+      "autonomy_level": 1,
+      "priority": "NORMAL",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_099",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 14",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 14",
+      "autonomy_level": 2,
+      "priority": "HIGH",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    },
+    {
+      "scenario_id": "GOAL_EVAL_100",
+      "category": "adversarial_chaos",
+      "title": "Adversarial Goal Safety & Chaos Testing Scenario 15",
+      "input_directive": "Test prompt for adversarial goal safety & chaos testing scenario 15",
+      "autonomy_level": 3,
+      "priority": "CRITICAL",
+      "expected_status": "BLOCKED_OR_REJECTED",
+      "requires_confirmation": true
+    }
+  ]
+}

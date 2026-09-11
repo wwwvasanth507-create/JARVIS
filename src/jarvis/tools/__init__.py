@@ -118,6 +118,20 @@ from jarvis.tools.memory_tools import (
     MemoryImportTool,
 )
 
+from jarvis.tools.goal_tools import (
+    GOAL_TOOLS,
+    CreateGoalTool,
+    PreviewGoalTool,
+    ActivateGoalTool,
+    PauseGoalTool,
+    ResumeGoalTool,
+    CancelGoalTool,
+    ListGoalsTool,
+    GetGoalTool,
+    ExplainGoalTool,
+    GoalProgressTool,
+)
+
 ALL_TOOLS = [
     MoveMouseTool(),
     ClickTool(),
@@ -144,6 +158,7 @@ ALL_TOOLS = [
     *SYSTEM_TOOLS,
     *SEMANTIC_TOOLS,
     *MEMORY_TOOLS,
+    *GOAL_TOOLS,
 ]
 
 __all__ = [

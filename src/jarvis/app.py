@@ -168,6 +168,36 @@ class JARVISApp:
         """Fast-path router for deterministic system commands avoiding LLM latency."""
         text_lower = input_text.lower().strip()
 
+        # 0. Fast Intent Router
+        try:
+            from jarvis.brain.fast_path import FastIntentRouter
+            match = FastIntentRouter.match(input_text)
+            if match.matched:
+                if match.target_tool:
+                    from jarvis.core.orchestration.dispatcher import ToolDispatcher
+                    dispatcher = ToolDispatcher()
+                    tool_res = dispatcher.dispatch(match.target_tool, match.parameters)
+                    resp_msg = match.fast_response
+                    if tool_res.data and isinstance(tool_res.data, dict) and "message" in tool_res.data:
+                        resp_msg = tool_res.data["message"]
+                    return {
+                        "success": tool_res.success,
+                        "response": resp_msg,
+                        "data": tool_res.data if tool_res.data else {},
+                        "fast_path": True,
+                        "verified": tool_res.success
+                    }
+                elif match.fast_response:
+                    return {
+                        "success": True,
+                        "response": match.fast_response,
+                        "data": {},
+                        "fast_path": True,
+                        "verified": True
+                    }
+        except Exception as e:
+            logger.debug(f"FastIntentRouter check exception: {e}")
+
         # 1. System Status Check
         if text_lower in ("show system status", "system status", "status", "what is system status", "health"):
             status_report = self.get_system_status()

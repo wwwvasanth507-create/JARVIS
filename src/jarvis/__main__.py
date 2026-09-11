@@ -68,7 +68,7 @@ def main():
         print("==================================================")
         sys.exit(1 if failed else 0)
 
-    if args.self-test:
+    if args.self_test:
         print("==================================================")
         print("           JARVIS SELF-TEST SUITE                ")
         print("==================================================")

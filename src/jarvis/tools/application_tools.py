@@ -12,6 +12,13 @@ from jarvis.tools.base import BaseTool, ToolMetadata, ToolResult
 _app_manager = ApplicationManager()
 
 
+def _extract_app_name(kwargs: Dict[str, Any]) -> str:
+    val = kwargs.get("name") or kwargs.get("app") or kwargs.get("query") or kwargs.get("app_name") or kwargs.get("target")
+    if not val:
+        raise ValueError("Missing required application name parameter ('name').")
+    return str(val)
+
+
 class ListApplicationsTool(BaseTool):
     def __init__(self, manager: Optional[ApplicationManager] = None):
         self.mgr = manager or _app_manager
@@ -57,7 +64,7 @@ class FindApplicationTool(BaseTool):
 
     def execute(self, **kwargs: Any) -> ToolResult:
         try:
-            res = self.mgr.find_application(query=kwargs["query"])
+            res = self.mgr.find_application(query=_extract_app_name(kwargs))
             return ToolResult(success=True, data=res.model_dump())
         except Exception as e:
             return self.handle_error(e)
@@ -91,7 +98,7 @@ class OpenApplicationTool(BaseTool):
     def execute(self, **kwargs: Any) -> ToolResult:
         try:
             res = self.mgr.open_application(
-                query=kwargs["name"],
+                query=_extract_app_name(kwargs),
                 arguments=kwargs.get("arguments"),
                 working_directory=kwargs.get("working_directory"),
             )
@@ -127,7 +134,7 @@ class CloseApplicationTool(BaseTool):
     def execute(self, **kwargs: Any) -> ToolResult:
         try:
             res = self.mgr.close_application(
-                query=kwargs["name"],
+                query=_extract_app_name(kwargs),
                 force=kwargs.get("force", False),
             )
             return ToolResult(success=res.success, data=res.model_dump())
@@ -158,7 +165,7 @@ class RestartApplicationTool(BaseTool):
 
     def execute(self, **kwargs: Any) -> ToolResult:
         try:
-            res = self.mgr.restart_application(query=kwargs["name"])
+            res = self.mgr.restart_application(query=_extract_app_name(kwargs))
             return ToolResult(success=res.success, data=res.model_dump())
         except Exception as e:
             return self.handle_error(e)
@@ -187,7 +194,7 @@ class IsApplicationRunningTool(BaseTool):
 
     def execute(self, **kwargs: Any) -> ToolResult:
         try:
-            res = self.mgr.is_running(query=kwargs["name"])
+            res = self.mgr.is_running(query=_extract_app_name(kwargs))
             return ToolResult(success=True, data=res.model_dump())
         except Exception as e:
             return self.handle_error(e)
@@ -241,8 +248,9 @@ class FocusApplicationTool(BaseTool):
 
     def execute(self, **kwargs: Any) -> ToolResult:
         try:
-            res = self.mgr.focus_application(query=kwargs["name"])
-            return ToolResult(success=res, data={"focused": res, "name": kwargs["name"]})
+            target_name = _extract_app_name(kwargs)
+            res = self.mgr.focus_application(query=target_name)
+            return ToolResult(success=res, data={"focused": res, "name": target_name})
         except Exception as e:
             return self.handle_error(e)
 
@@ -270,7 +278,7 @@ class CheckApplicationHealthTool(BaseTool):
 
     def execute(self, **kwargs: Any) -> ToolResult:
         try:
-            res = self.mgr.check_health(query=kwargs["name"])
+            res = self.mgr.check_health(query=_extract_app_name(kwargs))
             return ToolResult(success=True, data=res.model_dump())
         except Exception as e:
             return self.handle_error(e)
@@ -302,7 +310,7 @@ class OpenApplicationFileTool(BaseTool):
 
     def execute(self, **kwargs: Any) -> ToolResult:
         try:
-            res = self.mgr.open_file(query=kwargs["name"], file_path=kwargs["file_path"])
+            res = self.mgr.open_file(query=_extract_app_name(kwargs), file_path=kwargs["file_path"])
             return ToolResult(success=res.success, data=res.model_dump())
         except Exception as e:
             return self.handle_error(e)

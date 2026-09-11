@@ -31,8 +31,20 @@ def test_context_manager_budget_trimming():
         max_response_tokens=200
     )
 
-    # Latest request and system prompt must be preserved
     assert req.messages[-1].content == "Latest request"
     total_tokens = sum(cm.estimate_tokens(m.content) for m in req.messages)
     assert total_tokens <= 1500
+
+
+def test_context_manager_category_prompts():
+    cm = ContextManager(max_context_tokens=2000)
+    prompt_text = cm.get_category_prompt("security")
+    assert "Permission Boundary Guidelines" in prompt_text or "Safety Policy Guidelines" in prompt_text
+
+    req = cm.build_generation_request(
+        user_prompt="Run command",
+        prompt_categories=["security", "execution"]
+    )
+    assert any("Permission Boundary Guidelines" in m.content or "Tool Execution Guidelines" in m.content for m in req.messages)
+
 

@@ -63,6 +63,18 @@ class ContextManager:
             return 0
         return max(1, int(len(text) / 3.8))
 
+    def get_category_prompt(self, category: str) -> str:
+        """Loads and combines all prompt template files inside prompts/{category}/."""
+        cat_dir = Path("prompts") / category
+        if not cat_dir.exists() or not cat_dir.is_dir():
+            return ""
+        parts = []
+        for pfile in sorted(cat_dir.glob("*.md")):
+            content = pfile.read_text(encoding="utf-8").strip()
+            if content:
+                parts.append(content)
+        return "\n\n".join(parts)
+
     def build_generation_request(
         self,
         user_prompt: str,
@@ -71,6 +83,7 @@ class ContextManager:
         execution_state: Optional[str] = None,
         relevant_memory: Optional[List[str]] = None,
         relevant_knowledge: Optional[List[str]] = None,
+        prompt_categories: Optional[List[str]] = None,
         temperature: float = 0.2,
         max_response_tokens: int = 512,
     ) -> GenerationRequest:
@@ -78,6 +91,11 @@ class ContextManager:
 
         # Priority 1: System / Security instructions
         sys_instruction = self.full_system_instruction
+        if prompt_categories:
+            cat_texts = [self.get_category_prompt(cat) for cat in prompt_categories]
+            valid_cats = [ct for ct in cat_texts if ct]
+            if valid_cats:
+                sys_instruction += "\n\n---\n\n" + "\n\n---\n\n".join(valid_cats)
         if tool_contract:
             sys_instruction += f"\n\nActive Tool Contract:\n{tool_contract}"
         if sys_instruction:

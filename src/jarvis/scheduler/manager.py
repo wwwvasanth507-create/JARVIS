@@ -27,11 +27,14 @@ class SchedulerManager:
         parser: Optional[ScheduleParser] = None,
         policy: Optional[SchedulerPolicy] = None,
         notification_mgr: Optional[NotificationManager] = None,
+        db_manager: Optional[Any] = None,
+        orchestrator: Optional[Any] = None,
     ):
-        self.persistence = persistence or TaskPersistence()
+        self.persistence = persistence or (TaskPersistence(db_manager=db_manager) if db_manager else TaskPersistence())
         self.parser = parser or ScheduleParser()
         self.policy = policy or SchedulerPolicy()
         self.notification_mgr = notification_mgr or NotificationManager()
+        self.orchestrator = orchestrator
         self.canceller = TaskCanceller(self.persistence)
         self.scheduler = TaskScheduler(self.persistence)
 

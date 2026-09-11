@@ -23,16 +23,22 @@ class FastIntentRouter:
     """
 
     PATTERNS = [
+        # Conversational greetings & status
+        (r"^(?:hi|hello|hai|hey|greetings)(?:\s+jarvis|\s+boss)?$", "conversation.greeting", None, {}, "Hello Boss! How can I assist you today?"),
+        (r"^(?:how\s+are\s+you|how\s+are\s+you\s+doing)", "conversation.status", None, {}, "All systems operational and ready for your command, Boss."),
+        (r"^(?:who\s+are\s+you|what\s+are\s+you)", "conversation.identity", None, {}, "I am JARVIS, your local personal AI computer assistant, Boss."),
+        (r"^(?:help|what\s+can\s+you\s+do)", "conversation.help", None, {}, "I can control applications, manage files, search the web, execute shell commands, automate screen actions, and schedule background tasks, Boss."),
+
         # Application opening
-        (r"^(?:open|launch|start)\s+(chrome|browser)", "app.open", "application.open", {"app": "chrome"}, "Opening Chrome, Boss."),
-        (r"^(?:open|launch|start)\s+(notepad|editor)", "app.open", "application.open", {"app": "notepad"}, "Opening Notepad, Boss."),
-        (r"^(?:open|launch|start)\s+(calculator|calc)", "app.open", "application.open", {"app": "calculator"}, "Opening Calculator, Boss."),
-        (r"^(?:open|launch|start)\s+(terminal|cmd|powershell)", "app.open", "application.open", {"app": "terminal"}, "Opening Terminal, Boss."),
+        (r"^(?:open|launch|start)\s+(chrome|browser)", "app.open", "application.open", {"name": "chrome", "app": "chrome"}, "Opening Chrome, Boss."),
+        (r"^(?:open|launch|start)\s+(notepad|editor)", "app.open", "application.open", {"name": "notepad", "app": "notepad"}, "Opening Notepad, Boss."),
+        (r"^(?:open|launch|start)\s+(calculator|calc)", "app.open", "application.open", {"name": "calculator", "app": "calculator"}, "Opening Calculator, Boss."),
+        (r"^(?:open|launch|start)\s+(terminal|cmd|powershell)", "app.open", "application.open", {"name": "terminal", "app": "terminal"}, "Opening Terminal, Boss."),
         
         # Application closing
-        (r"^(?:close|quit|exit)\s+(chrome|browser)", "app.close", "application.close", {"app": "chrome"}, "Closing Chrome, Boss."),
-        (r"^(?:close|quit|exit)\s+(notepad|editor)", "app.close", "application.close", {"app": "notepad"}, "Closing Notepad, Boss."),
-        (r"^(?:close|quit|exit)\s+(calculator|calc)", "app.close", "application.close", {"app": "calculator"}, "Closing Calculator, Boss."),
+        (r"^(?:close|quit|exit)\s+(chrome|browser)", "app.close", "application.close", {"name": "chrome", "app": "chrome"}, "Closing Chrome, Boss."),
+        (r"^(?:close|quit|exit)\s+(notepad|editor)", "app.close", "application.close", {"name": "notepad", "app": "notepad"}, "Closing Notepad, Boss."),
+        (r"^(?:close|quit|exit)\s+(calculator|calc)", "app.close", "application.close", {"name": "calculator", "app": "calculator"}, "Closing Calculator, Boss."),
         
         # Media / System Control
         (r"^(?:pause|stop)\s+(?:music|playback|audio)", "media.pause", "computer.key_press", {"key": "playpause"}, "Pausing playback, Boss."),

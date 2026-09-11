@@ -122,6 +122,73 @@ class SchemaMigrator:
     );
     """
 
+    INIT_SCHEMA_V2 = """
+    CREATE TABLE IF NOT EXISTS goals (
+        goal_id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        owner TEXT NOT NULL DEFAULT 'USER',
+        created_at REAL NOT NULL,
+        updated_at REAL NOT NULL,
+        status TEXT NOT NULL DEFAULT 'DRAFT',
+        priority TEXT NOT NULL DEFAULT 'NORMAL',
+        deadline REAL,
+        deadline_type TEXT NOT NULL DEFAULT 'SOFT',
+        time_window_json TEXT DEFAULT '{}',
+        constraints_json TEXT DEFAULT '{}',
+        dependencies_json TEXT DEFAULT '[]',
+        success_criteria_json TEXT DEFAULT '[]',
+        risk_level TEXT NOT NULL DEFAULT 'LOW',
+        resource_budget_json TEXT DEFAULT '{}',
+        progress REAL NOT NULL DEFAULT 0.0,
+        progress_confidence TEXT NOT NULL DEFAULT 'MEDIUM',
+        autonomy_level INTEGER NOT NULL DEFAULT 1,
+        associated_project TEXT,
+        associated_memories_json TEXT DEFAULT '[]'
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_goals_status ON goals(status);
+    CREATE INDEX IF NOT EXISTS idx_goals_priority ON goals(priority);
+    CREATE INDEX IF NOT EXISTS idx_goals_owner ON goals(owner);
+
+    CREATE TABLE IF NOT EXISTS objectives (
+        objective_id TEXT PRIMARY KEY,
+        goal_id TEXT NOT NULL,
+        title TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'PENDING',
+        dependencies_json TEXT DEFAULT '[]',
+        completion_criteria_json TEXT DEFAULT '[]',
+        verification_json TEXT DEFAULT '{}',
+        created_at REAL NOT NULL,
+        updated_at REAL NOT NULL,
+        FOREIGN KEY(goal_id) REFERENCES goals(goal_id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_objectives_goal ON objectives(goal_id);
+
+    CREATE TABLE IF NOT EXISTS goal_checkpoints (
+        checkpoint_id TEXT PRIMARY KEY,
+        goal_id TEXT NOT NULL,
+        state_json TEXT NOT NULL DEFAULT '{}',
+        verified_outputs_json TEXT NOT NULL DEFAULT '[]',
+        blockers_json TEXT NOT NULL DEFAULT '[]',
+        resource_usage_json TEXT NOT NULL DEFAULT '{}',
+        created_at REAL NOT NULL,
+        FOREIGN KEY(goal_id) REFERENCES goals(goal_id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS goal_logs (
+        log_id TEXT PRIMARY KEY,
+        goal_id TEXT NOT NULL,
+        event_type TEXT NOT NULL,
+        description TEXT NOT NULL,
+        data_json TEXT DEFAULT '{}',
+        created_at REAL NOT NULL,
+        FOREIGN KEY(goal_id) REFERENCES goals(goal_id) ON DELETE CASCADE
+    );
+    """
+
     def __init__(self, db_manager: DatabaseManager):
         self.db_mgr = db_manager
 
@@ -138,3 +205,9 @@ class SchemaMigrator:
                 with self.db_mgr.get_connection() as conn2:
                     conn2.execute("INSERT OR REPLACE INTO schema_migrations (version, applied_at) VALUES (1, unixepoch());")
                     conn2.commit()
+
+            if current_version < 2:
+                self.db_mgr.execute_script(self.INIT_SCHEMA_V2)
+                with self.db_mgr.get_connection() as conn3:
+                    conn3.execute("INSERT OR REPLACE INTO schema_migrations (version, applied_at) VALUES (2, unixepoch());")
+                    conn3.commit()

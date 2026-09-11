@@ -122,20 +122,19 @@ This document outlines the authoritative 20-phase incremental development roadma
 - 5 new semantic tools (`computer.find_element`, `computer.click_element`, `computer.type_element`, `computer.wait_element`, `computer.fill_form`) registered in tool registry.
 - Local UI HTTP fixture server (`LocalUIFixtureServer`) and 14 End-to-End Acceptance Scenarios (A through N).
 - Expanded 150-scenario evaluation dataset (`tests/evaluation/evaluation_150_scenarios.json`) and latency performance benchmark (`tests/evaluation/performance/ui_perception_benchmark.py`).
-- Verified 100% test pass rate across 363 unit and integration tests.
-
-### Phase 26: Adaptive Personal Memory, Knowledge Graph, Outcome Learning & Continuous Agent Improvement (COMPLETED - Prompt 023)
-- Implemented strict 6-layer Memory Architecture 2.0 (`WORKING`, `EPISODIC`, `SEMANTIC`, `PREFERENCE`, `PROJECT`, `KNOWLEDGE`) with explicit layer definitions and zero unnecessary cross-layer duplication.
-- Built working memory manager (`WorkingMemoryManager`) for transient session context expiring automatically with session/task termination.
-- Built embedded SQLite Knowledge Graph (`KnowledgeGraphManager`) with node/edge tables, alias resolution (`Chrome` -> `Google Chrome`), bounded graph traversal (`depth <= 3`, `nodes <= 50`), and graph poisoning defense.
-- Implemented `OutcomeLearningEngine` and extended `StrategyMemory` with evidence-based confidence scoring (1/1 -> LOW, 20/21 -> HIGH) and hardcoded blocklist (`FORBIDDEN_LEARNING_TERMS`) preventing security bypasses.
-- Built Memory Conflict Resolver (`MemoryConflictResolver`) with explicit precedence hierarchy (`Current User Instruction` > `Task Scope` > `Project Scope` > `App Scope` > `Global Preference` > `Weak Inference`).
-- Built User Correction Handler (`UserCorrectionHandler`) parsing natural language corrections (`"Remember I use Firefox"`, `"That's wrong"`, `"Forget preference X"`).
-- Built Memory Explanation Engine (`MemoryExplanationEngine`) detailing provenance, confidence, source, and recency for any remembered item.
-- Built Workspace Profile (`WorkspaceProfileManager`), Onboarding Manager (`OnboardingManager`), and Memory Maintenance Manager (`MemoryMaintenanceManager`) supporting cleanup, export (`jarvis --export-memory`), import (`jarvis --import-memory`), and integrity validation (`jarvis --memory-maintenance`).
-- Registered 7 user-facing memory tools (`memory.list`, `memory.search`, `memory.get`, `memory.forget`, `memory.explain`, `memory.export`, `memory.import`) with security permission checks.
-- Created 100-scenario memory evaluation dataset (`tests/evaluation/memory_100_scenarios.json`), security adversarial test suite, and performance latency benchmark (`tests/evaluation/performance/memory_benchmark.py`).
 - Verified 100% test pass rate across 373 unit and integration tests.
+
+### Phase 27: Agent Operations Core, Goal Management, Priority Scheduling & Measurable Autonomous Execution (COMPLETED - Prompt 024)
+- Developed `src/jarvis/core/goals/` subsystem (`GoalManager`, `GoalRepository`, `GoalPolicy`, `BoundedGoalPriorityQueue`, `GoalArbitrator`, `GoalTemplateRegistry`, `GoalProgress`, `GoalCheckpoint`).
+- Built SQLite V2 schema migration (`goals`, `objectives`, `goal_checkpoints`, `goal_logs`).
+- Built 5-level hierarchy (`Goal` -> `Objective` -> `Task` -> `Workflow` -> `Step`) with cycle detection and DAG dependency validation.
+- Built explicit Autonomy Levels (Level 0 MANUAL, Level 1 ASSISTED, Level 2 SUPERVISED, Level 3 SCHEDULED) with high-risk confirmation enforcement.
+- Built Bounded Priority Queue with starvation protection and Boss command override.
+- Built 6 declarative goal templates (`project_health`, `document_processing`, `weekly_report`, `download_organization`, `scheduled_monitoring`, `research_and_summary`).
+- Registered 10 structured tools (`goal.create`, `goal.preview`, `goal.activate`, `goal.pause`, `goal.resume`, `goal.cancel`, `goal.list`, `goal.get`, `goal.explain`, `goal.progress`).
+- Built 3 builtin skills (`manage_goal`, `inspect_goals`, `goal_status`).
+- Built PySide6 Desktop GUI Goal Dashboard (`src/jarvis/ui/goal_dashboard.py`).
+- Built 100-scenario evaluation dataset (`tests/evaluation/goal_100_scenarios.json`) and latency performance benchmark (`tests/evaluation/performance/goal_benchmark.py`) with 100% pass rate.
 
 ---
 
