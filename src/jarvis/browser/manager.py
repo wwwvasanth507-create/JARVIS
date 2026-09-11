@@ -41,6 +41,14 @@ CAPTCHA_SIGNATURES = [
 class BrowserManager:
     """Central manager for JARVIS browser automation operations."""
 
+    _instance: Optional["BrowserManager"] = None
+
+    @classmethod
+    def get_instance(cls, settings: Optional[BrowserSettings] = None) -> "BrowserManager":
+        if cls._instance is None:
+            cls._instance = cls(settings=settings)
+        return cls._instance
+
     def __init__(self, settings: Optional[BrowserSettings] = None) -> None:
         self.settings = settings or get_settings().browser
         self.session = BrowserSession(settings=self.settings)

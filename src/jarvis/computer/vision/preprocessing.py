@@ -23,6 +23,13 @@ class ImagePreprocessor:
         return res
 
     @staticmethod
+    def resize_max_dimension(img: Image.Image, max_dim: int = 1024) -> Image.Image:
+        """Resizes image so max dimension does not exceed max_dim."""
+        if not img:
+            return img
+        return ImagePreprocessor.resize_max_bounds(img, max_dim, max_dim)
+
+    @staticmethod
     def crop_region(img: Image.Image, x: int, y: int, width: int, height: int) -> Image.Image:
         """Crops specified bounding box region."""
         box = (x, y, x + width, y + height)

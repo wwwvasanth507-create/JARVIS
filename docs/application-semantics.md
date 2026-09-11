@@ -1,17 +1,18 @@
-# Application Semantics & Family Adapters
+# Application Semantics & Platform Adapters
 
-## Semantic State Adapter (`src/jarvis/applications/application_semantics.py`)
-Replaces binary running/not-running checks with rich application semantic state:
-- `busy/idle`
-- `modal_present`
-- `document_open`
-- `has_unsaved_changes`
-- `ready_status`
+JARVIS connects platform-native accessibility APIs and application semantics with universal UI element queries.
 
-### Application Families Supported:
-- Web Browsers
-- File Explorers
-- Text Editors
-- Terminals
-- PDF Viewers
-- Office Editors
+## Windows UI Automation (`WindowsUIAutomationAdapter`)
+
+On Windows systems, JARVIS utilizes native UI Automation interfaces via `ctypes` and system window handles to extract:
+- Window handles and titles
+- Control structures (buttons, inputs, menus, scroll bars)
+- Automation IDs and bounding rectangles
+- Focus and enabled states
+
+## Playwright DOM Semantic Adapter (`BrowserSemanticAdapter`)
+
+For browser automation, JARVIS extracts DOM accessibility trees and element nodes:
+- Role mapping (`aria-label`, HTML tags, CSS selectors)
+- Bounding boxes and visibility status
+- Stale handle defense: Re-resolves element queries dynamically rather than reusing stale Playwright handles

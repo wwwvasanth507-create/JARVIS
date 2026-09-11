@@ -107,6 +107,23 @@ This document outlines the authoritative 20-phase incremental development roadma
 - Created 100-scenario evaluation dataset (`tests/evaluation/evaluation_100_scenarios.json`), chaos test suite, security adversarial test suite, and performance benchmarks.
 - Verified 100% test pass rate across 341 unit and integration tests.
 
+### Phase 25: Advanced Multimodal Perception, Semantic Computer Interaction & Reliable UI Automation (COMPLETED - Prompt 022)
+- Unified Semantic Computer Interaction Layer (`SemanticComputerInteractor`) with `find_element`, `click_element`, `double_click_element`, `right_click_element`, `type_into_element`, `select_element`, `scroll_to_element`, `focus_element`, `read_element`, `inspect_element`, `wait_for_element`, `drag_element`, `fill_form`, and `select_table_row`.
+- Common `UIElement` representation and `PerceptionSource` hierarchy (`ACCESSIBILITY/DOM (0.98/0.95)` > `APPLICATION_API (0.90)` > `OCR (0.75)` > `VISUAL (0.60)` > `VLM (0.45)`).
+- Structured target queries (`TargetQuery`) and geometric spatial relations (`above`, `below`, `left_of`, `right_of`, `near`, `inside`, `contains`, `next_to`, `before`, `after`, `same_row`, `same_column`).
+- Structured ambiguity handling (`AmbiguousTargetError` / multi-candidate breakdown).
+- High-level semantic models for Tables (`Table`, `TableRow`, `TableCell`), Forms (`Form`, `FormField`, `FormPreview`), and Dialogs (`UIDialog`, `DialogManager` with security prompt protection).
+- Intelligent Wait-For-Condition Engine (`SemanticWaitEngine`) with bounded polling replacing arbitrary fixed sleeps.
+- Governed `TargetLease` with TTL expiration and state hash validation before side-effect actions.
+- Windows UI Automation native adapter (`WindowsUIAutomationAdapter`), Playwright DOM semantic adapter (`BrowserSemanticAdapter`) with stale handle defense, and local CPU OCR (`OCRProvider`) with English and Tamil support.
+- Local VLM 2.0 (`VLMPerceptionAdapter`) with Region-Of-Interest (ROI) cropping and strict untrusted perception data pipeline.
+- End-to-End Local Document -> Form binding workflow (`DocumentFormWorkflow`) with pre-submission preview and permission confirmation gates.
+- Reusable semantic user macros (`SemanticMacro`, `MacroRegistry`) with versioning and safety validation.
+- 5 new semantic tools (`computer.find_element`, `computer.click_element`, `computer.type_element`, `computer.wait_element`, `computer.fill_form`) registered in tool registry.
+- Local UI HTTP fixture server (`LocalUIFixtureServer`) and 14 End-to-End Acceptance Scenarios (A through N).
+- Expanded 150-scenario evaluation dataset (`tests/evaluation/evaluation_150_scenarios.json`) and latency performance benchmark (`tests/evaluation/performance/ui_perception_benchmark.py`).
+- Verified 100% test pass rate across 363 unit and integration tests.
+
 ---
 
 *Master Roadmap approved for JARVIS.*

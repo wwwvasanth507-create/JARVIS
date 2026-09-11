@@ -98,6 +98,15 @@ from jarvis.tools.system_tools import (
     SystemReplayTaskTool,
 )
 
+from jarvis.tools.semantic_tools import (
+    SEMANTIC_TOOLS,
+    FindElementTool,
+    ClickElementTool,
+    TypeElementTool,
+    WaitElementTool,
+    FillFormTool,
+)
+
 ALL_TOOLS = [
     MoveMouseTool(),
     ClickTool(),
@@ -122,6 +131,7 @@ ALL_TOOLS = [
     *SCHEDULER_TOOLS,
     *CLIPBOARD_TOOLS,
     *SYSTEM_TOOLS,
+    *SEMANTIC_TOOLS,
 ]
 
 __all__ = [

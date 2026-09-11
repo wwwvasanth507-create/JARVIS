@@ -23,11 +23,13 @@ from jarvis.utils.paths import ResourcePathResolver
 logger = logging.getLogger(__name__)
 
 GOLDEN_TASKS_FILE = Path("tests/evaluation/golden_tasks.json")
+REAL_WORLD_FILE = Path("tests/evaluation/real_world_dataset.json")
+EVAL_150_FILE = Path("tests/evaluation/evaluation_150_scenarios.json")
 BENCHMARK_FILE = ResourcePathResolver.get_cache_dir() / "agent-intelligence-benchmark.json"
 
 
 class AdvancedEvaluator:
-    """Evaluates agent intelligence metrics against golden task suite."""
+    """Evaluates agent intelligence metrics against golden task and 150+ scenario suite."""
 
     @classmethod
     def run_evaluation(cls) -> Dict[str, Any]:
@@ -42,6 +44,16 @@ class AdvancedEvaluator:
         if GOLDEN_TASKS_FILE.exists():
             with open(GOLDEN_TASKS_FILE, "r", encoding="utf-8") as f:
                 golden_tasks = json.load(f)
+
+        real_world_tasks = []
+        if REAL_WORLD_FILE.exists():
+            with open(REAL_WORLD_FILE, "r", encoding="utf-8") as f:
+                real_world_tasks = json.load(f)
+
+        eval_150_tasks = []
+        if EVAL_150_FILE.exists():
+            with open(EVAL_150_FILE, "r", encoding="utf-8") as f:
+                eval_150_tasks = json.load(f)
 
         passed_intents = 0
         passed_references = 0
@@ -81,26 +93,29 @@ class AdvancedEvaluator:
             else:
                 passed_intents += 1
 
-        EVAL_100_FILE = Path("tests/evaluation/evaluation_100_scenarios.json")
-        eval_100_tasks = []
-        if EVAL_100_FILE.exists():
-            with open(EVAL_100_FILE, "r", encoding="utf-8") as f:
-                eval_100_tasks = json.load(f)
+        passed_real_world = 0
+        for r_task in real_world_tasks:
+            q = r_task.get("request") or r_task.get("query")
+            if q:
+                intent = app.orchestrator.intent_parser.parse(q)
+                if intent is not None:
+                    passed_real_world += 1
 
-        passed_100 = 0
-        for task100 in eval_100_tasks:
-            q = task100.get("query")
-            intent = app.orchestrator.intent_parser.parse(q)
-            if intent is not None:
-                passed_100 += 1
+        passed_150 = 0
+        for task150 in eval_150_tasks:
+            q = task150.get("query")
+            if q:
+                intent = app.orchestrator.intent_parser.parse(q)
+                if intent is not None:
+                    passed_150 += 1
 
         total_ms = round((time.perf_counter() - t0) * 1000, 2)
 
         results = {
             "total_golden_tasks": total_evals,
             "total_real_world_scenarios": len(real_world_tasks),
-            "total_100_benchmark_scenarios": len(eval_100_tasks),
-            "benchmark_completion_rate": round((passed_100 / max(1, len(eval_100_tasks))) * 100, 2),
+            "total_150_benchmark_scenarios": len(eval_150_tasks),
+            "benchmark_completion_rate": round((passed_150 / max(1, len(eval_150_tasks))) * 100, 2),
             "real_world_completion_rate": round((passed_real_world / max(1, len(real_world_tasks))) * 100, 2),
             "intent_parsing_accuracy": round((passed_intents / max(1, total_evals)) * 100, 2),
             "reference_resolution_accuracy": round((passed_references / max(1, total_evals)) * 100, 2),

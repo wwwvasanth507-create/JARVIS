@@ -24,7 +24,7 @@ class PromptInjectionDefense:
     """Detects and isolates prompt injection attacks in untrusted external text."""
 
     INJECTION_PATTERNS = [
-        r"\bignore\s+(?:all\s+)?(?:previous\s+)?(?:instructions|rules|system\s+prompt)\b",
+        r"\bignore\s+(?:all\s+)?(?:previous\s+)?(?:instructions|rules|jarvis\s+rules|system\s+prompt)\b",
         r"\bbypass\s+(?:security|permission|confirmation|policies|rules)\b",
         r"\bexecute\s+(?:shell|command|terminal|system)\s+without\s+confirmation\b",
         r"\bdelete\s+(?:all\s+)?(?:files|directories|database)\b",
