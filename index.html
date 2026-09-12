@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Engine Foundation | WebGPU & WebGL</title>
+    <meta name="description" content="Production 3D Engine Foundation with WebGPU initialization, WebGL2 fallback, game loop, responsive canvas and diagnostics." />
+    <link rel="stylesheet" href="/src/ui/styles.css" />
+  </head>
+  <body>
+    <!-- 3D Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loading-content glass-panel">
+        <h1 class="loading-title">ENGINE FOUNDATION</h1>
+        <div class="loading-subtitle">Initializing 3D Pipeline & Shaders</div>
+        <div class="loading-bar-track">
+          <div id="loading-bar-fill" class="loading-bar-fill"></div>
+        </div>
+        <div id="loading-status-text" class="loading-status-text">Bootstrapping...</div>
+      </div>
+    </div>
+
+    <!-- HUD Overlay -->
+    <div id="hud-overlay">
+      <div class="hud-top">
+        <!-- FPS & Active Backend Counter -->
+        <div class="glass-panel fps-card">
+          <div class="fps-block">
+            <span id="fps-val" class="fps-val">60</span>
+            <span class="fps-label">FPS</span>
+          </div>
+          <span id="ms-val" class="ms-val">16.6 ms</span>
+          <span id="backend-badge" class="badge badge-webgl">Detecting...</span>
+        </div>
+
+        <!-- Debug Console Toggle Button -->
+        <button id="toggle-debug-btn" class="btn-toggle-debug">⚙️ DEBUG CONSOLE [F1]</button>
+      </div>
+
+      <!-- Controls Hint Bar -->
+      <div class="controls-hint-bar">
+        <span><span class="key-badge">W A S D</span> Move</span>
+        <span><span class="key-badge">SHIFT</span> Sprint</span>
+        <span><span class="key-badge">SPACE</span> Jump</span>
+        <span><span class="key-badge">CTRL</span> Crouch</span>
+        <span><span class="key-badge">MOUSE</span> Camera</span>
+        <span><span class="key-badge">SCROLL</span> Zoom</span>
+        <span><span class="key-badge">F1</span> Console</span>
+      </div>
+    </div>
+
+    <!-- Debug Console Overlay -->
+    <div id="debug-overlay" class="glass-panel">
+      <div class="debug-header">Engine Diagnostics</div>
+
+      <div class="debug-section-title">Telemetry</div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-key">Backend</span>
+          <span id="stat-backend" class="stat-value">WebGL2</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-key">FPS (Min / Max)</span>
+          <span id="stat-fps" class="stat-value">60</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-key">Frame Time</span>
+          <span id="stat-frame-time" class="stat-value">16.6 ms</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-key">Draw Calls</span>
+          <span id="stat-calls" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-key">Triangles</span>
+          <span id="stat-triangles" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-key">JS Heap Memory</span>
+          <span id="stat-memory" class="stat-value">N/A</span>
+        </div>
+      </div>
+
+      <div class="debug-section-title">Actor & Camera</div>
+      <div class="stats-grid">
+        <div class="stat-item" style="grid-column: span 2;">
+          <span class="stat-key">Player Position</span>
+          <span id="stat-player-pos" class="stat-value">X: 0, Y: 0, Z: 0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-key">Speed & State</span>
+          <span id="stat-player-speed" class="stat-value">0 m/s (idle)</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-key">Ground & Slope</span>
+          <span id="stat-player-ground" class="stat-value">Grounded (0°)</span>
+        </div>
+        <div class="stat-item" style="grid-column: span 2;">
+          <span class="stat-key">Camera Pos</span>
+          <span id="stat-camera-pos" class="stat-value">X: 0, Y: 5, Z: 10</span>
+        </div>
+      </div>
+
+      <div class="debug-section-title">Graphics Settings</div>
+      <div class="settings-group">
+        <div class="preset-selector">
+          <button class="preset-btn" data-preset="low">Low</button>
+          <button class="preset-btn" data-preset="medium">Med</button>
+          <button class="preset-btn" data-preset="high">High</button>
+          <button class="preset-btn" data-preset="ultra">Ultra</button>
+        </div>
+
+        <label class="checkbox-row">
+          <span>Directional Shadows</span>
+          <input type="checkbox" id="setting-shadows" checked />
+        </label>
+
+        <label class="checkbox-row">
+          <span>Wireframe Mode</span>
+          <input type="checkbox" id="setting-wireframe" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Main Module Script -->
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
