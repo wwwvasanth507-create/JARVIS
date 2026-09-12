@@ -1,9 +1,0 @@
-documents:
-  chunk_size: 1500
-  chunk_overlap: 150
-  max_chunks: 5000
-  max_file_size_bytes: 52428800 # 50 MB
-  max_pages: 500
-  max_extracted_characters: 2000000
-  max_processing_time_seconds: 60
-  cache_enabled: true

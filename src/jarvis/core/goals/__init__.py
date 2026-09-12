@@ -1,3 +1,0 @@
-"""
-Goal Subsystem for JARVIS.
-"""
