@@ -166,7 +166,11 @@ class JARVISApp:
 
     def _try_fast_path(self, input_text: str) -> Optional[Dict[str, Any]]:
         """Fast-path router for deterministic system commands avoiding LLM latency."""
-        text_lower = input_text.lower().strip()
+        text_lower = input_text.lower().strip().rstrip(".!?")
+        if text_lower.startswith("jarvis,"):
+            text_lower = text_lower[7:].strip()
+        elif text_lower.startswith("jarvis"):
+            text_lower = text_lower[6:].strip()
 
         # 0. Fast Intent Router
         try:
@@ -188,9 +192,13 @@ class JARVISApp:
                         "verified": tool_res.success
                     }
                 elif match.fast_response:
+                    resp_str = match.fast_response
+                    if resp_str == "TIME_QUERY_PLACEHOLDER":
+                        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        resp_str = f"The current time is {now_str}."
                     return {
                         "success": True,
-                        "response": match.fast_response,
+                        "response": resp_str,
                         "data": {},
                         "fast_path": True,
                         "verified": True
@@ -199,7 +207,11 @@ class JARVISApp:
             logger.debug(f"FastIntentRouter check exception: {e}")
 
         # 1. System Status Check
-        if text_lower in ("show system status", "system status", "status", "what is system status", "health"):
+        if text_lower in (
+            "show system status", "system status", "status", "what is system status",
+            "what's the current system status?", "what's the current system status",
+            "what is the current system status", "current system status", "health", "system health"
+        ) or "system status" in text_lower:
             status_report = self.get_system_status()
             return {
                 "success": True,

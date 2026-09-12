@@ -24,10 +24,11 @@ class FastIntentRouter:
 
     PATTERNS = [
         # Conversational greetings & status
-        (r"^(?:hi|hello|hai|hey|greetings)(?:\s+jarvis|\s+boss)?$", "conversation.greeting", None, {}, "Hello Boss! How can I assist you today?"),
-        (r"^(?:how\s+are\s+you|how\s+are\s+you\s+doing)", "conversation.status", None, {}, "All systems operational and ready for your command, Boss."),
-        (r"^(?:who\s+are\s+you|what\s+are\s+you)", "conversation.identity", None, {}, "I am JARVIS, your local personal AI computer assistant, Boss."),
-        (r"^(?:help|what\s+can\s+you\s+do)", "conversation.help", None, {}, "I can control applications, manage files, search the web, execute shell commands, automate screen actions, and schedule background tasks, Boss."),
+        (r"^(?:hi|hello|hai|hey|greetings)(?:\s+jarvis|\s+boss)?[\.!\?]?$", "conversation.greeting", None, {}, "Hello Boss! How can I assist you today?"),
+        (r"^(?:how\s+are\s+you|how\s+are\s+you\s+doing)[\.!\?]?$", "conversation.status", None, {}, "All systems operational and ready for your command, Boss."),
+        (r"^(?:who\s+are\s+you|what\s+are\s+you)[\.!\?]?$", "conversation.identity", None, {}, "I am JARVIS, your local personal AI computer assistant, Boss."),
+        (r"^(?:help|what\s+can\s+you\s+do)[\.!\?]?$", "conversation.help", None, {}, "I can control applications, manage files, search the web, execute shell commands, automate screen actions, and schedule background tasks, Boss."),
+        (r"^(?:what\s+time\s+is\s+it|time|current\s+time|what\s+is\s+the\s+time)[\.!\?]?$", "conversation.time", None, {}, "TIME_QUERY_PLACEHOLDER"),
 
         # Application opening
         (r"^(?:open|launch|start)\s+(chrome|browser)", "app.open", "application.open", {"name": "chrome", "app": "chrome"}, "Opening Chrome, Boss."),

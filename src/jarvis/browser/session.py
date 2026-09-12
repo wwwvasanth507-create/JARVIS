@@ -18,6 +18,18 @@ logger = logging.getLogger("jarvis.browser.session")
 class BrowserSession:
     """Manages persistent Playwright browser process and context reuse."""
 
+    _global_playwright: Optional[Playwright] = None
+
+    @classmethod
+    def stop_global_playwright(cls) -> None:
+        if cls._global_playwright is not None:
+            try:
+                cls._global_playwright.stop()
+            except Exception as e:
+                logger.warning(f"Error stopping global Playwright instance: {e}")
+            finally:
+                cls._global_playwright = None
+
     def __init__(self, settings: Optional[BrowserSettings] = None):
         self.settings = settings or BrowserSettings()
         self._playwright: Optional[Playwright] = None
@@ -38,7 +50,9 @@ class BrowserSession:
         start_time = time.perf_counter()
         try:
             logger.info("Initializing Playwright engine...")
-            self._playwright = sync_playwright().start()
+            if BrowserSession._global_playwright is None:
+                BrowserSession._global_playwright = sync_playwright().start()
+            self._playwright = BrowserSession._global_playwright
 
             engine_type = getattr(self._playwright, self.settings.engine, self._playwright.chromium)
             user_data_path = Path(self.settings.user_data_dir).resolve()
@@ -99,8 +113,8 @@ class BrowserSession:
         return self._context
 
     def stop(self) -> None:
-        """Stops browser context, closes Playwright engine, and releases resources."""
-        if not self._is_running and not self._playwright:
+        """Stops browser context and releases session resources."""
+        if not self._is_running and not self._browser and not self._context:
             return
 
         logger.info("BROWSER_STOPPED: Shutting down browser session...")
@@ -109,8 +123,6 @@ class BrowserSession:
                 self._context.close()
             if self._browser:
                 self._browser.close()
-            if self._playwright:
-                self._playwright.stop()
         except Exception as e:
             logger.warning(f"Error during browser session shutdown: {e}")
         finally:
@@ -124,3 +136,4 @@ class BrowserSession:
         """Restarts the browser session."""
         self.stop()
         return self.start()
+

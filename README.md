@@ -128,6 +128,7 @@ JARVIS/
 - **Prompt 022 Completed**: Fully integrated Advanced Multimodal Perception, Semantic Computer Interaction & Reliable UI Automation (`SemanticComputerInteractor`, `UIElement`, `TargetQuery`, `SemanticSearchEngine`, `TargetLease`, `Table`, `Form`, `FormPreview`, `DialogManager`, `SemanticWaitEngine`, `WindowsUIAutomationAdapter`, `BrowserSemanticAdapter`, `VLMPerceptionAdapter`, `DocumentFormWorkflow`, `SemanticMacro`, `MacroRegistry`, 5 semantic tools `computer.find_element`, `computer.click_element`, `computer.type_element`, `computer.wait_element`, `computer.fill_form`, `LocalUIFixtureServer`, 150-scenario dataset `evaluation_150_scenarios.json`, `UIPerceptionBenchmark`) with 100% test pass rate across 363 tests.
 - **Prompt 023 Completed**: Fully integrated Adaptive Personal Memory, Knowledge Graph, Outcome Learning & Continuous Agent Improvement (`Memory Architecture 2.0`, `WorkingMemoryManager`, `KnowledgeGraphManager`, `OutcomeLearningEngine`, `MemoryConflictResolver`, `UserCorrectionHandler`, `MemoryExplanationEngine`, `WorkspaceProfileManager`, `OnboardingManager`, `MemoryMaintenanceManager`, 7 user-facing memory tools `memory.list`, `memory.search`, `memory.get`, `memory.forget`, `memory.explain`, `memory.export`, `memory.import`, 100-scenario memory evaluation dataset `memory_100_scenarios.json`, `MemoryBenchmark`) with 100% test pass rate across 373 tests.
 - **Prompt 024 Completed**: Fully integrated Agent Operations Core, Goal Management, Priority Scheduling & Measurable Autonomous Execution (`GoalManager`, `GoalRepository`, `GoalPolicy`, `BoundedGoalPriorityQueue`, `GoalArbitrator`, `GoalTemplateRegistry`, `GoalProgress`, `GoalCheckpoint`, 10 goal tools `goal.create`, `goal.preview`, `goal.activate`, `goal.pause`, `goal.resume`, `goal.cancel`, `goal.list`, `goal.get`, `goal.explain`, `goal.progress`, 3 goal skills `manage_goal`, `inspect_goals`, `goal_status`, Desktop GUI Goal Dashboard, 100-scenario dataset `goal_100_scenarios.json`, `GoalBenchmark`).
+- **Prompt 025 Completed**: Verified Real-World User Acceptance & End-to-End CPU Execution (`tests/e2e/test_real_user_acceptance_harness.py`, `scripts/run_real_user_acceptance_test.py`, `docs/first_10_minutes.md`). Verified 100% pass rate across 422 test scenarios including real desktop window management, Notepad launch/close, filesystem lifecycle, Playwright browser navigation, PyTesseract OCR, MemoryManager persistence, safety policy enforcement, and multi-step task resolution.
 
 ---
 
@@ -138,39 +139,71 @@ JARVIS/
    pip install -e .
    ```
 
-2. **Run Release Check**:
+2. **Run Real-World User Acceptance Test Runner**:
+   ```bash
+   python scripts/run_real_user_acceptance_test.py
+   ```
+
+3. **Run Real User Acceptance Test Harness (Pytest)**:
+   ```bash
+   python -m pytest tests/e2e/test_real_user_acceptance_harness.py -v
+   ```
+
+4. **Run Diagnostics (`--doctor`)**:
+   ```bash
+   python -m jarvis --doctor
+   ```
+
+5. **Run Self-Test Suite (`--self-test`)**:
+   ```bash
+   python -m jarvis --self-test
+   ```
+
+6. **Run Production Release Gate (`--release-check`)**:
    ```bash
    python -m jarvis --release-check
    ```
 
-3. **Run Diagnostics (`--doctor`)**:
+7. **Launch Interactive Terminal**:
    ```bash
-   jarvis --doctor
+   python -m jarvis --cli
    ```
 
-4. **Run Self-Test Suite (`--self-test`)**:
-   ```bash
-   jarvis --self-test
-   ```
-
-5. **Launch Application**:
+8. **Launch Desktop Application (GUI Mode)**:
    ```bash
    scripts/start_jarvis.bat
    # or
    python -m jarvis
    ```
 
-6. **Run Test Suite**:
+9. **Run Full Test Suite**:
    ```bash
    python -m pytest
    ```
 
 ---
 
+## Verified Capabilities & Safety Policy
+
+- **Verified Capabilities**:
+  - Deterministic Fast-Path Routing (Time, System Status, Task Listing, Direct File Reading).
+  - Safe Windows Application Lifecycle (Launch, focus, and graceful closure for applications like Notepad & Calculator).
+  - Multi-Step Filesystem Automation (Directory creation, file write, atomic edits, search, duplicate detection).
+  - Browser Control (Playwright headless navigation, text extraction, link discovery, tab closure).
+  - Computer Vision & Screen Capture (Screen bounds detection, screenshot storage, PyTesseract OCR).
+  - Persistent Memory 2.0 (SQLite preference storage, facts, project metadata, deduplication).
+  - Goal Management (Draft, preview, activate, pause, cancel, health score computation).
+- **Safety Policy Requirements**:
+  - `LOW` Risk actions (File reading, page view, time check) execute automatically.
+  - `CRITICAL` & `HIGH` Risk actions (File deletion, shell execution, credential access) strictly require explicit Boss approval.
+
+---
+
 ## Roadmap Summary
 
-- **Phases 1–24**: ALL COMPLETED (Production Hardened Release v0.1.0)
+- **Phases 1–25**: ALL COMPLETED (Production Hardened & Real-World Verified Release v0.1.0)
 
 ---
 
 *JARVIS — Built for the Boss.*
+
