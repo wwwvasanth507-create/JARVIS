@@ -2,6 +2,8 @@ import { Diagnostics, EngineDiagnostics } from '../engine/Diagnostics';
 import { RenderingEngine } from '../engine/RenderingEngine';
 import { CharacterController } from '../player/CharacterController';
 import { settings, QualityPreset } from '../core/SettingsManager';
+import { elevationSampler } from '../world/ElevationSampler';
+import type { TestScene } from '../scene/TestScene';
 
 export class DebugOverlay {
   public isOpen: boolean = true;
@@ -19,6 +21,13 @@ export class DebugOverlay {
   private statPlayerSpeed: HTMLElement | null = null;
   private statPlayerGround: HTMLElement | null = null;
   private statCameraPos: HTMLElement | null = null;
+
+  // Streaming & Geography stat elements
+  private statStreamRegion: HTMLElement | null = null;
+  private statStreamChunk: HTMLElement | null = null;
+  private statStreamActive: HTMLElement | null = null;
+  private statStreamQueue: HTMLElement | null = null;
+  private statStreamLoaded: HTMLElement | null = null;
 
   // Setting inputs
   private shadowCheckbox: HTMLInputElement | null = null;
@@ -45,6 +54,12 @@ export class DebugOverlay {
     this.statPlayerSpeed = document.getElementById('stat-player-speed');
     this.statPlayerGround = document.getElementById('stat-player-ground');
     this.statCameraPos = document.getElementById('stat-camera-pos');
+
+    this.statStreamRegion = document.getElementById('stat-stream-region');
+    this.statStreamChunk = document.getElementById('stat-stream-chunk');
+    this.statStreamActive = document.getElementById('stat-stream-active');
+    this.statStreamQueue = document.getElementById('stat-stream-queue');
+    this.statStreamLoaded = document.getElementById('stat-stream-loaded');
 
     this.shadowCheckbox = document.getElementById('setting-shadows') as HTMLInputElement;
     this.wireframeCheckbox = document.getElementById('setting-wireframe') as HTMLInputElement;
@@ -105,7 +120,7 @@ export class DebugOverlay {
     }
   }
 
-  public update(engine: RenderingEngine, player: CharacterController): void {
+  public update(engine: RenderingEngine, player: CharacterController, scene?: TestScene): void {
     if (!this.isOpen) return;
 
     const stats: EngineDiagnostics = Diagnostics.getStats(engine);
@@ -139,6 +154,28 @@ export class DebugOverlay {
 
     if (this.statCameraPos) {
       this.statCameraPos.textContent = `X: ${stats.cameraPos.x}, Y: ${stats.cameraPos.y}, Z: ${stats.cameraPos.z}`;
+    }
+
+    // Update World Streaming & Geography Telemetry
+    if (scene && scene.streamer) {
+      const telem = scene.streamer.getTelemetry();
+      const region = elevationSampler.getNearestRegion(player.position.x, player.position.z);
+
+      if (this.statStreamRegion) {
+        this.statStreamRegion.textContent = `${region.name} (${region.biome})`;
+      }
+      if (this.statStreamChunk) {
+        this.statStreamChunk.textContent = `${telem.playerChunk.cx}, ${telem.playerChunk.cz}`;
+      }
+      if (this.statStreamActive) {
+        this.statStreamActive.textContent = `${telem.activeChunksCount} (L0:${telem.lod0Count} / L1:${telem.lod1Count} / L2:${telem.lod2Count})`;
+      }
+      if (this.statStreamQueue) {
+        this.statStreamQueue.textContent = `${telem.queueLength} queued`;
+      }
+      if (this.statStreamLoaded) {
+        this.statStreamLoaded.textContent = `${telem.totalLoaded} / ${telem.totalUnloaded}`;
+      }
     }
   }
 }

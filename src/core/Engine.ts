@@ -97,7 +97,7 @@ export class Engine {
 
     // 4. Update UI Meters & Diagnostics
     this.fpsCounter.update();
-    this.debugOverlay.update(this.renderer, this.scene.player);
+    this.debugOverlay.update(this.renderer, this.scene.player, this.scene);
 
     // 5. End Input Frame
     input.endFrame();
