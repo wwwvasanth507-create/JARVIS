@@ -131,6 +131,7 @@ from jarvis.tools.goal_tools import (
     ExplainGoalTool,
     GoalProgressTool,
 )
+from jarvis.tools.communication_tools import COMMUNICATION_TOOLS, FindContactTool, ComposeEmailTool, PreviewEmailTool, SendEmailTool, VerifySentTool
 
 ALL_TOOLS = [
     MoveMouseTool(),
@@ -159,6 +160,7 @@ ALL_TOOLS = [
     *SEMANTIC_TOOLS,
     *MEMORY_TOOLS,
     *GOAL_TOOLS,
+    *COMMUNICATION_TOOLS,
 ]
 
 __all__ = [

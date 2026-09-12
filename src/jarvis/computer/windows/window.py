@@ -17,6 +17,14 @@ from jarvis.computer.base import ComputerActionResult, WindowInfo
 logger = logging.getLogger("jarvis.computer.windows.window")
 
 
+def _is_zoomed(hwnd: int) -> bool:
+    try:
+        import ctypes
+        return ctypes.windll.user32.IsZoomed(hwnd) != 0
+    except Exception:
+        return False
+
+
 class WindowsWindowManager:
     """Windows window enumeration and control implementation."""
 
@@ -40,7 +48,7 @@ class WindowsWindowManager:
                             pass
 
                         is_min = win32gui.IsIconic(hwnd) != 0
-                        is_max = win32gui.IsZoomed(hwnd) != 0
+                        is_max = _is_zoomed(hwnd)
                         is_act = (hwnd == active_hwnd)
 
                         windows.append(
@@ -111,7 +119,7 @@ class WindowsWindowManager:
             height=max(0, rect[3] - rect[1]),
             is_active=True,
             is_minimized=win32gui.IsIconic(hwnd) != 0,
-            is_maximized=win32gui.IsZoomed(hwnd) != 0,
+            is_maximized=_is_zoomed(hwnd),
         )
 
     @classmethod

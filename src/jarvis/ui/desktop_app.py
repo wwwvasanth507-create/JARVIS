@@ -85,6 +85,14 @@ class JarvisDesktopApp:
         # 2. Conversation View
         self.conversation = ConversationView(self.root)
 
+        # 2b. Live Boss Supervision Monitor Widget
+        try:
+            from jarvis.ui.live_monitor import LiveTaskMonitorWidget
+            self.live_monitor = LiveTaskMonitorWidget(self.root)
+            self.live_monitor.pack(fill="x", padx=8, pady=4)
+        except Exception:
+            self.live_monitor = None
+
         # 3. Input View
         self.input_view = InputView(
             self.root,
@@ -144,11 +152,25 @@ class JarvisDesktopApp:
     def _worker_execute_command(self, text: str):
         """Worker thread executing command through JARVISApp runtime."""
         try:
-            self.ui_queue.put(("progress", "Understanding intent"))
+            self.ui_queue.put(("progress", "Understanding intent and resolving goals"))
+            self.ui_queue.put(("telemetry", {
+                "task": text,
+                "goal": "Natural Language Task Resolution",
+                "subtask": "Analyzing Intent & Environment",
+                "action": "ReasoningEngine.process_task",
+                "status": "EXECUTING"
+            }))
             time.sleep(0.05)
             
             res = self.jarvis_app.execute_command(text)
             self.ui_queue.put(("command_result", res))
+            self.ui_queue.put(("telemetry", {
+                "task": text,
+                "goal": "Task Resolution",
+                "subtask": "Completed",
+                "action": "Finished",
+                "status": "READY" if res.get("success") else "FAILED"
+            }))
         except Exception as e:
             logger.error(f"Worker command error: {e}", exc_info=True)
             self.ui_queue.put(("error", str(e)))
@@ -161,6 +183,8 @@ class JarvisDesktopApp:
 
                 if msg_type == "progress":
                     self.conversation.add_progress(payload)
+                elif msg_type == "telemetry" and self.live_monitor:
+                    self.live_monitor.update_telemetry(**payload)
                 elif msg_type == "command_result":
                     self.header.update_status("READY")
                     success = payload.get("success", False)

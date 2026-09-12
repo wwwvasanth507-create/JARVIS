@@ -1,22 +1,22 @@
-[0912/145543.864:ERROR:net\disk_cache\cache_util_win.cc:25] Unable to move the cache: Access is denied. (0x5)
-[0912/145543.865:ERROR:net\disk_cache\disk_cache.cc:285] Unable to create cache
-[0912/145543.863:ERROR:net\disk_cache\cache_util_win.cc:25] Unable to move the cache: Access is denied. (0x5)
-[0912/145543.866:ERROR:gpu\ipc\host\gpu_disk_cache.cc:737] Gpu Cache Creation failed: -2
-[0912/145543.866:ERROR:net\disk_cache\disk_cache.cc:285] Unable to create cache
-[0912/145543.866:ERROR:net\disk_cache\cache_util_win.cc:25] Unable to move the cache: Access is denied. (0x5)
-[0912/145543.866:ERROR:gpu\ipc\host\gpu_disk_cache.cc:737] Gpu Cache Creation failed: -2
-[0912/145543.869:ERROR:net\disk_cache\disk_cache.cc:285] Unable to create cache
-[0912/145543.869:ERROR:gpu\ipc\host\gpu_disk_cache.cc:737] Gpu Cache Creation failed: -2
-[0912/145543.884:WARNING:content\browser\btm\btm_database.cc:128] Failed to initialize the DIPS SQLite database.
-[0912/145545.887:WARNING:components\leveldb_proto\internal\leveldb_database.cc:102] Unable to open C:\ll\JARVIS\data\browser_profile\Default\shared_proto_db\metadata: IO error: C:\ll\JARVIS\data\browser_profile\Default\shared_proto_db\metadata/LOCK: Access denied. (ChromeMethodBFE: 15::LockFile::5)
-[0912/145548.344:ERROR:net\disk_cache\cache_util_win.cc:25] Unable to move the cache: Access is denied. (0x5)
-[0912/145548.346:ERROR:net\disk_cache\cache_util_win.cc:25] Unable to move the cache: Access is denied. (0x5)
-[0912/145548.348:ERROR:net\disk_cache\disk_cache.cc:285] Unable to create cache
-[0912/145548.348:ERROR:gpu\ipc\host\gpu_disk_cache.cc:737] Gpu Cache Creation failed: -2
-[0912/145548.348:ERROR:net\disk_cache\disk_cache.cc:285] Unable to create cache
-[0912/145548.348:ERROR:gpu\ipc\host\gpu_disk_cache.cc:737] Gpu Cache Creation failed: -2
-[0912/145548.348:ERROR:net\disk_cache\cache_util_win.cc:25] Unable to move the cache: Access is denied. (0x5)
-[0912/145548.348:ERROR:net\disk_cache\disk_cache.cc:285] Unable to create cache
-[0912/145548.348:ERROR:gpu\ipc\host\gpu_disk_cache.cc:737] Gpu Cache Creation failed: -2
-[0912/145548.380:WARNING:content\browser\btm\btm_database.cc:128] Failed to initialize the DIPS SQLite database.
-[0912/145550.366:WARNING:components\leveldb_proto\internal\leveldb_database.cc:102] Unable to open C:\ll\JARVIS\data\browser_profile\Default\shared_proto_db\metadata: IO error: C:\ll\JARVIS\data\browser_profile\Default\shared_proto_db\metadata/LOCK: Access denied. (ChromeMethodBFE: 15::LockFile::5)
+[0912/152223.273:WARNING:content\browser\btm\btm_database.cc:128] Failed to initialize the DIPS SQLite database.
+[0912/152223.277:ERROR:net\disk_cache\cache_util_win.cc:25] Unable to move the cache: Access is denied. (0x5)
+[0912/152223.278:ERROR:net\disk_cache\cache_util_win.cc:25] Unable to move the cache: Access is denied. (0x5)
+[0912/152223.278:ERROR:net\disk_cache\cache_util_win.cc:25] Unable to move the cache: The operation completed successfully. (0x0)
+[0912/152223.278:ERROR:net\disk_cache\disk_cache.cc:285] Unable to create cache
+[0912/152223.278:ERROR:gpu\ipc\host\gpu_disk_cache.cc:737] Gpu Cache Creation failed: -2
+[0912/152223.281:ERROR:net\disk_cache\disk_cache.cc:285] Unable to create cache
+[0912/152223.281:ERROR:gpu\ipc\host\gpu_disk_cache.cc:737] Gpu Cache Creation failed: -2
+[0912/152223.281:ERROR:net\disk_cache\disk_cache.cc:285] Unable to create cache
+[0912/152223.281:ERROR:gpu\ipc\host\gpu_disk_cache.cc:737] Gpu Cache Creation failed: -2
+[0912/152225.287:WARNING:components\leveldb_proto\internal\leveldb_database.cc:102] Unable to open C:\ll\JARVIS\data\browser_profile\Default\shared_proto_db\metadata: IO error: C:\ll\JARVIS\data\browser_profile\Default\shared_proto_db\metadata/LOCK: Access denied. (ChromeMethodBFE: 15::LockFile::5)
+[0912/152227.313:WARNING:content\browser\btm\btm_database.cc:128] Failed to initialize the DIPS SQLite database.
+[0912/152227.317:ERROR:net\disk_cache\cache_util_win.cc:25] Unable to move the cache: Access is denied. (0x5)
+[0912/152227.317:ERROR:net\disk_cache\disk_cache.cc:285] Unable to create cache
+[0912/152227.317:ERROR:gpu\ipc\host\gpu_disk_cache.cc:737] Gpu Cache Creation failed: -2
+[0912/152227.317:ERROR:net\disk_cache\cache_util_win.cc:25] Unable to move the cache: Access is denied. (0x5)
+[0912/152227.317:ERROR:net\disk_cache\cache_util_win.cc:25] Unable to move the cache: Access is denied. (0x5)
+[0912/152227.317:ERROR:net\disk_cache\disk_cache.cc:285] Unable to create cache
+[0912/152227.317:ERROR:gpu\ipc\host\gpu_disk_cache.cc:737] Gpu Cache Creation failed: -2
+[0912/152227.317:ERROR:net\disk_cache\disk_cache.cc:285] Unable to create cache
+[0912/152227.317:ERROR:gpu\ipc\host\gpu_disk_cache.cc:737] Gpu Cache Creation failed: -2
+[0912/152229.333:WARNING:components\leveldb_proto\internal\leveldb_database.cc:102] Unable to open C:\ll\JARVIS\data\browser_profile\Default\shared_proto_db\metadata: IO error: C:\ll\JARVIS\data\browser_profile\Default\shared_proto_db\metadata/LOCK: Access denied. (ChromeMethodBFE: 15::LockFile::5)

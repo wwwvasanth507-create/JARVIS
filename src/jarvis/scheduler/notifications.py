@@ -53,3 +53,7 @@ class NotificationManager:
             return self.notify_desktop(message, title=title)
         else:
             return self.notify_text(message, title=title)
+
+    def deliver(self, notification_type: str, message: str, title: str = "JARVIS Reminder") -> bool:
+        """Alias method for dispatching notifications."""
+        return self.notify(message=message, notification_type=notification_type, title=title)
