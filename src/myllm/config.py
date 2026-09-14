@@ -282,6 +282,29 @@ class InstructionConfig:
 
 
 @dataclass
+class ServerConfig:
+    """Local API server and serving configuration."""
+    host: str = "127.0.0.1"
+    port: int = 8000
+    device: str = "cpu"
+    checkpoint: str = "experiments/phase7/phase7_sft_run/checkpoints/best.pt"
+    tokenizer: str = "data/tokenized/tokenizer.json"
+    max_sessions: int = 100
+    max_message_length: int = 4096
+    max_new_tokens: int = 128
+    default_temperature: float = 0.7
+    default_top_p: float = 0.9
+
+    def __post_init__(self) -> None:
+        if self.device.lower().strip() != "cpu":
+            raise ValueError(f"ServerConfig strictly requires device='cpu', got '{self.device}'.")
+        if self.port <= 0 or self.port > 65535:
+            raise ValueError(f"Invalid server port: {self.port}.")
+        if self.max_sessions <= 0:
+            raise ValueError(f"max_sessions must be positive, got {self.max_sessions}.")
+
+
+@dataclass
 class AppConfig:
     """Root configuration object containing all sub-configurations."""
     system: SystemConfig = field(default_factory=SystemConfig)
@@ -292,6 +315,7 @@ class AppConfig:
     tokenizer: TokenizerConfig = field(default_factory=TokenizerConfig)
     data: DataConfig = field(default_factory=DataConfig)
     instruction: InstructionConfig = field(default_factory=InstructionConfig)
+    server: ServerConfig = field(default_factory=ServerConfig)
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert configuration hierarchy into a nested dictionary."""
@@ -374,6 +398,7 @@ def load_config(config_path: Optional[Union[str, Path]] = None) -> AppConfig:
     tokenizer_dict = raw_data.get("tokenizer", {})
     data_dict = raw_data.get("data", {})
     instruction_dict = raw_data.get("instruction", {})
+    server_dict = raw_data.get("server", {})
 
     return AppConfig(
         system=SystemConfig(**system_dict),
@@ -384,6 +409,7 @@ def load_config(config_path: Optional[Union[str, Path]] = None) -> AppConfig:
         tokenizer=TokenizerConfig(**tokenizer_dict),
         data=DataConfig(**data_dict),
         instruction=InstructionConfig(**instruction_dict),
+        server=ServerConfig(**server_dict),
     )
 
 

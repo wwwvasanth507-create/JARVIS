@@ -27,6 +27,7 @@ A self-contained, inspectable GPT-style decoder-only Transformer language model 
 | **Phase 6** | **Real Training Workflow**: Production corpus preparation, data leakage validation, CPU scaling profiles, diagnostics telemetry, before/after generation quality, best-checkpoint selection, and documentation. | **Completed** |
 | **Phase 7** | **Supervised Instruction-Tuning (SFT)**: Structured instruction format, deterministic serialization templates, response-only loss masking, context length policy, SFT trainer, baseline vs post-tuning evaluation, and telemetry. | **Completed** |
 | **Phase 8** | **Conversational Chat Engine**: Multi-turn dialogue management, deterministic chat templates, system prompt support, turn-level context truncation, KV-cached streaming generation, session JSON persistence, and interactive CLI. | **Completed** |
+| **Phase 9** | **Local API Server**: Asynchronous FastAPI/Uvicorn HTTP & SSE streaming API, thread-safe session registry, per-session locking, model metadata introspection, explicit persistence, and client test suite. | **Completed** |
 
 ---
 
@@ -54,7 +55,8 @@ c:\ll\JARVIS/
 │   ├── data.md             # Deep dive into binary dataset pipeline
 │   ├── training.md         # Deep dive into CPU training engine & Phase 6 workflow
 │   ├── instruction_tuning.md # Deep dive into SFT pipeline & response-only masking
-│   └── chat_engine.md      # Deep dive into conversational chat engine & session state
+│   ├── chat_engine.md      # Deep dive into conversational chat engine & session state
+│   └── api.md              # Deep dive into local ASGI API server, SSE streaming & schemas
 ├── checkpoints/            # Model weights and training checkpoints
 ├── logs/                   # Training and runtime execution logs
 ├── experiments/            # Isolated experiment directories (metrics.jsonl, reports)
@@ -72,6 +74,8 @@ c:\ll\JARVIS/
 │   ├── train_sft.py         # CLI CPU supervised instruction-tuning runner
 │   ├── chat.py              # Interactive terminal conversation CLI with streaming
 │   ├── benchmark_chat.py    # CPU chat engine latency & throughput benchmark
+│   ├── serve.py             # CLI local API server launcher (FastAPI + Uvicorn)
+│   ├── test_api.py          # CLI API client smoke test & endpoint validator
 │   ├── evaluate.py          # CLI loss and perplexity evaluation
 │   ├── generate.py          # CLI autoregressive generation (greedy & sampling)
 │   └── inspect_training.py  # CLI checkpoint inspector & state analyzer
@@ -119,6 +123,14 @@ c:\ll\JARVIS/
 │       │   ├── telemetry.py # ChatToken, ChatTelemetry, ChatResponse
 │       │   ├── session.py  # ChatSession JSON persistence
 │       │   └── engine.py   # ChatEngine with KV cache & streaming
+│       ├── api/            # Local HTTP & SSE API server subsystem
+│       │   ├── __init__.py # Public API exports
+│       │   ├── app.py      # FastAPI application factory & routes
+│       │   ├── models.py   # Pydantic request/response schemas
+│       │   ├── service.py  # APIService coordinating models & concurrency
+│       │   ├── sessions.py # Thread-safe SessionRegistry & handles
+│       │   ├── errors.py   # Structured API exceptions & handlers
+│       │   └── dependencies.py # Dependency injection providers
 │       ├── evaluation/     # Loss and perplexity benchmarks
 │       ├── inference/      # Autoregressive generation engine
 │       └── utils/
@@ -138,6 +150,7 @@ c:\ll\JARVIS/
     ├── test_phase6_training.py # Real training workflow tests (8 tests)
     ├── test_phase7_instruction.py # SFT & response-only masking tests (9 tests)
     ├── test_phase8_chat.py # Conversational engine & CLI tests (18 tests)
+    ├── test_phase9_api.py  # API server, SSE streaming & sessions (17 tests)
     └── test_utils.py       # Seed and logging tests
 ```
 
@@ -604,6 +617,34 @@ python -m pytest
 ```
 
 For complete technical specifications, see [docs/chat_engine.md](file:///c:/ll/JARVIS/docs/chat_engine.md).
+
+---
+
+## Phase 9 — Local API Server Workflow
+
+Phase 9 establishes the local asynchronous ASGI HTTP API server with Server-Sent Events (SSE) streaming, isolated session management, and explicit persistence:
+
+```powershell
+# 1. Launch local API server on CPU (FastAPI + Uvicorn)
+python scripts/serve.py `
+  --host 127.0.0.1 `
+  --port 8000 `
+  --checkpoint experiments/phase7/phase7_sft_run/checkpoints/best.pt `
+  --tokenizer data/tokenized/tokenizer.json
+
+# 2. View interactive OpenAPI documentation in your browser:
+#    http://127.0.0.1:8000/docs
+#    http://127.0.0.1:8000/openapi.json
+
+# 3. Run automated client smoke test against running server
+python scripts/test_api.py --url http://127.0.0.1:8000
+
+# 4. Run complete regression test suite (211 tests)
+python -m pytest
+```
+
+For complete technical specifications, see [docs/api.md](file:///c:/ll/JARVIS/docs/api.md).
+
 
 
 

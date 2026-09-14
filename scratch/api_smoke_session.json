@@ -1,0 +1,44 @@
+{
+  "session_id": "bd320e5f-f3f1-49f8-8e4a-920a9f8d5b5a",
+  "system_prompt": "You are a concise assistant.",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hello! What is 2 + 2?"
+    },
+    {
+      "role": "assistant",
+      "content": "..."
+    },
+    {
+      "role": "user",
+      "content": "Can you explain that in one word?"
+    },
+    {
+      "role": "assistant",
+      "content": "..."
+    },
+    {
+      "role": "user",
+      "content": "Count to three."
+    },
+    {
+      "role": "assistant",
+      "content": "..."
+    }
+  ],
+  "generation_config": {
+    "max_new_tokens": 12,
+    "temperature": 1.0,
+    "top_k": 0,
+    "top_p": 0.9,
+    "repetition_penalty": 1.0,
+    "do_sample": false,
+    "seed": null,
+    "use_cache": true
+  },
+  "created_at": "2026-09-14T10:47:05.439583+00:00",
+  "updated_at": "2026-09-14T10:47:05.439583+00:00",
+  "model_checkpoint": "experiments/phase7/phase7_sft_run/checkpoints/best.pt",
+  "tokenizer_fingerprint": "a89c78921e8bc0078d28f6d07025a76b7e2b33f641714b54d88211f9108dff55"
+}
