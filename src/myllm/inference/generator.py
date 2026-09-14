@@ -49,7 +49,7 @@ class Generator:
         self.model.eval()
         self.tokenizer = tokenizer
 
-    @torch.no_grad()
+    @torch.inference_mode()
     def generate(
         self,
         prompt: Union[str, List[int]],

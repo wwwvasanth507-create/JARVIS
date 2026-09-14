@@ -44,6 +44,35 @@ class Tokenizer:
     ) -> None:
         self.vocab = vocabulary if vocabulary is not None else Vocabulary()
         self.config = config or {}
+        self._chunk_cache: Dict[str, List[int]] = {}
+        self._decode_table: Optional[List[bytes]] = None
+        self._special_token_table: Optional[List[Optional[bytes]]] = None
+
+    def _ensure_decode_tables(self) -> None:
+        """Construct fast direct-index byte lookup tables for decode()."""
+        if self._decode_table is not None and len(self._decode_table) == len(self.vocab):
+            return
+        v_len = len(self.vocab)
+        decode_tbl: List[bytes] = []
+        special_tbl: List[Optional[bytes]] = []
+        for i in range(v_len):
+            if self.vocab.is_special_token_id(i):
+                special_str = self.vocab.get_special_token_str(i) or ""
+                b_name = special_str.encode("utf-8")
+                decode_tbl.append(b_name)
+                special_tbl.append(b_name)
+            else:
+                b_val = self.vocab.id_to_bytes(i)
+                decode_tbl.append(b_val)
+                special_tbl.append(None)
+        self._decode_table = decode_tbl
+        self._special_token_table = special_tbl
+
+    def clear_cache(self) -> None:
+        """Clear chunk-level encoding cache and decode tables."""
+        self._chunk_cache.clear()
+        self._decode_table = None
+        self._special_token_table = None
 
     def __len__(self) -> int:
         return len(self.vocab)
@@ -117,11 +146,17 @@ class Tokenizer:
         chunks = split_text_into_chunks(text)
         merge_ranks = self.vocab.merge_ranks
         token_ids: List[int] = []
+        cache = self._chunk_cache
 
         for chunk in chunks:
-            initial_tokens = chunk_to_byte_tokens(chunk)
-            merged_tokens = apply_bpe_merges_to_tokens(initial_tokens, merge_ranks)
-            token_ids.extend(merged_tokens)
+            if chunk in cache:
+                token_ids.extend(cache[chunk])
+            else:
+                initial_tokens = chunk_to_byte_tokens(chunk)
+                merged_tokens = apply_bpe_merges_to_tokens(initial_tokens, merge_ranks)
+                if len(cache) < 20000:
+                    cache[chunk] = merged_tokens
+                token_ids.extend(merged_tokens)
 
         if add_bos:
             token_ids.insert(0, self.bos_token_id)
@@ -152,22 +187,30 @@ class Tokenizer:
         Raises:
             ValueError: If any token ID is outside the valid vocabulary range.
         """
+        self._ensure_decode_tables()
+        decode_tbl = self._decode_table
+        special_tbl = self._special_token_table
+        assert decode_tbl is not None and special_tbl is not None
+        v_len = len(decode_tbl)
+
         byte_segments: List[bytes] = []
-
-        for token_id in token_ids:
-            if not self.vocab.contains_id(token_id):
-                raise ValueError(
-                    f"Invalid token ID {token_id}. Valid vocabulary range is 0 to {len(self.vocab) - 1}."
-                )
-
-            if self.vocab.is_special_token_id(token_id):
-                if skip_special_tokens:
-                    continue
-                # Represent special token by its name encoded in UTF-8
-                name = self.vocab.get_special_token_str(token_id) or ""
-                byte_segments.append(name.encode("utf-8"))
-            else:
-                byte_segments.append(self.vocab.id_to_bytes(token_id))
+        if skip_special_tokens:
+            for token_id in token_ids:
+                if 0 <= token_id < v_len:
+                    if special_tbl[token_id] is None:
+                        byte_segments.append(decode_tbl[token_id])
+                else:
+                    raise ValueError(
+                        f"Invalid token ID {token_id}. Valid vocabulary range is 0 to {v_len - 1}."
+                    )
+        else:
+            for token_id in token_ids:
+                if 0 <= token_id < v_len:
+                    byte_segments.append(decode_tbl[token_id])
+                else:
+                    raise ValueError(
+                        f"Invalid token ID {token_id}. Valid vocabulary range is 0 to {v_len - 1}."
+                    )
 
         raw_bytes = b"".join(byte_segments)
         return raw_bytes.decode("utf-8", errors="replace")

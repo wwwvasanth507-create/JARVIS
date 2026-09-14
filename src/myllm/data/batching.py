@@ -57,15 +57,16 @@ class BatchGenerator:
             Tuple of (input_ids, labels) CPU tensors.
         """
         indices = [self._rng.randint(0, len(self.dataset) - 1) for _ in range(self.batch_size)]
-        xs = []
-        ys = []
-        for idx in indices:
+        seq_len = self.dataset.sequence_length
+        bx = np.empty((self.batch_size, seq_len), dtype=np.int64)
+        by = np.empty((self.batch_size, seq_len), dtype=np.int64)
+        for i, idx in enumerate(indices):
             x, y = self.dataset[idx]
-            xs.append(x)
-            ys.append(y)
+            bx[i] = x
+            by[i] = y
 
-        input_ids = torch.from_numpy(np.stack(xs)).long().to("cpu")
-        labels = torch.from_numpy(np.stack(ys)).long().to("cpu")
+        input_ids = torch.from_numpy(bx)
+        labels = torch.from_numpy(by)
         return input_ids, labels
 
     def __iter__(self) -> Iterator[Tuple[torch.Tensor, torch.Tensor]]:
@@ -73,18 +74,20 @@ class BatchGenerator:
         if self.shuffle:
             self._rng.shuffle(indices)
 
+        seq_len = self.dataset.sequence_length
         for i in range(0, len(indices), self.batch_size):
             batch_indices = indices[i : i + self.batch_size]
-            if self.drop_last and len(batch_indices) < self.batch_size:
+            b_len = len(batch_indices)
+            if self.drop_last and b_len < self.batch_size:
                 break
 
-            xs = []
-            ys = []
-            for idx in batch_indices:
+            bx = np.empty((b_len, seq_len), dtype=np.int64)
+            by = np.empty((b_len, seq_len), dtype=np.int64)
+            for j, idx in enumerate(batch_indices):
                 x, y = self.dataset[idx]
-                xs.append(x)
-                ys.append(y)
+                bx[j] = x
+                by[j] = y
 
-            input_ids = torch.from_numpy(np.stack(xs)).long().to("cpu")
-            labels = torch.from_numpy(np.stack(ys)).long().to("cpu")
+            input_ids = torch.from_numpy(bx)
+            labels = torch.from_numpy(by)
             yield input_ids, labels

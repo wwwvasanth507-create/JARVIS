@@ -134,8 +134,15 @@ class GPTModel(nn.Module):
                 f"Sequence length {total_len} exceeds maximum context length {self.config.context_length}."
             )
 
-        # Token ID validation
-        if (input_ids < 0).any() or (input_ids >= self.config.vocab_size).any():
+        # Fast bounds validation: scalar check for single tokens, tensor check otherwise
+        if B == 1 and T == 1:
+            val = int(input_ids[0, 0].item())
+            if val < 0 or val >= self.config.vocab_size:
+                raise ValueError(
+                    f"Token IDs out of vocabulary bounds [0, {self.config.vocab_size - 1}]. "
+                    f"Found values in range [{val}, {val}]."
+                )
+        elif (input_ids < 0).any() or (input_ids >= self.config.vocab_size).any():
             min_val = int(input_ids.min().item())
             max_val = int(input_ids.max().item())
             raise ValueError(
@@ -143,12 +150,9 @@ class GPTModel(nn.Module):
                 f"Found values in range [{min_val}, {max_val}]."
             )
 
-        # Position indices: [T] starting from past_len
-        pos = torch.arange(past_len, total_len, dtype=torch.long, device=input_ids.device)
-
-        # 1. Embeddings: token + learned position
+        # 1. Embeddings: token + learned position (zero-overhead direct weight slice)
         tok_emb = self.transformer.wte(input_ids)  # [B, T, C]
-        pos_emb = self.transformer.wpe(pos)        # [T, C]
+        pos_emb = self.transformer.wpe.weight[past_len:total_len]  # [T, C]
         x = self.transformer.drop(tok_emb + pos_emb)
 
         # 2. Sequential Transformer Blocks

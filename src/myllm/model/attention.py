@@ -105,32 +105,39 @@ class CausalSelfAttention(nn.Module):
                 f"Total sequence length {total_len} exceeds maximum context length {self.context_length}."
             )
 
-        # 4. Scaled dot-product attention scores:
-        # [B, n_head, T, head_dim] @ [B, n_head, head_dim, total_len] -> [B, n_head, T, total_len]
-        scale = 1.0 / math.sqrt(self.head_dim)
-        att = (q @ k.transpose(-2, -1)) * scale
+        dropout_p = self.attn_dropout.p if self.training else 0.0
 
-        # 5. Causal masking
+        # 4-7. Efficient scaled dot-product attention
         if past_key_value is None:
-            # Standard forward pass without past cache
-            att = att.masked_fill(self.causal_mask[:, :, :T, :T] == 0, float("-inf"))
+            # Full sequence forward pass (training or prefill): causal mask ensures j <= i
+            y = F.scaled_dot_product_attention(
+                q, k, v,
+                attn_mask=None,
+                dropout_p=dropout_p,
+                is_causal=True,
+            )
+        elif T == 1:
+            # Single-token incremental decode with past cache:
+            # Current query attends to all past and present keys without causal restriction
+            y = F.scaled_dot_product_attention(
+                q, k, v,
+                attn_mask=None,
+                dropout_p=dropout_p,
+                is_causal=False,
+            )
         else:
-            # With past cache: q has positions past_len .. total_len-1, k has positions 0 .. total_len-1
-            # If T == 1, query is at the very end and can attend to all keys 0 .. total_len-1 (no masking needed).
-            if T > 1:
-                past_len = past_key_value[0].size(2)
-                q_pos = torch.arange(past_len, total_len, device=x.device).unsqueeze(1)
-                k_pos = torch.arange(0, total_len, device=x.device).unsqueeze(0)
-                mask = (k_pos <= q_pos).view(1, 1, T, total_len)
-                att = att.masked_fill(~mask, float("-inf"))
-
-        # 6. Softmax over target sequence dimension
-        att = F.softmax(att, dim=-1)
-        att = self.attn_dropout(att)
-
-        # 7. Values aggregation:
-        # [B, n_head, T, total_len] @ [B, n_head, total_len, head_dim] -> [B, n_head, T, head_dim]
-        y = att @ v
+            # Multi-token continuation with past cache:
+            # Query positions [past_len .. total_len-1] attend to key positions <= query position
+            past_len = past_key_value[0].size(2)
+            q_pos = torch.arange(past_len, total_len, device=x.device).unsqueeze(1)
+            k_pos = torch.arange(0, total_len, device=x.device).unsqueeze(0)
+            mask = (k_pos <= q_pos).view(1, 1, T, total_len)
+            y = F.scaled_dot_product_attention(
+                q, k, v,
+                attn_mask=mask,
+                dropout_p=dropout_p,
+                is_causal=False,
+            )
 
         # 8. Recombine heads:
         # [B, n_head, T, head_dim] -> [B, T, n_head, head_dim] -> [B, T, C]

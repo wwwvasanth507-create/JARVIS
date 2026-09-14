@@ -1,0 +1,267 @@
+{
+  "suite_version": "1.0",
+  "timestamp": "2026-09-14T14:02:57.445360+00:00",
+  "environment": {
+    "timestamp": "2026-09-14T14:02:57.445360+00:00",
+    "python_version": "3.14.7",
+    "python_compiler": "MSC v.1944 64 bit (AMD64)",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "pytorch_version": "2.14.0+cpu",
+    "cpu_hardware": {
+      "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+      "machine": "AMD64",
+      "physical_cores": 4,
+      "logical_cores": 8,
+      "total_memory_mb": 7998.29
+    },
+    "default_intraop_threads": 4,
+    "default_interop_threads": 4,
+    "cuda_available": false,
+    "is_using_cuda": false
+  },
+  "model": {
+    "checkpoint": "experiments\\phase7\\phase7_sft_run\\checkpoints\\best.pt",
+    "tokenizer": "data\\tokenized\\tokenizer.json",
+    "parameter_count": 136960,
+    "context_length": 64,
+    "vocab_size": 512,
+    "n_layer": 2,
+    "n_head": 2,
+    "n_embd": 64,
+    "tied_weights": true
+  },
+  "forward_benchmarks": [
+    {
+      "batch_size": 1,
+      "sequence_length": 16,
+      "total_tokens": 16,
+      "mean_latency_ms": 2.222,
+      "median_latency_ms": 2.13,
+      "std_latency_ms": 0.296,
+      "tokens_per_second": 7202.11
+    },
+    {
+      "batch_size": 1,
+      "sequence_length": 64,
+      "total_tokens": 64,
+      "mean_latency_ms": 2.467,
+      "median_latency_ms": 2.519,
+      "std_latency_ms": 0.424,
+      "tokens_per_second": 25946.96
+    },
+    {
+      "batch_size": 4,
+      "sequence_length": 16,
+      "total_tokens": 64,
+      "mean_latency_ms": 2.791,
+      "median_latency_ms": 2.693,
+      "std_latency_ms": 0.272,
+      "tokens_per_second": 22932.74
+    },
+    {
+      "batch_size": 4,
+      "sequence_length": 64,
+      "total_tokens": 256,
+      "mean_latency_ms": 4.161,
+      "median_latency_ms": 4.179,
+      "std_latency_ms": 0.438,
+      "tokens_per_second": 61519.68
+    }
+  ],
+  "forward_component_profile": {
+    "batch_size": 1,
+    "sequence_length": 64,
+    "total_profiled_ms": 1.191,
+    "components": {
+      "embedding": {
+        "mean_time_ms": 0.1387,
+        "percentage": 11.65
+      },
+      "attention_qkv": {
+        "mean_time_ms": 0.1449,
+        "percentage": 12.17
+      },
+      "attention_scores": {
+        "mean_time_ms": 0.2161,
+        "percentage": 18.16
+      },
+      "attention_softmax": {
+        "mean_time_ms": 0.1135,
+        "percentage": 9.53
+      },
+      "attention_proj": {
+        "mean_time_ms": 0.1309,
+        "percentage": 10.99
+      },
+      "mlp": {
+        "mean_time_ms": 0.3007,
+        "percentage": 25.26
+      },
+      "layernorm": {
+        "mean_time_ms": 0.0533,
+        "percentage": 4.48
+      },
+      "lm_head": {
+        "mean_time_ms": 0.0925,
+        "percentage": 7.77
+      }
+    }
+  },
+  "cpu_threading": [
+    {
+      "threads": 1,
+      "mean_latency_ms": 2.67,
+      "median_latency_ms": 2.596,
+      "tokens_per_second": 11983.76
+    },
+    {
+      "threads": 2,
+      "mean_latency_ms": 2.656,
+      "median_latency_ms": 2.694,
+      "tokens_per_second": 12049.96
+    },
+    {
+      "threads": 4,
+      "mean_latency_ms": 2.534,
+      "median_latency_ms": 2.512,
+      "tokens_per_second": 12625.91
+    },
+    {
+      "threads": 8,
+      "mean_latency_ms": 3.011,
+      "median_latency_ms": 2.907,
+      "tokens_per_second": 10626.57
+    }
+  ],
+  "inference_modes": {
+    "prompt": "The future of artificial intelligence on consumer CPUs is",
+    "max_new_tokens": 20,
+    "tokens_match": true,
+    "no_grad": {
+      "mean_latency_ms": 49.732,
+      "tokens_per_second": 402.16
+    },
+    "inference_mode": {
+      "mean_latency_ms": 36.786,
+      "tokens_per_second": 543.68
+    },
+    "speedup_ratio": 1.352
+  },
+  "inference_kv_cache": {
+    "prompt": "The future of artificial intelligence on consumer CPUs is",
+    "prompt_tokens": 28,
+    "new_tokens": 20,
+    "outputs_match": true,
+    "prefill_latency_ms": 2.863,
+    "first_token_latency_ms": 3.234,
+    "naive_latency_ms": 53.615,
+    "naive_tokens_per_sec": 373.03,
+    "cached_latency_ms": 42.725,
+    "cached_tokens_per_sec": 468.11,
+    "kv_cache_speedup": 1.255
+  },
+  "tokenizer": {
+    "short_english": {
+      "characters": 31,
+      "tokens": 24,
+      "round_trip_lossless": true,
+      "encode_latency_ms": 0.0379,
+      "encode_tokens_per_sec": 634048.4,
+      "decode_latency_ms": 0.0193,
+      "decode_tokens_per_sec": 1242493.27
+    },
+    "medium_english": {
+      "characters": 150,
+      "tokens": 89,
+      "round_trip_lossless": true,
+      "encode_latency_ms": 0.265,
+      "encode_tokens_per_sec": 335803.44,
+      "decode_latency_ms": 0.0713,
+      "decode_tokens_per_sec": 1248106.8
+    },
+    "long_english": {
+      "characters": 2710,
+      "tokens": 1400,
+      "round_trip_lossless": true,
+      "encode_latency_ms": 6.6977,
+      "encode_tokens_per_sec": 209025.73,
+      "decode_latency_ms": 1.1019,
+      "decode_tokens_per_sec": 1270493.51
+    },
+    "unicode_tamil": {
+      "characters": 69,
+      "tokens": 57,
+      "round_trip_lossless": true,
+      "encode_latency_ms": 0.2762,
+      "encode_tokens_per_sec": 206355.76,
+      "decode_latency_ms": 0.0428,
+      "decode_tokens_per_sec": 1330532.21
+    }
+  },
+  "data_pipeline": {
+    "dataset_total_tokens": 32526,
+    "memmap_open_latency_ms": 1.5346,
+    "sequence_retrievals_per_sec": 142468.41,
+    "batch_construction_latency_ms": 0.3654,
+    "batches_per_sec": 2736.41
+  },
+  "training_profile": {
+    "steps_profiled": 10,
+    "batch_size": 4,
+    "sequence_length": 64,
+    "mean_step_latency_ms": 17.494,
+    "tokens_per_second": 14633.63,
+    "breakdown": {
+      "data_retrieval": {
+        "mean_ms": 0.204,
+        "percentage": 1.18
+      },
+      "forward": {
+        "mean_ms": 5.371,
+        "percentage": 30.97
+      },
+      "backward": {
+        "mean_ms": 6.33,
+        "percentage": 36.5
+      },
+      "grad_clip": {
+        "mean_ms": 1.145,
+        "percentage": 6.6
+      },
+      "optimizer": {
+        "mean_ms": 4.274,
+        "percentage": 24.65
+      },
+      "scheduler": {
+        "mean_ms": 0.016,
+        "percentage": 0.09
+      }
+    }
+  },
+  "api_benchmarks": {
+    "health_latency_ms": 2.238,
+    "model_info_latency_ms": 2.579,
+    "session_create_latency_ms": 4.353,
+    "chat_sync_latency_ms": 12.441,
+    "stream_first_token_latency_ms": 11.882,
+    "stream_total_latency_ms": 11.95
+  },
+  "memory_rss": {
+    "rss_initial_mb": 338.46,
+    "rss_model_loaded_mb": 338.84,
+    "rss_model_delta_mb": 0.38,
+    "rss_api_idle_mb": 339.54,
+    "rss_one_session_mb": 336.48,
+    "rss_five_sessions_mb": 336.97
+  },
+  "compilation_and_precision": {
+    "eager_fp32_latency_ms": 5.356,
+    "bf16_autocast_supported": true,
+    "bf16_autocast_latency_ms": 21.178,
+    "bf16_speedup_vs_fp32": 0.253,
+    "torch_compile_supported": false,
+    "torch_compile_first_run_overhead_sec": null,
+    "torch_compile_steady_state_latency_ms": null,
+    "torch_compile_speedup_vs_eager": null
+  }
+}

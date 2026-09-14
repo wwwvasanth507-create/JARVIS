@@ -167,7 +167,7 @@ class ChatEngine:
         self.history = session.history.clone()
         self.cache_dirty = True
 
-    @torch.no_grad()
+    @torch.inference_mode()
     def stream_response(
         self,
         config: Optional[GenerationConfig] = None,

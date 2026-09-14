@@ -29,6 +29,7 @@ A self-contained, inspectable GPT-style decoder-only Transformer language model 
 | **Phase 8** | **Conversational Chat Engine**: Multi-turn dialogue management, deterministic chat templates, system prompt support, turn-level context truncation, KV-cached streaming generation, session JSON persistence, and interactive CLI. | **Completed** |
 | **Phase 9** | **Local API Server**: Asynchronous FastAPI/Uvicorn HTTP & SSE streaming API, thread-safe session registry, per-session locking, model metadata introspection, explicit persistence, and client test suite. | **Completed** |
 | **Phase 10** | **Web UI**: Modern responsive browser chat interface built with React 19, TypeScript, Vite, and Vanilla CSS design system. Real-time SSE streaming, multi-turn dialogue, session persistence, generation settings, model inspection, and pure CPU end-to-end integration. | **Completed** |
+| **Phase 11** | **CPU Performance Optimization & Profiling**: Rigorous CPU profiling, PyTorch SDPA attention primitives, tokenizer LRU chunk-caching, preallocated 2D batch generation, inference mode acceleration, benchmark regression suite, and hardware telemetry. | **Completed** |
 
 ---
 
@@ -682,3 +683,44 @@ npm run build
 ```
 
 For complete technical specifications, see [docs/web_ui.md](file:///c:/ll/JARVIS/docs/web_ui.md).
+
+---
+
+## Phase 11 — CPU Performance Optimization & Engineering
+
+Phase 11 introduces a comprehensive performance benchmarking suite, PyTorch SDPA causal attention primitives, LRU chunk-caching for the Byte-Level BPE tokenizer, zero-copy contiguous 2D batch generation, and full `torch.inference_mode()` acceleration while guaranteeing mathematical equivalence:
+
+### Key Performance Improvements
+
+| Benchmark Domain | Baseline Metric | Optimized Metric | Measured Improvement |
+| :--- | :---: | :---: | :---: |
+| **Model Forward Latency ($B=1, T=64$)** | 2.47 ms | 1.22 ms | **-50.5% latency (+102% tok/s)** |
+| **Model Forward Latency ($B=4, T=64$)** | 4.16 ms | 1.59 ms | **-61.7% latency (+161% tok/s)** |
+| **Prompt Prefill Latency** | 2.86 ms | 0.96 ms | **-66.5% latency** |
+| **Generation Throughput (Cached)** | 468.1 tok/s | 1,097.3 tok/s | **+134.4% throughput** |
+| **Generation Throughput (Inference Mode)**| 543.7 tok/s | 1,050.8 tok/s | **+93.3% throughput** |
+| **Tokenizer Encode (Long English)** | 209.0k tok/s | 8,148.0k tok/s | **+3,798% throughput** |
+| **Tokenizer Decode (Long English)** | 1,270.5k tok/s | 11,554.8k tok/s | **+809% throughput** |
+| **Data Batch Construction ($B=8, T=64$)**| 2,736 batch/s | 20,339 batch/s | **+643% throughput** |
+| **Training Step Latency ($B=4, T=64$)** | 17.49 ms | 10.14 ms | **-42.0% latency (+72.5% tok/s)** |
+| **FastAPI Synchronous Chat Latency** | 12.44 ms | 4.75 ms | **-61.8% latency** |
+| **FastAPI SSE First-Token Latency** | 11.88 ms | 5.56 ms | **-53.2% latency** |
+
+### Running Benchmarks & Regression Guard
+
+```powershell
+# 1. Run full CPU benchmark suite
+python scripts/benchmark_suite.py --output benchmarks/phase11/current.json
+
+# 2. Compare against baseline with 10% regression threshold
+python scripts/compare_benchmarks.py \
+    --baseline benchmarks/phase11/baseline.json \
+    --current benchmarks/phase11/optimized.json \
+    --markdown benchmarks/phase11/comparison.md
+
+# 3. Run complete regression test suite (222 backend tests)
+python -m pytest
+```
+
+For complete technical specifications, see [docs/performance.md](file:///c:/ll/JARVIS/docs/performance.md).
+
