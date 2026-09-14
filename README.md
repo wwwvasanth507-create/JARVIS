@@ -26,6 +26,7 @@ A self-contained, inspectable GPT-style decoder-only Transformer language model 
 | **Phase 5** | **Inference & Evaluation**: Autoregressive decoding (greedy, temperature, top-k, top-p, repetition penalty), KV cache, validation loss, and perplexity. | **Completed** |
 | **Phase 6** | **Real Training Workflow**: Production corpus preparation, data leakage validation, CPU scaling profiles, diagnostics telemetry, before/after generation quality, best-checkpoint selection, and documentation. | **Completed** |
 | **Phase 7** | **Supervised Instruction-Tuning (SFT)**: Structured instruction format, deterministic serialization templates, response-only loss masking, context length policy, SFT trainer, baseline vs post-tuning evaluation, and telemetry. | **Completed** |
+| **Phase 8** | **Conversational Chat Engine**: Multi-turn dialogue management, deterministic chat templates, system prompt support, turn-level context truncation, KV-cached streaming generation, session JSON persistence, and interactive CLI. | **Completed** |
 
 ---
 
@@ -52,7 +53,8 @@ c:\ll\JARVIS/
 │   ├── model.md            # Deep dive into GPT Transformer architecture
 │   ├── data.md             # Deep dive into binary dataset pipeline
 │   ├── training.md         # Deep dive into CPU training engine & Phase 6 workflow
-│   └── instruction_tuning.md # Deep dive into SFT pipeline & response-only masking
+│   ├── instruction_tuning.md # Deep dive into SFT pipeline & response-only masking
+│   └── chat_engine.md      # Deep dive into conversational chat engine & session state
 ├── checkpoints/            # Model weights and training checkpoints
 ├── logs/                   # Training and runtime execution logs
 ├── experiments/            # Isolated experiment directories (metrics.jsonl, reports)
@@ -68,6 +70,8 @@ c:\ll\JARVIS/
 │   ├── benchmark_data_pipeline.py # End-to-end throughput & integration benchmark
 │   ├── train.py             # CLI CPU training engine & experiment runner
 │   ├── train_sft.py         # CLI CPU supervised instruction-tuning runner
+│   ├── chat.py              # Interactive terminal conversation CLI with streaming
+│   ├── benchmark_chat.py    # CPU chat engine latency & throughput benchmark
 │   ├── evaluate.py          # CLI loss and perplexity evaluation
 │   ├── generate.py          # CLI autoregressive generation (greedy & sampling)
 │   └── inspect_training.py  # CLI checkpoint inspector & state analyzer
@@ -107,6 +111,14 @@ c:\ll\JARVIS/
 │       │   ├── checkpoint.py # Atomic checkpoint save, load, and pruning
 │       │   ├── validation.py # Deterministic evaluation loop
 │       │   └── trainer.py  # Core Trainer coordinating loop & clipping
+│       ├── chat/           # Conversational chat subsystem
+│       │   ├── __init__.py # Public chat exports
+│       │   ├── message.py  # ChatMessage and ChatHistory
+│       │   ├── template.py # Deterministic ChatTemplate & role safety
+│       │   ├── context.py  # ContextManager & turn-level truncation
+│       │   ├── telemetry.py # ChatToken, ChatTelemetry, ChatResponse
+│       │   ├── session.py  # ChatSession JSON persistence
+│       │   └── engine.py   # ChatEngine with KV cache & streaming
 │       ├── evaluation/     # Loss and perplexity benchmarks
 │       ├── inference/      # Autoregressive generation engine
 │       └── utils/
@@ -122,6 +134,10 @@ c:\ll\JARVIS/
     ├── test_tokenizer.py   # Comprehensive Byte-Level BPE tests (32 tests)
     ├── test_data.py        # Comprehensive Dataset & Batching tests (24 tests)
     ├── test_training.py    # Comprehensive Training & Optimizer tests (33 tests)
+    ├── test_inference.py   # Inference & KV Cache tests (31 tests)
+    ├── test_phase6_training.py # Real training workflow tests (8 tests)
+    ├── test_phase7_instruction.py # SFT & response-only masking tests (9 tests)
+    ├── test_phase8_chat.py # Conversational engine & CLI tests (18 tests)
     └── test_utils.py       # Seed and logging tests
 ```
 
@@ -555,5 +571,39 @@ Get-Content experiments/phase7/phase7_sft_run/training_report.md
 ```
 
 For complete technical specifications, see [docs/instruction_tuning.md](file:///c:/ll/JARVIS/docs/instruction_tuning.md).
+
+---
+
+## Phase 8 — Conversational Chat Engine Workflow
+
+Phase 8 introduces the stateful multi-turn conversational chat engine with streaming responses, KV cache management, turn-level context truncation, and session persistence:
+
+```powershell
+# 1. Run interactive terminal chat CLI with real-time streaming
+python scripts/chat.py `
+  --checkpoint experiments/phase7/phase7_sft_run/checkpoints/best.pt `
+  --tokenizer data/tokenized/tokenizer.json `
+  --system "You are a concise, helpful assistant."
+
+# Inside the chat session, use interactive commands:
+#   /history       - View full message exchange
+#   /save <path>   - Save session state to JSON
+#   /load <path>   - Restore session from JSON
+#   /reset         - Clear history and KV cache
+#   /exit          - Exit chat
+
+# 2. Run CPU performance benchmark (latency, throughput, KV cache on vs off)
+python scripts/benchmark_chat.py `
+  --checkpoint experiments/phase7/phase7_sft_run/checkpoints/best.pt `
+  --tokenizer data/tokenized/tokenizer.json `
+  --num-runs 3 `
+  --max-new-tokens 20
+
+# 3. Run complete regression test suite (194 tests)
+python -m pytest
+```
+
+For complete technical specifications, see [docs/chat_engine.md](file:///c:/ll/JARVIS/docs/chat_engine.md).
+
 
 

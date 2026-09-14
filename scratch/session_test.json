@@ -1,0 +1,28 @@
+{
+  "session_id": "aac0a52c-19e9-4a4a-a9ff-6c8ea9be5c42",
+  "system_prompt": null,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hello! Who are you?"
+    },
+    {
+      "role": "assistant",
+      "content": "..."
+    }
+  ],
+  "generation_config": {
+    "max_new_tokens": 10,
+    "temperature": 1.0,
+    "top_k": 0,
+    "top_p": 1.0,
+    "repetition_penalty": 1.0,
+    "do_sample": false,
+    "seed": null,
+    "use_cache": true
+  },
+  "created_at": "2026-09-14T10:35:29.158461+00:00",
+  "updated_at": "2026-09-14T10:35:29.158461+00:00",
+  "model_checkpoint": "experiments/phase7/phase7_sft_run/checkpoints/best.pt",
+  "tokenizer_fingerprint": "a89c78921e8bc0078d28f6d07025a76b7e2b33f641714b54d88211f9108dff55"
+}
