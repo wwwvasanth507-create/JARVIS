@@ -9,7 +9,7 @@ Strictly CPU-first.
 from __future__ import annotations
 
 import math
-from typing import Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
@@ -92,31 +92,46 @@ class GPTModel(nn.Module):
         self,
         input_ids: torch.Tensor,
         labels: Optional[torch.Tensor] = None,
-    ) -> Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]]:
+        past_key_values: Optional[List[Tuple[torch.Tensor, torch.Tensor]]] = None,
+        use_cache: bool = False,
+    ) -> Union[
+        torch.Tensor,
+        Tuple[torch.Tensor, torch.Tensor],
+        Tuple[torch.Tensor, List[Tuple[torch.Tensor, torch.Tensor]]],
+        Tuple[torch.Tensor, torch.Tensor, List[Tuple[torch.Tensor, torch.Tensor]]],
+    ]:
         """
         Forward pass of the language model.
 
         Args:
             input_ids: Integer tensor of shape [B, T] with token IDs in [0, vocab_size).
             labels: Optional target token IDs of shape [B, T] for next-token prediction loss.
+            past_key_values: Optional list of cached (K, V) tuples per layer for incremental decoding.
+            use_cache: If True, returns present_key_values alongside logits.
 
         Returns:
-            If labels is None:
-                logits of shape [B, T, vocab_size]
-            If labels is provided:
-                tuple of (logits, loss) where loss is a scalar torch.Tensor.
+            - logits: If labels is None and use_cache is False.
+            - (logits, loss): If labels is provided and use_cache is False.
+            - (logits, present_key_values): If labels is None and use_cache is True.
+            - (logits, loss, present_key_values): If labels is provided and use_cache is True.
 
         Raises:
-            ValueError: If input sequence length T > context_length, or if token IDs are out of bounds.
+            ValueError: If input sequence length exceeds context_length, or if token IDs are out of bounds.
         """
         if input_ids.dim() != 2:
             raise ValueError(f"input_ids must be 2D tensor [B, T], got shape {list(input_ids.shape)}.")
 
         B, T = input_ids.size()
 
-        if T > self.config.context_length:
+        if past_key_values is not None and len(past_key_values) > 0 and past_key_values[0] is not None:
+            past_len = past_key_values[0][0].size(2)
+        else:
+            past_len = 0
+
+        total_len = past_len + T
+        if total_len > self.config.context_length:
             raise ValueError(
-                f"Sequence length T={T} exceeds maximum context length {self.config.context_length}."
+                f"Sequence length {total_len} exceeds maximum context length {self.config.context_length}."
             )
 
         # Token ID validation
@@ -128,8 +143,8 @@ class GPTModel(nn.Module):
                 f"Found values in range [{min_val}, {max_val}]."
             )
 
-        # Position indices: [T]
-        pos = torch.arange(0, T, dtype=torch.long, device=input_ids.device)
+        # Position indices: [T] starting from past_len
+        pos = torch.arange(past_len, total_len, dtype=torch.long, device=input_ids.device)
 
         # 1. Embeddings: token + learned position
         tok_emb = self.transformer.wte(input_ids)  # [B, T, C]
@@ -137,8 +152,14 @@ class GPTModel(nn.Module):
         x = self.transformer.drop(tok_emb + pos_emb)
 
         # 2. Sequential Transformer Blocks
-        for block in self.transformer.h:
-            x = block(x)
+        present_key_values = [] if use_cache else None
+        for i, block in enumerate(self.transformer.h):
+            past_kv = past_key_values[i] if past_key_values is not None else None
+            if use_cache:
+                x, present_kv = block(x, past_key_value=past_kv, use_cache=True)
+                present_key_values.append(present_kv)
+            else:
+                x = block(x, past_key_value=past_kv, use_cache=False)
 
         # 3. Final LayerNorm
         x = self.transformer.ln_f(x)
@@ -147,6 +168,7 @@ class GPTModel(nn.Module):
         logits = self.lm_head(x)  # [B, T, vocab_size]
 
         # 5. Optional loss calculation using next-token prediction
+        loss = None
         if labels is not None:
             if labels.dim() != 2 or labels.size() != input_ids.size():
                 raise ValueError(
@@ -163,6 +185,14 @@ class GPTModel(nn.Module):
                 shift_labels.view(-1),
                 ignore_index=-100,
             )
+
+        if use_cache:
+            if loss is not None:
+                return logits, loss, present_key_values
+            return logits, present_key_values
+
+        if loss is not None:
             return logits, loss
 
         return logits
+

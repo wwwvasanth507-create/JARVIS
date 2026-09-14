@@ -1,0 +1,29 @@
+{
+  "format_version": "1.0",
+  "dataset_name": "smoke",
+  "tokenizer_fingerprint": "f8ba67b9f09156ae6b6d3b9f766438ce7334f26ce52479d7c599a62ea1001d3b",
+  "tokenizer_vocab_size": 320,
+  "dtype": "uint32",
+  "train_tokens": 7205,
+  "validation_tokens": 1275,
+  "total_tokens": 8480,
+  "documents_processed": 160,
+  "bytes_processed": 14320,
+  "sequence_length": 16,
+  "dataset_fingerprint": "b2662200899436298ddba17da7605a848a9a52e33549a979ecd8d99b23210ede",
+  "creation_config": {
+    "validation_ratio": 0.15,
+    "sequence_length": 16,
+    "add_bos": false,
+    "add_eos": true,
+    "allow_cross_document_sequences": false,
+    "seed": 42
+  },
+  "statistics": {
+    "average_tokens_per_document": 53.0,
+    "min_tokens_per_document": 44,
+    "max_tokens_per_document": 59,
+    "unique_tokens_observed": 112,
+    "vocab_utilization_percent": 35.0
+  }
+}

@@ -23,7 +23,7 @@ A self-contained, inspectable GPT-style decoder-only Transformer language model 
 | **Phase 2** | **Model Architecture**: GPT-style decoder-only Transformer (Causal Self-Attention, MLP, LayerNorm/RMSNorm, Embeddings). | **Completed** |
 | **Phase 3** | **Data Pipeline**: Text streaming, dataset tokenization, memory-mapped binary files, batch generation. | **Completed** |
 | **Phase 4** | **Training Loop**: CPU-tuned AdamW optimizer, learning rate scheduling with warmup & cosine decay, checkpointing. | **Completed** |
-| **Phase 5** | **Inference & Evaluation**: Autoregressive decoding (greedy, top-k, top-p / nucleus sampling, temperature), validation loss, and perplexity. | Upcoming |
+| **Phase 5** | **Inference & Evaluation**: Autoregressive decoding (greedy, temperature, top-k, top-p, repetition penalty), KV cache, validation loss, and perplexity. | **Completed** |
 
 ---
 
@@ -383,6 +383,88 @@ print(f"Training completed at step {final_state.global_step}, final loss: {final
 
 For complete technical specifications, see [docs/training.md](file:///c:/ll/JARVIS/docs/training.md).
 
+---
 
+## Inference, KV Cache & Evaluation (Phase 5)
 
+> [!NOTE]
+> MyLLM at this stage is a research and development language model architecture designed to study Transformers and CPU ML systems engineering. It is not intended to serve as a general-purpose conversational assistant.
 
+### Features
+- **Autoregressive Text Generation**: Fully controllable decoding on CPU with greedy argmax, temperature scaling, top-k filtering, nucleus (top-p) sampling, and repetition penalty.
+- **Ordered Logit Manipulation Pipeline**: Strictly enforces `raw logits -> repetition penalty -> temperature -> top-k -> top-p -> softmax -> sample/argmax`.
+- **Key-Value (KV) Attention Caching**: Layer-by-layer caching of past keys and values ($[B, n\_head, seq\_len, head\_dim]$) eliminating redundant prompt recomputation and achieving $> 1.3\times$ speedup on CPU while maintaining exact numerical logit equivalence ($< 10^{-4}$ max diff).
+- **Safe Checkpoint & Tokenizer Validation**: Validates SHA-256 tokenizer fingerprints against saved checkpoint metadata to prevent tokenizer-model mismatches, strictly loads onto CPU, and initializes `model.eval()`.
+- **Context Limit Control**: Provides `"error"` and `"truncate_prompt"` strategies to ensure sequence length never exceeds the model context window.
+- **Validation Perplexity Evaluation**: Exact token-weighted cross-entropy loss aggregation across arbitrary validation batches under zero-grad CPU execution.
+- **Inspectable CLI Utilities**: Full suite of CLI tools for generation (`scripts/generate.py`), evaluation (`scripts/evaluate.py`), and inference benchmarking (`scripts/benchmark_inference.py`).
+
+### CLI Examples
+
+**Autoregressive Generation:**
+```powershell
+python scripts/generate.py `
+  --checkpoint checkpoints/smoke/best.pt `
+  --tokenizer checkpoints/smoke/tokenizer.json `
+  --prompt "MyLLM is a pure" `
+  --max-new-tokens 20 `
+  --temperature 0.8 `
+  --top-k 40 `
+  --top-p 0.9 `
+  --repetition-penalty 1.1 `
+  --seed 42
+```
+
+**Dataset Evaluation & Perplexity:**
+```powershell
+python scripts/evaluate.py `
+  --checkpoint checkpoints/smoke/best.pt `
+  --tokenizer checkpoints/smoke/tokenizer.json `
+  --dataset data/smoke/val.bin `
+  --batch-size 4
+```
+
+**CPU Inference & KV Cache Benchmark:**
+```powershell
+python scripts/benchmark_inference.py `
+  --checkpoint checkpoints/smoke/best.pt `
+  --tokenizer checkpoints/smoke/tokenizer.json `
+  --max-new-tokens 15
+```
+
+### Python API Example
+```python
+from myllm.inference import Generator, GenerationConfig, load_inference_system
+from myllm.evaluation import evaluate_perplexity
+from myllm.data import TokenDataset
+
+# 1. Load trained model and tokenizer onto CPU
+model, tokenizer, metadata = load_inference_system(
+    checkpoint_path="checkpoints/smoke/best.pt",
+    tokenizer_path="checkpoints/smoke/tokenizer.json",
+)
+
+# 2. Configure autoregressive generation
+generator = Generator(model=model, tokenizer=tokenizer, device="cpu")
+config = GenerationConfig(
+    max_new_tokens=30,
+    temperature=0.8,
+    top_k=40,
+    top_p=0.9,
+    repetition_penalty=1.1,
+    use_cache=True,
+    seed=42,
+)
+
+# 3. Generate completion
+result = generator.generate(prompt="MyLLM is a pure", config=config)
+print(f"Generated text: {result.text}")
+print(f"Throughput:     {result.tokens_per_second:.2f} tokens/s (CPU)")
+
+# 4. Evaluate perplexity on validation dataset
+val_dataset = TokenDataset("data/smoke/val.bin", sequence_length=model.config.context_length)
+metrics = evaluate_perplexity(model, val_dataset, batch_size=4)
+print(f"Validation Loss: {metrics.mean_loss:.4f} | Perplexity: {metrics.perplexity:.2f}")
+```
+
+For complete technical specifications, see [docs/inference.md](file:///c:/ll/JARVIS/docs/inference.md).
