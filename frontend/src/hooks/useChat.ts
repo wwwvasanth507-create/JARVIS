@@ -18,8 +18,8 @@ const DEFAULT_SETTINGS: GenerationSettings = {
   temperature: 0.7,
   top_k: 0,
   top_p: 0.9,
-  repetition_penalty: 1.0,
-  do_sample: false,
+  repetition_penalty: 1.1,
+  do_sample: true,
   seed: null,
 };
 

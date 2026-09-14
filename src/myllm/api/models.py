@@ -18,6 +18,17 @@ class HealthResponse(BaseModel):
     device: str = "cpu"
 
 
+class ReadyResponse(BaseModel):
+    """Readiness check status response verifying model availability."""
+    status: str = "ready"
+    ready: bool = True
+    model_loaded: bool = True
+    parameter_count: int
+    context_length: int
+    device: str = "cpu"
+
+
+
 class ModelInfoResponse(BaseModel):
     """Model architecture and checkpoint metadata response."""
     model_name: str

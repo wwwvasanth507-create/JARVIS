@@ -20,6 +20,7 @@ from myllm.api.models import (
     CreateSessionRequest,
     DeleteSessionResponse,
     HealthResponse,
+    ReadyResponse,
     ModelInfoResponse,
     SaveSessionRequest,
     SaveSessionResponse,
@@ -96,6 +97,26 @@ def create_app(
     )
     async def health() -> HealthResponse:
         return HealthResponse(status="ok", service="MyLLM", device="cpu")
+
+    @app.get(
+        "/ready",
+        response_model=ReadyResponse,
+        tags=["System"],
+        summary="Service Readiness Probe",
+        description="Returns readiness status confirming model and tokenizer are actively loaded on CPU.",
+    )
+    async def ready(
+        service: APIService = Depends(get_api_service),
+    ) -> ReadyResponse:
+        info = service.get_model_info()
+        return ReadyResponse(
+            status="ready",
+            ready=True,
+            model_loaded=True,
+            parameter_count=info.parameter_count,
+            context_length=info.context_length,
+            device="cpu",
+        )
 
     @app.get(
         "/v1/model",

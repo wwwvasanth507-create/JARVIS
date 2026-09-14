@@ -1,0 +1,33 @@
+# Python bytecode & environments
+__pycache__/
+*.py[cod]
+*.pyo
+.venv*
+env/
+venv/
+
+# Git and IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Frontend builds
+frontend/node_modules/
+frontend/dist/
+
+# Large model artifacts and raw training data (mount via volumes instead)
+checkpoints/*
+!checkpoints/.gitkeep
+experiments/*
+!experiments/.gitkeep
+data/raw/*
+data/processed/*
+data/tokenized/*
+logs/*
+scratch/*

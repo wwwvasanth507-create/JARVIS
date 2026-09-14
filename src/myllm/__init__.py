@@ -5,6 +5,7 @@ First and primary target is CPU-only execution with zero external pretrained mod
 """
 
 __version__ = "0.1.0"
+version = __version__
 __author__ = "ML Systems Engineer"
 
 from myllm.config import AppConfig, load_config
@@ -13,6 +14,8 @@ from myllm.utils.seed import set_seed
 from myllm.utils.logging import get_logger
 
 __all__ = [
+    "__version__",
+    "version",
     "AppConfig",
     "load_config",
     "resolve_device",

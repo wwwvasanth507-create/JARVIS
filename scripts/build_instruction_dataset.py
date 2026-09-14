@@ -76,28 +76,41 @@ def process_examples(
     truncated_prompts = 0
 
     for idx, ex in enumerate(examples):
-        tok, err = tokenize_instruction_example(
+        # Format 1: Standard instruction format (### Instruction: ... ### Response: ...)
+        tok_inst, err_inst = tokenize_instruction_example(
             example=ex,
             tokenizer=tokenizer,
             max_seq_len=sequence_length,
             mask_prompt_labels=mask_prompt_labels,
             supervise_eos=supervise_eos,
             pad_to_max=True,
+            template_format="instruction",
         )
-        if err or tok is None:
-            rejected.append({"index": idx, "reason": err, "instruction": ex.instruction[:50]})
-            continue
+        if tok_inst is not None:
+            if tok_inst.was_truncated:
+                truncated_prompts += 1
+            tokenized.append(tok_inst)
+            prompt_lens.append(tok_inst.prompt_len)
+            response_lens.append(tok_inst.response_len)
+            supervised_lens.append(int(np.sum(tok_inst.labels[1:] != -100)))
+        else:
+            rejected.append({"index": idx, "reason": err_inst, "instruction": ex.instruction[:50]})
 
-        if tok.was_truncated:
-            truncated_prompts += 1
-
-        tokenized.append(tok)
-        prompt_lens.append(tok.prompt_len)
-        response_lens.append(tok.response_len)
-        # Count non-ignored label tokens (targets)
-        # In next-token shift, targets are labels[1:], so count (labels[1:] != -100)
-        sup_count = int(np.sum(tok.labels[1:] != -100))
-        supervised_lens.append(sup_count)
+        # Format 2: Conversational chat format (### User: ... ### Assistant: ...)
+        tok_chat, _ = tokenize_instruction_example(
+            example=ex,
+            tokenizer=tokenizer,
+            max_seq_len=sequence_length,
+            mask_prompt_labels=mask_prompt_labels,
+            supervise_eos=supervise_eos,
+            pad_to_max=True,
+            template_format="chat",
+        )
+        if tok_chat is not None:
+            tokenized.append(tok_chat)
+            prompt_lens.append(tok_chat.prompt_len)
+            response_lens.append(tok_chat.response_len)
+            supervised_lens.append(int(np.sum(tok_chat.labels[1:] != -100)))
 
     total_tokens = sum(prompt_lens) + sum(response_lens)
     total_supervised = sum(supervised_lens)

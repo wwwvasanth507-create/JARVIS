@@ -37,6 +37,7 @@ def print_server_banner(service: APIService, host: str, port: int) -> None:
     print("=" * 65)
     print("  Available Endpoints:")
     print("    GET    /health")
+    print("    GET    /ready")
     print("    GET    /v1/model")
     print("    POST   /v1/sessions")
     print("    GET    /v1/sessions/{id}")
@@ -111,6 +112,14 @@ def main() -> None:
     app = create_app(service=service, config=server_config)
 
     print_server_banner(service, args.host, args.port)
+
+    if args.host == "0.0.0.0":
+        print("!" * 65)
+        print("  SECURITY WARNING: Server is binding to 0.0.0.0 (all interfaces).")
+        print("  MyLLM provides NO authentication, NO authorization, and NO TLS.")
+        print("  This server is NOT intended for public internet exposure.")
+        print("!" * 65)
+        print()
 
     uvicorn.run(
         app,

@@ -30,6 +30,7 @@ A self-contained, inspectable GPT-style decoder-only Transformer language model 
 | **Phase 9** | **Local API Server**: Asynchronous FastAPI/Uvicorn HTTP & SSE streaming API, thread-safe session registry, per-session locking, model metadata introspection, explicit persistence, and client test suite. | **Completed** |
 | **Phase 10** | **Web UI**: Modern responsive browser chat interface built with React 19, TypeScript, Vite, and Vanilla CSS design system. Real-time SSE streaming, multi-turn dialogue, session persistence, generation settings, model inspection, and pure CPU end-to-end integration. | **Completed** |
 | **Phase 11** | **CPU Performance Optimization & Profiling**: Rigorous CPU profiling, PyTorch SDPA attention primitives, tokenizer LRU chunk-caching, preallocated 2D batch generation, inference mode acceleration, benchmark regression suite, and hardware telemetry. | **Completed** |
+| **Phase 12** | **Packaging, Release & Deployment**: Reproducible pip package, clean virtual environment verification, model SHA-256 manifests, model verification CLI, single-command launcher, CPU-only Docker container, CI workflow, and deployment documentation. | **Completed** |
 
 ---
 
@@ -723,4 +724,81 @@ python -m pytest
 ```
 
 For complete technical specifications, see [docs/performance.md](file:///c:/ll/JARVIS/docs/performance.md).
+
+---
+
+## Phase 12 — Packaging, Release & Deployment
+
+Phase 12 completes the MyLLM roadmap by turning the project into an installable, reproducible, and verifiable local application for standard consumer CPUs.
+
+### Installation Quickstart
+
+```powershell
+# 1. Clone repository
+git clone https://github.com/your-username/JARVIS.git
+cd JARVIS
+
+# 2. Create isolated virtual environment
+python -m venv .venv
+.venv\Scripts\activate
+
+# 3. Install CPU PyTorch
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+# 4. Install MyLLM
+pip install -e .
+
+# 5. Verify environment & model checksums
+python scripts/check_environment.py
+python scripts/verify_model.py
+```
+
+### Running the Application
+
+```powershell
+# Option A: Single-Command Launcher (Starts API and Web UI)
+python scripts/run_local.py --with-frontend
+
+# Option B: Manual Service Startup
+# Terminal 1 (API Server):
+python scripts/serve.py --host 127.0.0.1 --port 8000
+
+# Terminal 2 (Web UI):
+cd frontend
+npm install
+npm run dev
+```
+
+### Docker Container Deployment (Pure CPU)
+
+```bash
+# Start containerized API with mounted models
+docker compose up --build -d
+
+# Verify readiness probe
+curl http://127.0.0.1:8000/ready
+```
+
+---
+
+## Current Model Status & Quality Disclosure
+
+> [!IMPORTANT]
+> **Transparency & Capability Disclosure**:
+> - **Model Scale**: The primary release model (`MyLLM-Phase7-SFT`) is a lightweight 2-layer, 2-head, 64-dim GPT decoder-only Transformer (~136,960 unique parameters).
+> - **Training Corpora**: Pre-trained and fine-tuned on custom multi-domain datasets (technical documentation, encyclopedic text, and synthetic instruction dialogues).
+> - **Intended Scope**: This model is designed strictly for **local development, inspectability, educational demonstration, and architectural research**.
+> - **Generation Characteristics**: The model demonstrates correct autoregressive decoding, KV caching, tokenization invariants, and multi-turn dialogue state management, but is **NOT equivalent to large commercial LLMs** (e.g., GPT-4, Claude, or LLaMA-70B). It should not be expected to perform complex multi-step reasoning or high-factual query answering.
+> - **Hardware Constraints**: Operates strictly on consumer CPUs (FP32 precision) using 4 intra-op threads.
+
+---
+
+## Security & Local Architecture
+
+- **Local-Only Operation**: MyLLM binds to `127.0.0.1` by default and contains no authentication, authorization, or TLS encryption. It is not intended for direct public internet exposure without an authenticating reverse proxy.
+- **Privacy Conscious**: Full conversation content is never logged at default INFO levels.
+- **Pure CPU Sovereignty**: Strictly enforces `device: cpu` with no CUDA dependencies, cloud telemetry, or external network requests.
+
+For complete documentation on all phases, see [docs/architecture.md](file:///c:/ll/JARVIS/docs/architecture.md) and [docs/deployment.md](file:///c:/ll/JARVIS/docs/deployment.md).
+
 

@@ -1,0 +1,19 @@
+services:
+  myllm-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: myllm:cpu-0.1.0
+    container_name: myllm_api_cpu
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount model checkpoints into /app/models
+      - ./experiments/phase7/phase7_sft_run/checkpoints:/app/models:ro
+      # Mount tokenized data & tokenizer into /app/data
+      - ./data/tokenized:/app/data:ro
+      # Mount runtime scratch directory
+      - ./scratch:/app/scratch:rw
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

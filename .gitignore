@@ -50,12 +50,18 @@ cover/
 
 # Environments
 .env
-.venv
+.env.*
+!.env.example
+.venv*
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Frontend builds and dependencies
+frontend/node_modules/
+frontend/dist/
 
 # Project outputs & artifacts (keep directories with .gitkeep)
 checkpoints/*

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 import sys
 import time
 import httpx
@@ -29,7 +30,7 @@ def run_smoke_test(base_url: str = "http://127.0.0.1:8000") -> bool:
 
     try:
         # 1. Health Endpoint
-        print("\n[1/9] Testing GET /health ... ", end="", flush=True)
+        print("\n[1/10] Testing GET /health ... ", end="", flush=True)
         r = client.get("/health")
         assert r.status_code == 200, f"Expected 200, got {r.status_code}: {r.text}"
         data = r.json()
@@ -37,8 +38,18 @@ def run_smoke_test(base_url: str = "http://127.0.0.1:8000") -> bool:
         assert data.get("device") == "cpu"
         print("PASS")
 
-        # 2. Model Info Endpoint
-        print("[2/9] Testing GET /v1/model ... ", end="", flush=True)
+        # 2. Readiness Endpoint
+        print("[2/10] Testing GET /ready ... ", end="", flush=True)
+        r = client.get("/ready")
+        assert r.status_code == 200, f"Expected 200, got {r.status_code}: {r.text}"
+        ready_data = r.json()
+        assert ready_data.get("ready") is True
+        assert ready_data.get("model_loaded") is True
+        assert ready_data.get("device") == "cpu"
+        print("PASS")
+
+        # 3. Model Info Endpoint
+        print("[3/10] Testing GET /v1/model ... ", end="", flush=True)
         r = client.get("/v1/model")
         assert r.status_code == 200, f"Expected 200, got {r.status_code}: {r.text}"
         data = r.json()
@@ -47,8 +58,8 @@ def run_smoke_test(base_url: str = "http://127.0.0.1:8000") -> bool:
         assert data.get("device") == "cpu"
         print(f"PASS ({data['parameter_count']} params, ctx={data['context_length']})")
 
-        # 3. Create Session
-        print("[3/9] Testing POST /v1/sessions ... ", end="", flush=True)
+        # 4. Create Session
+        print("[4/10] Testing POST /v1/sessions ... ", end="", flush=True)
         create_payload = {
             "system_prompt": "You are a concise assistant.",
             "generation_config": {"max_new_tokens": 12, "temperature": 1.0, "do_sample": False},
@@ -60,8 +71,8 @@ def run_smoke_test(base_url: str = "http://127.0.0.1:8000") -> bool:
         assert session_id, "Missing session_id in response"
         print(f"PASS (session_id={session_id[:8]}...)")
 
-        # 4. Synchronous Message Generation
-        print("[4/9] Testing POST /v1/sessions/{id}/messages (Turn 1) ... ", end="", flush=True)
+        # 5. Synchronous Message Generation
+        print("[5/10] Testing POST /v1/sessions/{id}/messages (Turn 1) ... ", end="", flush=True)
         msg_payload = {"content": "Hello! What is 2 + 2?"}
         r = client.post(f"/v1/sessions/{session_id}/messages", json=msg_payload)
         assert r.status_code == 200, f"Expected 200, got {r.status_code}: {r.text}"
@@ -73,8 +84,8 @@ def run_smoke_test(base_url: str = "http://127.0.0.1:8000") -> bool:
         tps = resp_data["telemetry"]["tokens_per_second"]
         print(f"PASS (got '{ans1[:25]}...', {tps:.1f} tok/s)")
 
-        # 5. Multi-Turn Follow-Up Message
-        print("[5/9] Testing POST /v1/sessions/{id}/messages (Turn 2 follow-up) ... ", end="", flush=True)
+        # 6. Multi-Turn Follow-Up Message
+        print("[6/10] Testing POST /v1/sessions/{id}/messages (Turn 2 follow-up) ... ", end="", flush=True)
         msg2_payload = {"content": "Can you explain that in one word?"}
         r = client.post(f"/v1/sessions/{session_id}/messages", json=msg2_payload)
         assert r.status_code == 200, f"Expected 200, got {r.status_code}: {r.text}"
@@ -82,8 +93,8 @@ def run_smoke_test(base_url: str = "http://127.0.0.1:8000") -> bool:
         assert resp2_data["message"]["role"] == "assistant"
         print("PASS")
 
-        # 6. Streaming SSE Endpoint
-        print("[6/9] Testing POST /v1/sessions/{id}/messages/stream (SSE) ... ", end="", flush=True)
+        # 7. Streaming SSE Endpoint
+        print("[7/10] Testing POST /v1/sessions/{id}/messages/stream (SSE) ... ", end="", flush=True)
         stream_payload = {"content": "Count to three."}
         events = []
         with client.stream("POST", f"/v1/sessions/{session_id}/messages/stream", json=stream_payload) as stream_resp:
@@ -99,25 +110,25 @@ def run_smoke_test(base_url: str = "http://127.0.0.1:8000") -> bool:
         tokens_received = [e["token"] for e in events if not e.get("finished")]
         print(f"PASS ({len(tokens_received)} stream tokens received)")
 
-        # 7. Get Session Details & History
-        print("[7/9] Testing GET /v1/sessions/{id} ... ", end="", flush=True)
+        # 8. Get Session Details & History
+        print("[8/10] Testing GET /v1/sessions/{id} ... ", end="", flush=True)
         r = client.get(f"/v1/sessions/{session_id}")
         assert r.status_code == 200, f"Expected 200, got {r.status_code}: {r.text}"
         detail = r.json()
         assert len(detail["messages"]) >= 4, f"Expected at least 4 messages in history, got {len(detail['messages'])}"
         print(f"PASS (history has {len(detail['messages'])} messages)")
 
-        # 8. Explicit Persistence
-        print("[8/9] Testing POST /v1/sessions/{id}/save ... ", end="", flush=True)
-        save_payload = {"path": "scratch/api_smoke_session.json"}
+        # 9. Explicit Persistence
+        print("[9/10] Testing POST /v1/sessions/{id}/save ... ", end="", flush=True)
+        save_path = "scratch/api_smoke_session.json"
+        save_payload = {"path": save_path}
         r = client.post(f"/v1/sessions/{session_id}/save", json=save_payload)
         assert r.status_code == 200, f"Expected 200, got {r.status_code}: {r.text}"
-        save_data = r.json()
-        assert save_data["status"] == "saved"
+        assert Path(save_path).is_file(), f"Expected session file at {save_path}"
         print("PASS")
 
-        # 9. Delete Session
-        print("[9/9] Testing DELETE /v1/sessions/{id} ... ", end="", flush=True)
+        # 10. Delete Session
+        print("[10/10] Testing DELETE /v1/sessions/{id} ... ", end="", flush=True)
         r = client.delete(f"/v1/sessions/{session_id}")
         assert r.status_code == 200, f"Expected 200, got {r.status_code}: {r.text}"
 

@@ -85,15 +85,18 @@ class ContextManager:
         Returns:
             Tuple of (truncated_messages, ContextInfo, formatted_prompt_text).
         """
-        # Desired budget for prompt: context_length - min(max_new_tokens, min_response_budget)
-        # At minimum, reserve min_response_budget tokens for generation.
-        reserve_tokens = max(self.min_response_budget, min(max_new_tokens, self.context_length // 2))
+        # Desired budget for prompt:
+        min_reserve = max(1, self.min_response_budget)
+        reserve_tokens = max(min_reserve, min(max_new_tokens, self.context_length // 2))
         max_allowed_prompt_tokens = max(1, self.context_length - reserve_tokens)
+        absolute_max_prompt_tokens = max(1, self.context_length - min_reserve)
 
         current_messages = list(history)
         initial_token_count = self.count_prompt_tokens(current_messages, system_prompt)
 
-        if initial_token_count <= max_allowed_prompt_tokens:
+        if initial_token_count <= max_allowed_prompt_tokens or (
+            len(current_messages) <= 1 and initial_token_count <= absolute_max_prompt_tokens
+        ):
             prompt_text = ChatTemplate.format_prompt(current_messages, system_prompt)
             info = ContextInfo(
                 total_tokens=self.context_length,
@@ -129,13 +132,30 @@ class ContextManager:
 
         curr_tokens = self.count_prompt_tokens(current_messages, system_prompt)
 
-        # If even with a single message (or empty history) it still exceeds budget:
+        # If even with a single message it still exceeds budget:
         # Check if dropping system prompt helps
-        if curr_tokens > max_allowed_prompt_tokens and system_prompt:
+        if curr_tokens > absolute_max_prompt_tokens and system_prompt:
             logger.warning("Prompt exceeds context length even with minimal history; dropping system prompt.")
             system_preserved = False
             system_prompt = None
             curr_tokens = self.count_prompt_tokens(current_messages, system_prompt=None)
+
+        # If still exceeding absolute max allowed prompt tokens, truncate the latest message content
+        if curr_tokens > absolute_max_prompt_tokens and current_messages:
+            last_msg = current_messages[-1]
+            empty_last = [ChatMessage(role=m.role, content=m.content) for m in current_messages[:-1]]
+            empty_last.append(ChatMessage(role=last_msg.role, content=""))
+            overhead_tokens = self.count_prompt_tokens(empty_last, system_prompt=system_prompt)
+            content_token_budget = max(1, absolute_max_prompt_tokens - overhead_tokens)
+
+            user_tokens = self.tokenizer.encode(last_msg.content, add_bos=False, add_eos=False)
+            if len(user_tokens) > content_token_budget:
+                trimmed_tokens = user_tokens[-content_token_budget:]
+                trimmed_text = self.tokenizer.decode(trimmed_tokens).strip()
+                if not trimmed_text:
+                    trimmed_text = last_msg.content[:content_token_budget]
+                current_messages[-1] = ChatMessage(role=last_msg.role, content=trimmed_text)
+                curr_tokens = self.count_prompt_tokens(current_messages, system_prompt=system_prompt)
 
         prompt_text = ChatTemplate.format_prompt(current_messages, system_prompt=system_prompt)
         info = ContextInfo(

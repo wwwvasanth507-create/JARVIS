@@ -89,10 +89,11 @@ class APIService:
         self.vocab_size = self.model.config.vocab_size
 
         default_gen_cfg = GenerationConfig(
-            max_new_tokens=min(config.max_new_tokens, 32),
+            max_new_tokens=min(config.max_new_tokens, 24),
             temperature=config.default_temperature,
             top_p=config.default_top_p,
-            do_sample=False,  # Greedy default for reproducibility
+            repetition_penalty=1.1,
+            do_sample=True,  # Conversational sampling by default
             use_cache=True,
             stop_on_eos=True,
         )

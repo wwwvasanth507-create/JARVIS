@@ -1,0 +1,52 @@
+{
+  "release_version": "0.1.0",
+  "project_name": "MyLLM",
+  "build_timestamp": "2026-09-14T14:35:00Z",
+  "git_commit": "3ffc11959416e18938e6dcdd151b68307a9836bf",
+  "license": "MIT",
+  "environment": {
+    "python_version": "3.14.7",
+    "python_requires": ">=3.10",
+    "pytorch_version": "2.14.0+cpu",
+    "node_version": "v24.19.0",
+    "frontend_version": "0.1.0",
+    "strict_cpu_mode": true,
+    "cuda_available": false,
+    "cuda_used": false,
+    "recommended_intraop_threads": 4
+  },
+  "models": {
+    "primary_release_model": {
+      "model_name": "MyLLM-Phase7-SFT",
+      "checkpoint_path": "experiments/phase7/phase7_sft_run/checkpoints/best.pt",
+      "checkpoint_sha256": "bbd6eb7718b96a176709187b503e1dff2d239f6e8ed28fcffe05ce496645c5f5",
+      "tokenizer_path": "data/tokenized/tokenizer.json",
+      "tokenizer_sha256": "2f9822e7c989710a24b3b011c100f9e8ddbaf630e91276533b9af4c709707ce4",
+      "tokenizer_fingerprint": "a89c78921e8bc0078d28f6d07025a76b7e2b33f641714b54d88211f9108dff55",
+      "parameters": 136960,
+      "context_length": 64,
+      "vocab_size": 512
+    },
+    "smoke_model": {
+      "model_name": "MyLLM-Phase0-Smoke",
+      "checkpoint_path": "checkpoints/smoke/best.pt",
+      "checkpoint_sha256": "b7e3ccd6ab3741a28b25b03b3f62513b5da3b683118a6e36e842321b21d43cbc",
+      "tokenizer_path": "checkpoints/smoke/tokenizer.json",
+      "tokenizer_sha256": "4929725dfaa9b6ce4fbfbf3234028f3be25d753efcfb5229f51f7a5f34f03468",
+      "tokenizer_fingerprint": "f8ba67b9f09156ae6b6d3b9f766438ce7334f26ce52479d7c599a62ea1001d3b",
+      "parameters": 122624,
+      "context_length": 32,
+      "vocab_size": 320
+    }
+  },
+  "verification": {
+    "backend_tests_total": 230,
+    "backend_tests_passed": 230,
+    "frontend_tests_total": 39,
+    "frontend_tests_passed": 39,
+    "typescript_errors": 0,
+    "oxlint_warnings": 0,
+    "frontend_production_build": "successful",
+    "cpu_enforcement_status": "verified"
+  }
+}

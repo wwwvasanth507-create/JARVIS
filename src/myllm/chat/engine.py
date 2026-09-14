@@ -208,6 +208,8 @@ class ChatEngine:
         # Calculate effective generation budget
         available_budget = self.context_length - prompt_len
         if available_budget <= 0:
+            self.history.add_message(role="assistant", content="...")
+            self.cache_dirty = True
             yield ChatToken(token_id=eos_id, text="", finished=True, stop_reason="context_limit")
             return
 
@@ -218,6 +220,18 @@ class ChatEngine:
         if cfg.seed is not None:
             rng_generator = torch.Generator(device="cpu")
             rng_generator.manual_seed(cfg.seed)
+
+        import codecs
+
+        incremental_decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
+        self.tokenizer._ensure_decode_tables()
+        decode_table = self.tokenizer._decode_table
+
+        def decode_stream_token(token_id: int) -> str:
+            if decode_table is not None and 0 <= token_id < len(decode_table):
+                raw_bytes = decode_table[token_id]
+                return incremental_decoder.decode(raw_bytes)
+            return self.tokenizer.decode([token_id])
 
         generated_token_ids: List[int] = []
         seen_tokens = list(prompt_ids)
@@ -232,8 +246,13 @@ class ChatEngine:
             self.kv_cache.update(present_kvs)
 
             next_logits = logits[0, -1, :]
+            # Mask EOS on initial step if generation length > 1 to guarantee at least one token
+            first_step_logits = next_logits.clone()
+            if effective_max_new > 1 and eos_id is not None and 0 <= eos_id < first_step_logits.size(-1):
+                first_step_logits[eos_id] = -1e4
+
             next_token = sample_next_token(
-                logits=next_logits,
+                logits=first_step_logits,
                 seen_tokens=seen_tokens,
                 config=cfg,
                 generator=rng_generator,
@@ -241,10 +260,9 @@ class ChatEngine:
             generated_token_ids.append(next_token)
             seen_tokens.append(next_token)
 
-            token_str = self.tokenizer.decode([next_token])
+            token_str = decode_stream_token(next_token)
             if check_eos(next_token, eos_id, cfg.stop_on_eos):
                 stopped_reason = "eos"
-                yield ChatToken(token_id=next_token, text=token_str, finished=False)
                 yield ChatToken(token_id=next_token, text="", finished=True, stop_reason=stopped_reason)
             else:
                 yield ChatToken(token_id=next_token, text=token_str, finished=False)
@@ -274,10 +292,9 @@ class ChatEngine:
                     generated_token_ids.append(next_token)
                     seen_tokens.append(next_token)
 
-                    token_str = self.tokenizer.decode([next_token])
+                    token_str = decode_stream_token(next_token)
                     if check_eos(next_token, eos_id, cfg.stop_on_eos):
                         stopped_reason = "eos"
-                        yield ChatToken(token_id=next_token, text=token_str, finished=False)
                         break
 
                     yield ChatToken(token_id=next_token, text=token_str, finished=False)
@@ -297,8 +314,12 @@ class ChatEngine:
                 logits = model_output[0] if isinstance(model_output, tuple) else model_output
 
                 next_logits = logits[0, -1, :]
+                step_logits = next_logits.clone()
+                if step_idx == 0 and effective_max_new > 1 and eos_id is not None and 0 <= eos_id < step_logits.size(-1):
+                    step_logits[eos_id] = -1e4
+
                 next_token = sample_next_token(
-                    logits=next_logits,
+                    logits=step_logits,
                     seen_tokens=seen_tokens,
                     config=cfg,
                     generator=rng_generator,
@@ -307,19 +328,23 @@ class ChatEngine:
                 curr_sequence.append(next_token)
                 seen_tokens.append(next_token)
 
-                token_str = self.tokenizer.decode([next_token])
+                token_str = decode_stream_token(next_token)
                 if check_eos(next_token, eos_id, cfg.stop_on_eos):
                     stopped_reason = "eos"
-                    yield ChatToken(token_id=next_token, text=token_str, finished=False)
                     break
 
                 yield ChatToken(token_id=next_token, text=token_str, finished=False)
 
             yield ChatToken(token_id=generated_token_ids[-1] if generated_token_ids else eos_id, text="", finished=True, stop_reason=stopped_reason)
 
+        # Flush any trailing bytes from the incremental UTF-8 decoder
+        flush_str = incremental_decoder.decode(b"", final=True)
+        if flush_str:
+            yield ChatToken(token_id=generated_token_ids[-1] if generated_token_ids else eos_id, text=flush_str, finished=False)
+
         # Filter out EOS if present from assistant message text
         final_token_ids = [t for t in generated_token_ids if t != eos_id]
-        full_assistant_text = self.tokenizer.decode(final_token_ids).strip()
+        full_assistant_text = self.tokenizer.decode(final_token_ids, skip_special_tokens=True).strip()
         if not full_assistant_text:
             full_assistant_text = "..."  # Fallback to satisfy non-empty assistant content policy
 

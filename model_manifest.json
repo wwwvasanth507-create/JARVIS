@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "generated_at": "2026-09-14T20:00:00+00:00",
+  "models": [
+    {
+      "model_name": "MyLLM-Phase7-SFT",
+      "version": "0.1.0",
+      "description": "Supervised instruction-tuned GPT decoder-only model trained on multi-turn dialogue with response-only masking.",
+      "checkpoint_path": "experiments/phase7/phase7_sft_run/checkpoints/best.pt",
+      "checkpoint_sha256": "bbd6eb7718b96a176709187b503e1dff2d239f6e8ed28fcffe05ce496645c5f5",
+      "tokenizer_path": "data/tokenized/tokenizer.json",
+      "tokenizer_sha256": "2f9822e7c989710a24b3b011c100f9e8ddbaf630e91276533b9af4c709707ce4",
+      "tokenizer_fingerprint": "a89c78921e8bc0078d28f6d07025a76b7e2b33f641714b54d88211f9108dff55",
+      "unique_parameter_count": 136960,
+      "state_dict_parameter_count": 169728,
+      "context_length": 64,
+      "vocabulary_size": 512,
+      "n_layer": 2,
+      "n_head": 2,
+      "n_embd": 64,
+      "weight_tying": true,
+      "training_config_id": "tiny_cpu",
+      "sft_config_id": "tiny_sft",
+      "creation_date": "2026-09-14T10:18:06.955084+00:00",
+      "cpu_compatibility": {
+        "strict_cpu_only": true,
+        "supported_dtypes": ["float32"],
+        "recommended_intraop_threads": 4,
+        "cuda_required": false
+      },
+      "is_release_model": true,
+      "is_smoke_model": false
+    },
+    {
+      "model_name": "MyLLM-Phase0-Smoke",
+      "version": "0.1.0",
+      "description": "Minimal demonstration and integration smoke model for quick verification without full training overhead.",
+      "checkpoint_path": "checkpoints/smoke/best.pt",
+      "checkpoint_sha256": "b7e3ccd6ab3741a28b25b03b3f62513b5da3b683118a6e36e842321b21d43cbc",
+      "tokenizer_path": "checkpoints/smoke/tokenizer.json",
+      "tokenizer_sha256": "4929725dfaa9b6ce4fbfbf3234028f3be25d753efcfb5229f51f7a5f34f03468",
+      "tokenizer_fingerprint": "f8ba67b9f09156ae6b6d3b9f766438ce7334f26ce52479d7c599a62ea1001d3b",
+      "unique_parameter_count": 122624,
+      "state_dict_parameter_count": 143104,
+      "context_length": 32,
+      "vocabulary_size": 320,
+      "n_layer": 2,
+      "n_head": 2,
+      "n_embd": 64,
+      "weight_tying": true,
+      "training_config_id": "smoke_pretrain",
+      "sft_config_id": null,
+      "creation_date": "2026-09-14T09:39:13.853058+00:00",
+      "cpu_compatibility": {
+        "strict_cpu_only": true,
+        "supported_dtypes": ["float32"],
+        "recommended_intraop_threads": 4,
+        "cuda_required": false
+      },
+      "is_release_model": false,
+      "is_smoke_model": true
+    }
+  ]
+}

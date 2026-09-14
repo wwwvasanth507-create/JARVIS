@@ -28,11 +28,16 @@ dependencies = [
     "torch>=2.2.0",
     "PyYAML>=6.0.1",
     "numpy>=1.26.0",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.28.0",
+    "pydantic>=2.6.0",
+    "psutil>=5.9.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0.0",
+    "httpx>=0.27.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -42,4 +47,4 @@ where = ["src"]
 minversion = "8.0"
 addopts = "-ra -q --import-mode=importlib"
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]

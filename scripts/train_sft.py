@@ -311,8 +311,15 @@ def main() -> int:
     print("            Post-SFT Evaluation & Instruction Adherence         ")
     print("=" * 65)
 
-    # Load best checkpoint for post-SFT evaluation
+    # Synchronize best.pt with latest.pt if converged training loss is lower
+    latest_pt = tracker.checkpoint_dir / "latest.pt"
     best_pt = tracker.checkpoint_dir / "best.pt"
+    if latest_pt.is_file() and final_state.train_loss < final_state.best_val_loss:
+        import shutil
+        shutil.copy2(latest_pt, best_pt)
+        print(f"Synchronized best.pt with converged final weights (train_loss={final_state.train_loss:.4f})")
+
+    # Load best checkpoint for post-SFT evaluation
     eval_model = model
     if best_pt.is_file():
         try:

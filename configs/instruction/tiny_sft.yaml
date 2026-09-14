@@ -25,19 +25,19 @@ model:
 
 training:
   batch_size: 4
-  max_steps: 60
-  learning_rate: 0.0003
-  min_learning_rate: 0.00003
+  max_steps: 1200
+  learning_rate: 0.002
+  min_learning_rate: 0.0002
   weight_decay: 0.01
   beta1: 0.9
   beta2: 0.95
   eps: 1.0e-8
   grad_clip_norm: 1.0
-  warmup_steps: 10
-  log_every_steps: 5
-  eval_every_steps: 10
+  warmup_steps: 40
+  log_every_steps: 25
+  eval_every_steps: 50
   eval_batches: 5
-  checkpoint_every_steps: 20
+  checkpoint_every_steps: 100
   max_checkpoints: 3
   seed: 42
   gradient_accumulation_steps: 1

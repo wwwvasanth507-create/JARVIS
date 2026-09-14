@@ -133,6 +133,7 @@ def tokenize_instruction_example(
     mask_prompt_labels: bool = True,
     supervise_eos: bool = True,
     pad_to_max: bool = True,
+    template_format: str = "instruction",
 ) -> Tuple[Optional[TokenizedInstruction], Optional[str]]:
     """
     Tokenize an instruction example into fixed-length input_ids and response-masked labels.
@@ -144,11 +145,15 @@ def tokenize_instruction_example(
         mask_prompt_labels: If True, prompt positions receive IGNORE_INDEX (-100).
         supervise_eos: If True, append tokenizer EOS token to response and supervise it.
         pad_to_max: If True, pad sequence with PAD_ID to max_seq_len.
+        template_format: Formatting style ("instruction" for ### Instruction: or "chat" for ### User:).
 
     Returns:
         Tuple of (TokenizedInstruction, error_reason). error_reason is None on success.
     """
-    prompt_text = InstructionTemplate.format_prompt(example)
+    if template_format == "chat":
+        prompt_text = f"### User:\n{example.instruction}\n\n### Assistant:\n"
+    else:
+        prompt_text = InstructionTemplate.format_prompt(example)
     prompt_ids = tokenizer.encode(prompt_text, add_bos=False, add_eos=False)
     response_ids = tokenizer.encode(example.output, add_bos=False, add_eos=False)
 
