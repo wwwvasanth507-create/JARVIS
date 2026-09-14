@@ -1,71 +1,148 @@
-# MyLLM Training Engine (Phase 4)
+# MyLLM Training Engine & Phase 6 Real Training Workflow
 
-A modular, inspectable, pure **CPU-first training subsystem** for the MyLLM GPT decoder-only Transformer.
+A modular, inspectable, pure **CPU-first training and experimentation subsystem** for the MyLLM GPT decoder-only Transformer.
 
 ---
 
-## 1. Overview & Architecture
+## 1. Overview & Phase 6 Real Training Architecture
 
-The training subsystem trains the Phase 2 `GPTModel` using the Phase 3 `TokenDataset` and `BatchGenerator`. Every operation runs strictly on CPU using standard PyTorch CPU tensors and automatic differentiation.
+The training subsystem trains the `GPTModel` using the `TokenDataset` and `BatchGenerator` pipelines. Every operation runs strictly on CPU using standard PyTorch CPU tensors and automatic differentiation without requiring GPU, CUDA, or ROCm.
 
 ### Training Flowchart
 
 ```
-           Raw Text Corpora
-                  ↓
-          Phase 1 Tokenizer (Byte-Level BPE)
-                  ↓
-       Phase 3 Binary Dataset Pipeline
-       (train.bin, val.bin, *.idx, metadata.json)
-                  ↓
-         TokenDataset (np.memmap, zero RAM copy)
-                  ↓
-       BatchGenerator (Yields CPU Tensors [B, T])
-                  ↓
-               Trainer
-                  │
-        ┌─────────┴─────────┐
-        │  Micro-step Loop  │ (Gradient Accumulation)
-        │  Model Forward    │ → logits, loss
-        │  loss / accum     │
-        │  scaled.backward()│
-        └─────────┬─────────┘
-                  ↓
-        torch.nn.utils.clip_grad_norm_
-                  ↓
-        AdamW Optimizer Step (Decoupled Weight Decay)
-                  ↓
-        CosineWarmupScheduler Step
-                  ↓
-        State & Metrics Update (tok/s, steps/s, loss, PPL)
-                  │
-        ┌─────────┴─────────┐
-        │ Periodic Events   │
-        ├───────────────────┤
-        │ Periodic Log      │ → Console & training.log
-        │ Validation Loop   │ → model.eval(), torch.no_grad()
-        │ Atomic Checkpoint │ → step_*.pt, latest.pt, best.pt
-        └───────────────────┘
+           Raw Text Corpora (Multi-Domain)
+                         ↓
+            scripts/prepare_corpus.py
+            (Train / Validation Split, Leakage Validation)
+                         ↓
+           Phase 1 Custom Byte-Level BPE Tokenizer
+                         ↓
+             Phase 3 Binary Dataset Pipeline
+         (train.bin, val.bin, *.idx, metadata.json)
+                         ↓
+               Dataset Quality & Leakage Audit
+                 (DatasetQualityValidator)
+                         ↓
+            Pre-Training Compatibility Validation
+         (validate_training_compatibility: CPU, FP, Vocab, Context)
+                         ↓
+            TokenDataset (np.memmap, zero RAM copy)
+                         ↓
+             BatchGenerator (Yields CPU Tensors [B, T])
+                         ↓
+                      Trainer
+                         │
+               ┌─────────┴─────────┐
+               │  Micro-step Loop  │ (Gradient Accumulation)
+               │  Model Forward    │ → logits, cross-entropy loss
+               │  loss / accum     │
+               │  scaled.backward()│
+               └─────────┬─────────┘
+                         ↓
+               torch.nn.utils.clip_grad_norm_ (Finite checks)
+                         ↓
+               AdamW Optimizer Step (Decoupled Weight Decay)
+                         ↓
+               CosineWarmupScheduler Step
+                         ↓
+               State & Telemetry Update (tok/s, steps/s, loss, PPL)
+                         │
+               ┌─────────┴─────────┐
+               │ Periodic Events   │
+               ├───────────────────┤
+               │ Telemetry Stream  │ → metrics.jsonl & training.log
+               │ Validation Loop   │ → model.eval(), torch.no_grad()
+               │ Atomic Checkpoint │ → step_*.pt, latest.pt, best.pt
+               └─────────┬─────────┘
+                         ↓
+              Experiment Post-Processing
+              - Best-checkpoint selection (val_loss)
+              - Before vs. After prompt generation comparison
+              - Overfitting / underfitting diagnostic report
+              - training_report.md & summary.json generation
 ```
 
 ---
 
-## 2. Optimization Mechanics
+## 2. Training Corpus Preparation & Quality Validation
+
+### A. Directory Layout
+Phase 6 defines a clean, production-style corpus and dataset hierarchy:
+```
+data/
+├── raw/
+│   ├── corpus.txt                # Unified multi-domain raw corpus
+│   ├── train/
+│   │   └── train.txt             # Split train documents
+│   └── validation/
+│       └── val.txt               # Split validation documents
+└── tokenized/
+    ├── train.bin                 # Memory-mapped uint32 training token buffer
+    ├── val.bin                   # Memory-mapped uint32 validation token buffer
+    ├── train.idx                 # Document offset index (uint64)
+    ├── val.idx                   # Document offset index (uint64)
+    ├── metadata.json             # Dataset manifest with SHA-256 fingerprints
+    └── tokenizer.json            # Byte-Level BPE tokenizer model
+```
+
+### B. Data Leakage and Quality Validation
+Implemented in [src/myllm/data/quality.py](file:///c:/ll/JARVIS/src/myllm/data/quality.py) via `DatasetQualityValidator`.
+
+1. **Document Hashing**: Normalizes and computes SHA-256 digests of document texts (`hash_document_text`).
+2. **Cross-Split Data Leakage Prevention**: Identifies if identical documents exist in both train and validation splits. Reports cross-split duplicate count and affected hashes.
+3. **Intra-Split Duplicate Detection**: Checks for redundant repetitions within the training split to prevent uncalibrated frequency skew.
+4. **Length Distribution Metrics**: Tracks document length in tokens (min, max, mean, median, standard deviation).
+5. **CLI Inspection**: Run via `scripts/inspect_dataset.py --dataset data/tokenized --quality --tokenizer data/tokenized/tokenizer.json`.
+
+---
+
+## 3. CPU Model Scaling Profiles & Memory Footprints
+
+Phase 6 defines three realistic scaling profiles in `configs/profiles/` tailored for consumer CPU architectures:
+
+| Profile | Params | Context ($T$) | Layers ($L$) | Heads ($H$) | Dim ($D$) | FP32 Params | AdamW RAM | Activations | Total RAM Budget |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`tiny_cpu`** | ~137 K | 64 | 2 | 2 | 64 | ~535 KB | ~1.04 MB | ~1.88 MB | **~4 MB** |
+| **`small_cpu`** | ~843 K | 128 | 4 | 4 | 128 | ~3.22 MB | ~6.43 MB | ~17.0 MB | **~30 MB** |
+| **`medium_cpu`**| ~10.8 M | 256 | 6 | 6 | 384 | ~41.4 MB | ~82.8 MB | ~153.0 MB | **~318 MB** |
+
+### Memory Estimation
+Implemented in [src/myllm/model/memory.py](file:///c:/ll/JARVIS/src/myllm/model/memory.py):
+- **Parameters (FP32)**: $\text{params} \times 4\text{ bytes}$.
+- **AdamW State**: $2 \times \text{trainable params} \times 4\text{ bytes}$ (first and second moments $m_t, v_t$).
+- **Gradients**: $\text{trainable params} \times 4\text{ bytes}$.
+- **Activations**: Layer-by-layer forward activation tensors saved for backpropagation:
+  $$\text{Per Block} \approx B \times T \times D \times (11 + 2 \times H \times T) \times 4\text{ bytes}$$
+- **Inspect via CLI**:
+  ```powershell
+  python scripts/inspect_model.py --profile tiny_cpu
+  python scripts/inspect_model.py --profile small_cpu
+  python scripts/inspect_model.py --profile medium_cpu
+  ```
+
+---
+
+## 4. Pre-Training Compatibility Validation
+
+Before starting any training step, [src/myllm/training/compatibility.py](file:///c:/ll/JARVIS/src/myllm/training/compatibility.py) validates:
+1. **Device Assertion**: Device must strictly be `"cpu"`. Fails if CUDA or non-CPU device is selected.
+2. **Tokenizer Fingerprint Matching**: Ensures the tokenizer model SHA-256 fingerprint matches the dataset metadata fingerprint.
+3. **Vocabulary Size Alignment**: Ensures `model.vocab_size >= dataset.tokenizer_vocab_size`.
+4. **Context Length Compatibility**: Ensures `model.context_length >= dataset.sequence_length`.
+5. **Dataset Internal Consistency**: Ensures `train.bin` byte size equals $\text{train\_tokens} \times 4$ and `val.bin` byte size equals $\text{val\_tokens} \times 4$.
+
+Any mismatch raises a descriptive `CompatibilityError` and halts execution cleanly before any allocation.
+
+---
+
+## 5. Optimization Mechanics & Training Engine
 
 ### A. Decoupled Weight Decay (AdamW)
-Implemented via `create_optimizer` in [src/myllm/training/optimizer.py](file:///c:/ll/JARVIS/src/myllm/training/optimizer.py).
-
-Parameters are partitioned into two disjoint groups:
-1. **Decayed Group** (`weight_decay = config.weight_decay`):
-   - All 2D and higher-dimensional weight tensors:
-     - Linear projection weights (`c_attn.weight`, `c_proj.weight`, `c_fc.weight`).
-     - Embedding tables (`wte.weight`, `wpe.weight`).
-2. **Non-Decayed Group** (`weight_decay = 0.0`):
-   - All 1D tensors:
-     - Biases (`c_attn.bias`, `c_proj.bias`, `c_fc.bias`).
-     - LayerNorm parameters (`ln_1.weight`, `ln_1.bias`, `ln_2.weight`, `ln_2.bias`, `ln_f.weight`, `ln_f.bias`).
-
-Weight tying is respected: tied parameters (`wte.weight` and `lm_head.weight`) are processed once, avoiding duplicated weight decay or gradients.
+Implemented via `create_optimizer` in [src/myllm/training/optimizer.py](file:///c:/ll/JARVIS/src/myllm/training/optimizer.py):
+- **Decayed Group** (`weight_decay = config.weight_decay`): All 2D weight tensors (projections, embeddings).
+- **Non-Decayed Group** (`weight_decay = 0.0`): All 1D tensors (biases, LayerNorm gains and biases).
+- Tied parameters (`wte.weight` and `lm_head.weight`) are processed once.
 
 ### B. Learning Rate Scheduling
 Implemented via `CosineWarmupScheduler` in [src/myllm/training/scheduler.py](file:///c:/ll/JARVIS/src/myllm/training/scheduler.py):
@@ -74,149 +151,106 @@ Implemented via `CosineWarmupScheduler` in [src/myllm/training/scheduler.py](fil
 - **Cosine Decay Phase** ($\text{warmup\_steps} \le \text{step} \le \text{max\_steps}$):
   $$\text{progress} = \frac{\text{step} - \text{warmup\_steps}}{\text{max\_steps} - \text{warmup\_steps}}$$
   $$\text{lr}(\text{step}) = \text{min\_lr} + 0.5 \times (1 + \cos(\pi \times \text{progress})) \times (\text{peak\_lr} - \text{min\_lr})$$
-- **Post-Decay Phase** ($\text{step} > \text{max\_steps}$):
-  $$\text{lr}(\text{step}) = \text{min\_lr}$$
 
-### C. Gradient Clipping
-Gradient clipping prevents exploding gradients:
+### C. Gradient Clipping & Finite Checks
 - `torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=config.grad_clip_norm)`
-- Pre-clipping gradient norms are checked for finite values. If $\text{NaN}$ or $\text{Inf}$ is encountered, a `TrainingError` is raised immediately to halt corrupt training.
-
-### D. Gradient Accumulation
-Simulates larger effective batch sizes without increasing memory:
-- $\text{Effective Batch Size} = \text{batch\_size} \times \text{gradient\_accumulation\_steps}$
-- Gradients are accumulated across micro-batches:
-  $$\text{loss}_{\text{scaled}} = \frac{\text{loss}}{\text{gradient\_accumulation\_steps}}$$
-- Gradients are cleared via `optimizer.zero_grad(set_to_none=True)` only after the accumulation steps complete.
+- Checks for $\text{NaN}$ and $\text{Inf}$ in both forward loss and gradient norms, immediately failing if non-finite numbers occur.
 
 ---
 
-## 3. Validation & Perplexity
+## 6. Experiment Telemetry & Overfitting Diagnostics
 
-### A. Deterministic Evaluation Loop
-Implemented in [src/myllm/training/validation.py](file:///c:/ll/JARVIS/src/myllm/training/validation.py):
-- Runs under `model.eval()` and `torch.no_grad()`.
-- Uses fixed validation seeds for reproducibility.
-- Guarantees restoring the model's prior training state (`model.train(prev_mode)`).
-- Never modifies optimizer states or scheduler counters.
+Implemented in [src/myllm/training/experiment.py](file:///c:/ll/JARVIS/src/myllm/training/experiment.py).
 
-### B. Numerically Safe Perplexity
-Implemented in [src/myllm/training/metrics.py](file:///c:/ll/JARVIS/src/myllm/training/metrics.py):
-- Formula: $\text{PPL} = \exp(\text{Loss})$.
-- Overflow protection: If $\text{Loss} > 85.0$, returns `float("inf")` instead of generating $\text{NaN}$ or crashing with `OverflowError`.
-- Validates that cross-entropy loss is non-negative.
+### A. Persistent Artifacts
+Every training run creates an isolated directory `experiments/<run_name>/`:
+- `config.yaml`: Exact configuration used for the experiment.
+- `metrics.jsonl`: Machine-readable streaming JSONL telemetry logged at every step.
+- `summary.json`: Final experiment summary metrics, environment specs, and timings.
+- `training_report.md`: Markdown report with executive summary, trajectory table, and diagnostics.
+- `checkpoints/`: Checkpoint store (`latest.pt`, `best.pt`, `step_*.pt`).
+- `generations_before.txt`: Greedy/sampled text completions generated prior to training.
+- `generations_after.txt`: Completions on identical prompts using the best checkpoint.
+
+### B. Overfitting / Underfitting Diagnostics
+The experiment analyzer computes:
+- $\text{Val / Train Ratio} = \frac{\text{final\_val\_loss}}{\text{final\_train\_loss}}$
+- **Diagnoses**:
+  - `OVERFITTING_WARNING`: If $\text{ratio} > 1.35$ and validation loss is rising while training loss is falling.
+  - `UNDERFITTING_WARNING`: If training loss failed to reduce significantly ($> 95\%$ of initial loss).
+  - `HEALTHY`: Training and validation losses decrease in tandem without severe divergence.
 
 ---
 
-## 4. Checkpointing & Resumption
+## 7. Deterministic Checkpoint & Resumption
 
-### A. Atomic File Writing
-Implemented in [src/myllm/training/checkpoint.py](file:///c:/ll/JARVIS/src/myllm/training/checkpoint.py):
-1. Payload is serialized to a temporary file: `.tmp_<uuid>_step_00000050.pt`.
-2. OS flush is performed.
-3. Atomic rename via `os.replace` guarantees zero file corruption if execution is interrupted mid-write.
+### Mathematical Equivalence
+When training is paused at step $N$ and resumed up to step $M$:
+- The model weights are reloaded from state dict.
+- The AdamW optimizer momentum and variance tensors are restored.
+- The CosineWarmupScheduler step counter is restored.
+- The PyTorch CPU, Python, and NumPy RNG state seeds are restored.
+- The `BatchGenerator` fast-forwards the exact number of consumed batches in the current epoch.
 
-### B. Checkpoint Contents
-Each `.pt` file contains:
-- `format_version`: `"1.0.0"`
-- `saved_at`: UTC timestamp string
-- `model_state_dict`: Model weights
-- `optimizer_state_dict`: AdamW momentum buffers and second-moment estimators
-- `scheduler_state`: Step index and learning rate progression
-- `training_state`: Global step, micro step, tokens seen, losses, best metrics
-- `config`: Complete nested YAML configuration dictionary
-- `tokenizer_fingerprint`: SHA-256 fingerprint of tokenizer
-- `dataset_fingerprint`: SHA-256 fingerprint of dataset
-- `model_metadata`: Total, trainable, and tied parameter counts
-- `rng_state`: Python, NumPy, and PyTorch CPU RNG states
+This guarantees bit-for-bit mathematical equivalence between a continuous run ($1 \to M$) and an interrupted/resumed run ($1 \to N \to \text{resume} \to M$). Tested and verified in [tests/test_phase6_training.py](file:///c:/ll/JARVIS/tests/test_phase6_training.py).
 
-### C. Automated Pruning
-The checkpoint manager automatically deletes older step checkpoints exceeding `max_checkpoints`, while perpetually preserving:
-- `latest.pt`: The most recent successful checkpoint.
-- `best.pt`: The checkpoint with the lowest validation loss.
+---
 
-### D. Resuming Training
-To resume training:
+## 8. CLI Command Quick Reference
+
+### 1. Ingest & Prepare Corpus
 ```powershell
-python scripts/train.py --resume checkpoints/latest.pt --train-dataset data/tokenized/train.bin --max-steps 500
+python scripts/prepare_corpus.py --output-dir data
 ```
-- Restores weights, optimizer moments, scheduler step, and RNG states.
-- Training resumes from `global_step` without resetting counters to 0.
 
----
+### 2. Inspect Dataset Quality & Leakage
+```powershell
+python scripts/inspect_dataset.py `
+  --dataset data/tokenized `
+  --quality `
+  --tokenizer data/tokenized/tokenizer.json
+```
 
-## 5. CLI Usage
+### 3. Inspect Model Profile Memory
+```powershell
+python scripts/inspect_model.py --profile tiny_cpu
+```
 
-### Launch Training
+### 4. Execute Real CPU Training Experiment
 ```powershell
 python scripts/train.py `
-  --config configs/base.yaml `
+  --profile tiny_cpu `
   --train-dataset data/tokenized/train.bin `
   --val-dataset data/tokenized/val.bin `
-  --tokenizer checkpoints/tokenizer.json `
-  --checkpoint-dir checkpoints `
-  --max-steps 100 `
-  --batch-size 4 `
-  --learning-rate 0.0003
+  --tokenizer data/tokenized/tokenizer.json `
+  --experiment-name phase6_real_run `
+  --max-steps 50
 ```
 
-### Inspect Checkpoint
+### 5. Evaluate Trained Checkpoint
 ```powershell
-python scripts/inspect_training.py --checkpoint checkpoints/latest.pt
+python scripts/evaluate.py `
+  --checkpoint experiments/phase6_real_run/checkpoints/best.pt `
+  --tokenizer data/tokenized/tokenizer.json `
+  --dataset data/tokenized/val.bin
 ```
 
-Example Output:
-```
-=================================================================
-                 MyLLM Checkpoint Inspector                     
-=================================================================
-File Path               : C:\ll\JARVIS\checkpoints\latest.pt
-File Size               : 37.51 MB
-Format Version          : 1.0.0
-Creation Timestamp      : 2026-09-14T09:22:53.977983+00:00
------------------------------------------------------------------
---- Model Architecture & Parameters ---
-Total Parameters        : 3,269,120
-Trainable Parameters    : 3,269,120
-Layers (n_layer)        : 4
-Attention Heads (n_head): 4
-Embedding Dim (n_embd)  : 256
-Context Length          : 128
-Vocab Size              : 300
------------------------------------------------------------------
---- Training State Progress ---
-Global Optimizer Step   : 20
-Tokens Processed        : 10,240
-Latest Learning Rate    : 3.00e-05
-Latest Train Loss       : 2.9101
-=================================================================
-```
+### 6. Autoregressive Text Generation
+```powershell
+# Greedy decoding:
+python scripts/generate.py `
+  --checkpoint experiments/phase6_real_run/checkpoints/best.pt `
+  --tokenizer data/tokenized/tokenizer.json `
+  --prompt "A Transformer is" `
+  --greedy `
+  --max-new-tokens 25
 
----
-
-## 6. Python API Quickstart
-
-```python
-from myllm.config import AppConfig
-from myllm.data import TokenDataset
-from myllm.model import GPTModel
-from myllm.training import Trainer
-
-# 1. Setup config and datasets
-app_config = AppConfig()
-train_dataset = TokenDataset("data/tokenized/train.bin", sequence_length=128)
-val_dataset = TokenDataset("data/tokenized/val.bin", sequence_length=128)
-
-# 2. Instantiate Model and Trainer
-model = GPTModel(app_config.model)
-trainer = Trainer(
-    model=model,
-    train_dataset=train_dataset,
-    val_dataset=val_dataset,
-    config=app_config,
-)
-
-# 3. Execute training loop
-final_state = trainer.train()
-print(f"Training completed at step {final_state.global_step}, loss: {final_state.train_loss:.4f}")
+# Top-K / Top-P sampling:
+python scripts/generate.py `
+  --checkpoint experiments/phase6_real_run/checkpoints/best.pt `
+  --tokenizer data/tokenized/tokenizer.json `
+  --prompt "A Transformer is" `
+  --temperature 0.8 `
+  --top-k 30 `
+  --max-new-tokens 25
 ```

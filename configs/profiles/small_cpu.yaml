@@ -1,0 +1,78 @@
+# Small CPU Profile: Meaningful real language modeling on consumer CPU (~800K params)
+system:
+  seed: 42
+  device: "cpu"
+  num_threads: 4
+  strict_cpu: true
+
+paths:
+  model_dir: "checkpoints"
+  checkpoint_dir: "checkpoints"
+  dataset_dir: "data"
+  log_dir: "logs"
+  experiment_dir: "experiments"
+
+model:
+  vocab_size: 1000
+  context_length: 128
+  n_layer: 4
+  n_head: 4
+  n_embd: 128
+  dropout: 0.1
+  bias: true
+  activation: "gelu"
+  weight_tying: true
+
+training:
+  batch_size: 4
+  max_steps: 150
+  learning_rate: 0.0005
+  min_learning_rate: 0.00005
+  weight_decay: 0.1
+  beta1: 0.9
+  beta2: 0.95
+  eps: 1.0e-8
+  grad_clip_norm: 1.0
+  warmup_steps: 20
+  log_every_steps: 10
+  eval_every_steps: 25
+  eval_batches: 10
+  checkpoint_every_steps: 50
+  max_checkpoints: 3
+  seed: 42
+  gradient_accumulation_steps: 2
+  save_best: true
+  resume_from: null
+  num_workers: 0
+
+logging:
+  log_level: "INFO"
+  log_to_file: true
+  log_filename: "small_cpu.log"
+
+tokenizer:
+  vocab_size: 1000
+  min_pair_frequency: 2
+  special_tokens:
+    - "<PAD>"
+    - "<UNK>"
+    - "<BOS>"
+    - "<EOS>"
+
+data:
+  input_path: "data/raw"
+  output_path: "data/tokenized"
+  validation_ratio: 0.15
+  sequence_length: 128
+  add_bos: false
+  add_eos: true
+  allow_cross_document_sequences: false
+  normalize_unicode: false
+  strip_bom: true
+  normalize_newlines: true
+  strip_outer_whitespace: false
+  recursive: true
+  extensions:
+    - ".txt"
+    - ".md"
+  seed: 42

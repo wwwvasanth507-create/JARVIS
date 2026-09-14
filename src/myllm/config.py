@@ -302,33 +302,54 @@ def _deep_update(base: dict, update: dict) -> dict:
     return base
 
 
+def resolve_config_path(config_path: Optional[Union[str, Path]] = None) -> Optional[Path]:
+    """Resolve configuration file path or named profile to an existing Path."""
+    if config_path is None:
+        candidate = Path("configs/base.yaml")
+        return candidate if candidate.is_file() else None
+
+    path = Path(config_path)
+    if path.is_file():
+        return path
+
+    # Check named profiles under configs/profiles/
+    name = str(config_path).strip()
+    profile_candidates = [
+        Path(f"configs/profiles/{name}.yaml"),
+        Path(f"configs/profiles/{name}"),
+        Path(f"configs/{name}.yaml"),
+        Path(f"configs/{name}"),
+    ]
+    for cand in profile_candidates:
+        if cand.is_file():
+            return cand
+
+    return None
+
+
 def load_config(config_path: Optional[Union[str, Path]] = None) -> AppConfig:
     """
-    Load an AppConfig instance.
+    Load an AppConfig instance from a YAML file or named profile.
 
-    If config_path is provided and points to an existing file, the YAML contents
-    are parsed and merged over default values. If config_path is None, the function
-    checks for 'configs/base.yaml' from the current working directory.
+    Supports:
+    - Direct file paths (e.g. 'configs/base.yaml', 'configs/profiles/small_cpu.yaml').
+    - Named profiles (e.g. 'tiny_cpu', 'small_cpu', 'medium_cpu').
+    - None (defaults to 'configs/base.yaml').
 
     Args:
-        config_path: Optional file path to a YAML configuration file.
+        config_path: Optional file path or profile name.
 
     Returns:
         Populated and validated AppConfig instance.
     """
-    if config_path is None:
-        candidate = Path("configs/base.yaml")
-        if candidate.is_file():
-            config_path = candidate
-
+    resolved_path = resolve_config_path(config_path)
     raw_data: Dict[str, Any] = {}
-    if config_path is not None:
-        path = Path(config_path)
-        if path.is_file():
-            with open(path, "r", encoding="utf-8") as f:
-                loaded = yaml.safe_load(f)
-                if isinstance(loaded, dict):
-                    raw_data = loaded
+
+    if resolved_path is not None and resolved_path.is_file():
+        with open(resolved_path, "r", encoding="utf-8") as f:
+            loaded = yaml.safe_load(f)
+            if isinstance(loaded, dict):
+                raw_data = loaded
 
     system_dict = raw_data.get("system", {})
     paths_dict = raw_data.get("paths", {})
@@ -347,6 +368,17 @@ def load_config(config_path: Optional[Union[str, Path]] = None) -> AppConfig:
         tokenizer=TokenizerConfig(**tokenizer_dict),
         data=DataConfig(**data_dict),
     )
+
+
+def load_profile(profile_name: str) -> AppConfig:
+    """Load a named configuration profile (e.g. 'tiny_cpu', 'small_cpu', 'medium_cpu')."""
+    resolved = resolve_config_path(profile_name)
+    if resolved is None:
+        raise FileNotFoundError(
+            f"Configuration profile '{profile_name}' not found. "
+            f"Searched in configs/profiles/{profile_name}.yaml and configs/."
+        )
+    return load_config(resolved)
 
 
 def get_default_config() -> AppConfig:

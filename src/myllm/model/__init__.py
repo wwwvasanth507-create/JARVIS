@@ -8,6 +8,7 @@ causal multi-head self-attention, and optional weight tying.
 from myllm.model.attention import CausalSelfAttention
 from myllm.model.block import TransformerBlock
 from myllm.model.gpt import GPTModel
+from myllm.model.memory import ModelMemoryEstimate, estimate_memory_footprint
 from myllm.model.mlp import MLP
 from myllm.model.utils import count_parameters, get_model_summary
 
@@ -18,4 +19,6 @@ __all__ = [
     "MLP",
     "count_parameters",
     "get_model_summary",
+    "ModelMemoryEstimate",
+    "estimate_memory_footprint",
 ]

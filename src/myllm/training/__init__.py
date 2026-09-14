@@ -19,6 +19,8 @@ from myllm.training.checkpoint import (
     prune_old_checkpoints,
     save_checkpoint,
 )
+from myllm.training.compatibility import CompatibilityError, validate_training_compatibility
+from myllm.training.experiment import ExperimentTracker
 from myllm.training.metrics import (
     StepMetrics,
     ThroughputTracker,
@@ -45,4 +47,7 @@ __all__ = [
     "load_checkpoint",
     "prune_old_checkpoints",
     "CHECKPOINT_FORMAT_VERSION",
+    "CompatibilityError",
+    "validate_training_compatibility",
+    "ExperimentTracker",
 ]

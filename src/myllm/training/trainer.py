@@ -24,6 +24,8 @@ from myllm.data.batching import BatchGenerator
 from myllm.data.dataset import TokenDataset
 from myllm.data.metadata import DatasetMetadata
 from myllm.training.checkpoint import load_checkpoint, save_checkpoint
+from myllm.training.compatibility import validate_training_compatibility
+from myllm.training.experiment import ExperimentTracker
 from myllm.training.metrics import ThroughputTracker, calculate_perplexity
 from myllm.training.optimizer import create_optimizer
 from myllm.training.scheduler import CosineWarmupScheduler
@@ -52,6 +54,7 @@ class Trainer:
         tokenizer_fingerprint: str = "",
         dataset_fingerprint: str = "",
         callbacks: Optional[list[Callable[[TrainingState], None]]] = None,
+        tracker: Optional[ExperimentTracker] = None,
     ) -> None:
         self.config = config or AppConfig()
         self.train_config: TrainingConfig = self.config.training
@@ -61,6 +64,7 @@ class Trainer:
         self.tokenizer_fingerprint = tokenizer_fingerprint
         self.dataset_fingerprint = dataset_fingerprint
         self.callbacks = callbacks or []
+        self.tracker = tracker
 
         # 1. Strict CPU verification
         self.device = resolve_device(self.config.system.device, strict_cpu=self.config.system.strict_cpu)
@@ -102,14 +106,12 @@ class Trainer:
         if len(self.train_dataset) == 0:
             raise ValueError("Training dataset has 0 valid sequence samples.")
 
-        model_cfg = getattr(self.model, "config", None)
-        if model_cfg is not None:
-            # Check context length vs sequence length
-            if self.train_dataset.sequence_length > model_cfg.context_length:
-                raise ValueError(
-                    f"Dataset sequence_length ({self.train_dataset.sequence_length}) "
-                    f"exceeds model context_length ({model_cfg.context_length})."
-                )
+        validate_training_compatibility(
+            model=self.model,
+            train_dataset=self.train_dataset,
+            val_dataset=self.val_dataset,
+            config=self.config,
+        )
 
     def _resume(self, checkpoint_path: Union[str, Path]) -> None:
         """Resume training from a saved checkpoint."""
@@ -120,17 +122,23 @@ class Trainer:
             optimizer=self.optimizer,
             scheduler=self.scheduler,
         )
+        # Ensure scheduler max_steps respects the current run configuration
+        if self.train_config.max_steps > 0:
+            self.scheduler.max_steps = self.train_config.max_steps
 
-    def train(self) -> TrainingState:
+    def train(self, target_max_steps: Optional[int] = None) -> TrainingState:
         """
         Execute the complete training loop.
+
+        Args:
+            target_max_steps: Optional step count to pause/stop early (e.g. for checkpoint interruption tests).
 
         Returns:
             The final TrainingState after completion.
         """
         self.model.train()
         start_step = self.state.global_step
-        max_steps = self.train_config.max_steps
+        max_steps = target_max_steps if target_max_steps is not None else self.train_config.max_steps
 
         if start_step >= max_steps:
             logger.info(
@@ -149,10 +157,20 @@ class Trainer:
             dataset=self.train_dataset,
             batch_size=self.train_config.batch_size,
             shuffle=True,
-            seed=self.train_config.seed + start_step,
+            seed=self.train_config.seed + self.state.epoch,
             drop_last=False,
         )
         batch_iter: Iterator[Tuple[torch.Tensor, torch.Tensor]] = iter(batch_gen)
+
+        # If resuming mid-epoch, fast-forward iterator to match consumed micro-steps
+        batches_in_epoch = len(batch_gen)
+        if batches_in_epoch > 0 and self.state.micro_step > 0:
+            batches_to_skip = self.state.micro_step % batches_in_epoch
+            for _ in range(batches_to_skip):
+                try:
+                    next(batch_iter)
+                except StopIteration:
+                    break
 
         accum_steps = self.train_config.gradient_accumulation_steps
         ckpt_dir = Path(self.config.paths.checkpoint_dir)
@@ -242,6 +260,8 @@ class Trainer:
                     f"GradNorm: {grad_norm_val:.3f} | "
                     f"Speed: {t_tokens_sec:,.0f} tok/s ({t_steps_sec:.1f} steps/s)"
                 )
+                if self.tracker:
+                    self.tracker.log_step_metrics(self.state, is_val=False, is_best=False)
 
             # --- Periodic Validation ---
             if (
@@ -272,6 +292,9 @@ class Trainer:
                     f"Val PPL: {val_ppl:.2f}"
                     + (" (★ New Best)" if is_best else "")
                 )
+
+                if self.tracker:
+                    self.tracker.log_step_metrics(self.state, is_val=True, is_best=is_best)
 
                 # Save best checkpoint immediately when configured
                 if is_best and self.train_config.save_best:

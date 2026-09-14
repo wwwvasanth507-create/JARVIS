@@ -56,9 +56,15 @@ def main() -> int:
         choices=["train", "val"],
         help="Split to sample sequences from ('train' or 'val', default: 'train').",
     )
+    parser.add_argument(
+        "--quality", "-q",
+        action="store_true",
+        help="Run in-depth dataset quality, distribution, and sequence capacity analysis.",
+    )
 
     args = parser.parse_args()
-    dataset_dir = Path(args.dataset)
+    raw_path = Path(args.dataset)
+    dataset_dir = raw_path.parent if raw_path.is_file() else raw_path
     meta_path = dataset_dir / "metadata.json"
 
     if not meta_path.is_file():
@@ -127,6 +133,35 @@ def main() -> int:
                     print(f"  Decoded x Text    : {decoded_text!r}")
         except Exception as exc:
             print(f"Note on sequence preview: {exc}")
+
+    if args.quality:
+        import numpy as np
+        import statistics
+
+        print("-" * 65)
+        print("Detailed Quality & Document Distribution Analysis:")
+
+        # Read document boundaries from index files
+        all_doc_lens = []
+        for s in ["train", "val"]:
+            idx_file = dataset_dir / f"{s}.idx"
+            if idx_file.is_file() and idx_file.stat().st_size > 8:
+                offsets = np.fromfile(idx_file, dtype=np.uint64)
+                if len(offsets) >= 2:
+                    lengths = list(np.diff(offsets))
+                    all_doc_lens.extend(lengths)
+                    s_mean = statistics.mean(lengths)
+                    s_med = statistics.median(lengths)
+                    print(f"  - {s.capitalize()} Documents        : {len(lengths):,}")
+                    print(f"  - {s.capitalize()} Doc Length Range: [{min(lengths)} .. {max(lengths)}] tokens")
+                    print(f"  - {s.capitalize()} Mean / Median   : {s_mean:.1f} / {s_med:.1f} tokens")
+
+        usable_train = max(0, metadata.train_tokens - metadata.sequence_length)
+        usable_val = max(0, metadata.validation_tokens - metadata.sequence_length)
+        print(f"  - Usable Train Sequences   : {usable_train:,} (at seq_len={metadata.sequence_length})")
+        print(f"  - Usable Val Sequences     : {usable_val:,} (at seq_len={metadata.sequence_length})")
+        ratio = (metadata.validation_tokens / max(1, metadata.total_tokens)) * 100.0
+        print(f"  - Validation Token Ratio   : {ratio:.2f}%")
 
     print("=" * 65)
     print("SUCCESS: Memory-mapped dataset inspection complete.")

@@ -22,19 +22,52 @@ repo_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(repo_root / "src"))
 
 import torch
-from myllm.config import load_config
+import argparse
+from myllm.config import load_config, load_profile
 from myllm.model import GPTModel, count_parameters, get_model_summary
+from myllm.model.memory import estimate_memory_footprint
 from myllm.tokenizer import Tokenizer
 from myllm.utils.device import resolve_device, configure_cpu_threads
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Inspect MyLLM model architecture and memory footprint.")
+    parser.add_argument(
+        "--config", "-c",
+        type=str,
+        default=None,
+        help="Path to YAML configuration file or profile name.",
+    )
+    parser.add_argument(
+        "--profile", "-p",
+        type=str,
+        default=None,
+        choices=["tiny_cpu", "small_cpu", "medium_cpu"],
+        help="Named CPU scaling profile to inspect.",
+    )
+    parser.add_argument(
+        "--batch-size", "-b",
+        type=int,
+        default=4,
+        help="Batch size for activation and memory estimation.",
+    )
+    return parser.parse_args()
+
+
 def main() -> int:
+    args = parse_args()
     print("=" * 65)
     print("            MyLLM Transformer Model Architecture Inspection        ")
     print("=" * 65)
 
-    # 1. Load project configuration
-    app_config = load_config()
+    # 1. Load project configuration or profile
+    if args.profile:
+        app_config = load_profile(args.profile)
+        print(f"Loaded Profile          : {args.profile}")
+    else:
+        app_config = load_config(args.config)
+        if args.config:
+            print(f"Loaded Config           : {args.config}")
     model_config = app_config.model
 
     # 2. Resolve CPU device and threads
@@ -66,6 +99,16 @@ def main() -> int:
     print(summary)
 
     counts = count_parameters(model)
+    mem_est = estimate_memory_footprint(model_config, batch_size=args.batch_size)
+
+    print("-" * 65)
+    print("Estimated CPU Memory Footprint (Estimates only):")
+    print(f"  - Parameters (FP32)         : {mem_est.parameter_memory_str} ({mem_est.parameter_memory_bytes:,} bytes)")
+    print(f"  - Optimizer (AdamW FP32)    : {mem_est.optimizer_memory_str} ({mem_est.optimizer_memory_bytes:,} bytes)")
+    print(f"  - Gradients (FP32)          : {mem_est.gradient_memory_str} ({mem_est.gradient_memory_bytes:,} bytes)")
+    print(f"  - Activations (batch={args.batch_size:<2})   : {mem_est.activation_memory_str} ({mem_est.activation_memory_bytes:,} bytes)")
+    print(f"  - Total Training Budget     : ~{mem_est.total_training_memory_str}")
+    print(f"  - Inference Budget          : ~{mem_est.inference_memory_str}")
 
     # 6. Create sample input on CPU
     sample_text = "Hello world from MyLLM"

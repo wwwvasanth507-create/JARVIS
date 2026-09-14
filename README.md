@@ -24,6 +24,7 @@ A self-contained, inspectable GPT-style decoder-only Transformer language model 
 | **Phase 3** | **Data Pipeline**: Text streaming, dataset tokenization, memory-mapped binary files, batch generation. | **Completed** |
 | **Phase 4** | **Training Loop**: CPU-tuned AdamW optimizer, learning rate scheduling with warmup & cosine decay, checkpointing. | **Completed** |
 | **Phase 5** | **Inference & Evaluation**: Autoregressive decoding (greedy, temperature, top-k, top-p, repetition penalty), KV cache, validation loss, and perplexity. | **Completed** |
+| **Phase 6** | **Real Training Workflow**: Production corpus preparation, data leakage validation, CPU scaling profiles, diagnostics telemetry, before/after generation quality, best-checkpoint selection, and documentation. | **Completed** |
 
 ---
 
@@ -37,27 +38,31 @@ c:\ll\JARVIS/
 ├── requirements.txt        # CPU-only dependencies specification
 ├── pyproject.toml          # PEP 517/518 build definition & pytest config
 ├── configs/
-│   └── base.yaml           # Baseline YAML configuration (CPU-first defaults)
+│   ├── base.yaml           # Baseline YAML configuration (CPU-first defaults)
+│   └── profiles/           # CPU scaling profiles (tiny_cpu, small_cpu, medium_cpu)
 ├── data/
-│   ├── raw/                # Unprocessed text corpora (.gitkeep)
+│   ├── raw/                # Unprocessed multi-domain text corpora
 │   ├── processed/          # Cleaned text datasets (.gitkeep)
-│   └── tokenized/          # Binary tokenized sequences (.gitkeep)
+│   └── tokenized/          # Binary tokenized sequences, idx, and metadata manifests
 ├── docs/
 │   ├── tokenizer.md        # Deep dive into Byte-Level BPE architecture
 │   ├── model.md            # Deep dive into GPT Transformer architecture
 │   ├── data.md             # Deep dive into binary dataset pipeline
-│   └── training.md         # Deep dive into CPU training engine & optimization
-├── checkpoints/            # Model weights and training checkpoints (.gitkeep)
-├── logs/                   # Training and runtime execution logs (.gitkeep)
-├── experiments/            # Experiment manifests and metrics (.gitkeep)
+│   └── training.md         # Deep dive into CPU training engine & Phase 6 workflow
+├── checkpoints/            # Model weights and training checkpoints
+├── logs/                   # Training and runtime execution logs
+├── experiments/            # Isolated experiment directories (metrics.jsonl, reports)
 ├── scripts/
 │   ├── check_environment.py # Diagnostic verification script
-│   ├── inspect_model.py     # Model architecture & latency inspector
+│   ├── prepare_corpus.py    # Production multi-domain corpus preparation & splitting
+│   ├── inspect_model.py     # Model architecture & memory footprint inspector
 │   ├── train_tokenizer.py   # CLI tokenizer training tool
 │   ├── build_dataset.py     # CLI binary dataset ingestion & builder tool
-│   ├── inspect_dataset.py   # CLI memory-mapped dataset inspector
+│   ├── inspect_dataset.py   # CLI memory-mapped dataset & quality inspector
 │   ├── benchmark_data_pipeline.py # End-to-end throughput & integration benchmark
-│   ├── train.py             # CLI CPU training engine & runner
+│   ├── train.py             # CLI CPU training engine & experiment runner
+│   ├── evaluate.py          # CLI loss and perplexity evaluation
+│   ├── generate.py          # CLI autoregressive generation (greedy & sampling)
 │   └── inspect_training.py  # CLI checkpoint inspector & state analyzer
 ├── src/
 │   └── myllm/              # Primary Python package
@@ -468,3 +473,43 @@ print(f"Validation Loss: {metrics.mean_loss:.4f} | Perplexity: {metrics.perplexi
 ```
 
 For complete technical specifications, see [docs/inference.md](file:///c:/ll/JARVIS/docs/inference.md).
+
+---
+
+## Phase 6 — Real Training & Experimentation Workflow
+
+Phase 6 introduces a production-style, reproducible training pipeline on CPU:
+
+```powershell
+# 1. Prepare multi-domain corpus with zero cross-split leakage
+python scripts/prepare_corpus.py --output-dir data
+
+# 2. Audit dataset quality, sequence windows, and document length distributions
+python scripts/inspect_dataset.py --dataset data/tokenized --quality --tokenizer data/tokenized/tokenizer.json
+
+# 3. Inspect CPU model scaling profile & memory footprint estimates
+python scripts/inspect_model.py --profile tiny_cpu
+
+# 4. Run reproducible training experiment with telemetry tracking
+python scripts/train.py `
+  --profile tiny_cpu `
+  --train-dataset data/tokenized/train.bin `
+  --val-dataset data/tokenized/val.bin `
+  --tokenizer data/tokenized/tokenizer.json `
+  --experiment-name phase6_real_run `
+  --max-steps 50
+
+# 5. Review experiment reports and before vs after text completions
+Get-Content experiments/phase6_real_run/training_report.md
+Get-Content experiments/phase6_real_run/generations_before.txt
+Get-Content experiments/phase6_real_run/generations_after.txt
+
+# 6. Evaluate final best checkpoint
+python scripts/evaluate.py `
+  --checkpoint experiments/phase6_real_run/checkpoints/best.pt `
+  --tokenizer data/tokenized/tokenizer.json `
+  --dataset data/tokenized/val.bin
+```
+
+For complete technical specifications, see [docs/training.md](file:///c:/ll/JARVIS/docs/training.md).
+

@@ -7,6 +7,7 @@ from myllm.data.binary import BinaryDatasetWriter, compute_dataset_fingerprint
 from myllm.data.corpus import CorpusReader
 from myllm.data.dataset import TokenDataset
 from myllm.data.metadata import DatasetMetadata
+from myllm.data.quality import DatasetQualityReport, DatasetQualityValidator
 from myllm.data.text import normalize_text
 from myllm.data.tokenizer_pipeline import (
     TokenizerPipeline,
@@ -23,4 +24,6 @@ __all__ = [
     "DatasetMetadata",
     "TokenDataset",
     "BatchGenerator",
+    "DatasetQualityValidator",
+    "DatasetQualityReport",
 ]
