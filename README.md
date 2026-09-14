@@ -21,8 +21,8 @@ A self-contained, inspectable GPT-style decoder-only Transformer language model 
 | **Phase 0** | **Project Foundation**: Architecture blueprint, CPU device utilities, seed control, configuration system, diagnostics, and test suite. | **Completed** |
 | **Phase 1** | **Custom Tokenizer**: Byte-Pair Encoding (BPE) / Byte-level tokenizer built from scratch, vocabulary builder, encode/decode pipelines. | **Completed** |
 | **Phase 2** | **Model Architecture**: GPT-style decoder-only Transformer (Causal Self-Attention, MLP, LayerNorm/RMSNorm, Embeddings). | **Completed** |
-| **Phase 3** | **Data Pipeline**: Text streaming, dataset tokenization, memory-mapped binary files, batch generation. | Upcoming |
-| **Phase 4** | **Training Loop**: CPU-tuned AdamW optimizer, learning rate scheduling with warmup & cosine decay, checkpointing. | Upcoming |
+| **Phase 3** | **Data Pipeline**: Text streaming, dataset tokenization, memory-mapped binary files, batch generation. | **Completed** |
+| **Phase 4** | **Training Loop**: CPU-tuned AdamW optimizer, learning rate scheduling with warmup & cosine decay, checkpointing. | **Completed** |
 | **Phase 5** | **Inference & Evaluation**: Autoregressive decoding (greedy, top-k, top-p / nucleus sampling, temperature), validation loss, and perplexity. | Upcoming |
 
 ---
@@ -44,14 +44,21 @@ c:\ll\JARVIS/
 │   └── tokenized/          # Binary tokenized sequences (.gitkeep)
 ├── docs/
 │   ├── tokenizer.md        # Deep dive into Byte-Level BPE architecture
-│   └── model.md            # Deep dive into GPT Transformer architecture
+│   ├── model.md            # Deep dive into GPT Transformer architecture
+│   ├── data.md             # Deep dive into binary dataset pipeline
+│   └── training.md         # Deep dive into CPU training engine & optimization
 ├── checkpoints/            # Model weights and training checkpoints (.gitkeep)
 ├── logs/                   # Training and runtime execution logs (.gitkeep)
 ├── experiments/            # Experiment manifests and metrics (.gitkeep)
 ├── scripts/
 │   ├── check_environment.py # Diagnostic verification script
 │   ├── inspect_model.py     # Model architecture & latency inspector
-│   └── train_tokenizer.py   # CLI tokenizer training tool
+│   ├── train_tokenizer.py   # CLI tokenizer training tool
+│   ├── build_dataset.py     # CLI binary dataset ingestion & builder tool
+│   ├── inspect_dataset.py   # CLI memory-mapped dataset inspector
+│   ├── benchmark_data_pipeline.py # End-to-end throughput & integration benchmark
+│   ├── train.py             # CLI CPU training engine & runner
+│   └── inspect_training.py  # CLI checkpoint inspector & state analyzer
 ├── src/
 │   └── myllm/              # Primary Python package
 │       ├── __init__.py     # Package exports
@@ -70,8 +77,24 @@ c:\ll\JARVIS/
 │       │   ├── block.py    # Pre-LayerNorm Transformer block
 │       │   ├── gpt.py      # Full GPTModel with tied embeddings
 │       │   └── utils.py    # Parameter counter and model summary
-│       ├── data/           # Dataset loaders and batch generators
+│       ├── data/           # Dataset ingestion & binary pipeline
+│       │   ├── __init__.py # Public data exports
+│       │   ├── corpus.py   # Deterministic corpus streaming & discovery
+│       │   ├── text.py     # Safe, conservative text normalization
+│       │   ├── tokenizer_pipeline.py # Tokenizer integration & SHA-256 fingerprinting
+│       │   ├── metadata.py # Manifest dataclass & JSON serialization
+│       │   ├── binary.py   # Streaming uint32 writer & document index
+│       │   ├── dataset.py  # Zero-copy memory-mapped TokenDataset reader
+│       │   └── batching.py # CPU BatchGenerator yielding (x, y) PyTorch tensors
 │       ├── training/       # Optimization and training loops
+│       │   ├── __init__.py # Public training subsystem exports
+│       │   ├── state.py    # TrainingState dataclass & RNG tracking
+│       │   ├── optimizer.py # Parameter-grouped AdamW optimizer
+│       │   ├── scheduler.py # Linear warmup & cosine decay LR scheduler
+│       │   ├── metrics.py  # Numerical-safe perplexity & throughput tracker
+│       │   ├── checkpoint.py # Atomic checkpoint save, load, and pruning
+│       │   ├── validation.py # Deterministic evaluation loop
+│       │   └── trainer.py  # Core Trainer coordinating loop & clipping
 │       ├── evaluation/     # Loss and perplexity benchmarks
 │       ├── inference/      # Autoregressive generation engine
 │       └── utils/
@@ -85,6 +108,8 @@ c:\ll\JARVIS/
     ├── test_device.py      # Strict CPU device selection tests
     ├── test_model.py       # Comprehensive Transformer tests (27 tests)
     ├── test_tokenizer.py   # Comprehensive Byte-Level BPE tests (32 tests)
+    ├── test_data.py        # Comprehensive Dataset & Batching tests (24 tests)
+    ├── test_training.py    # Comprehensive Training & Optimizer tests (33 tests)
     └── test_utils.py       # Seed and logging tests
 ```
 
@@ -239,5 +264,125 @@ print("Loss:", loss.item())
 ```
 
 For complete technical specifications, see [docs/model.md](file:///c:/ll/JARVIS/docs/model.md).
+
+---
+
+## Data Ingestion & Binary Dataset Pipeline (Phase 3)
+
+### Features
+- **Pure CPU Memory-Mapped Binary Storage**: Zero-copy dataset reads via `np.memmap` using compact `uint32` token representations. Scales to multi-gigabyte corpora without loading everything into RAM.
+- **Deterministic Lexicographical Ingestion**: Streams single files, directories, or text iterables with strictly sorted discovery across `.txt`, `.md`, and `.text` files.
+- **Safe, Non-Destructive Normalization**: Optional BOM stripping (`\ufeff`), universal newline normalization (`\r\n` -> `\n`), and optional Unicode NFC normalization with zero information loss (preserves casing, punctuation, Unicode/Tamil, and emojis).
+- **Document Boundary Protection**: Configurable `<BOS>` / `<EOS>` token insertion and document boundary indexing (`.idx` file containing `uint64` document start byte offsets). When `allow_cross_document_sequences=False`, sequences are sampled strictly within individual document boundaries.
+- **No Token Leakage Split**: Deterministic, seeded document-level train/validation splitting (e.g. 90/10) preventing cross-split token contamination.
+- **SHA-256 Fingerprinting**: Independent SHA-256 fingerprints for both tokenizer artifacts and dataset configurations to detect tokenizer drift or corrupted artifacts.
+- **CPU BatchGenerator**: Produces PyTorch `(input_ids, labels)` tensors of shape `[B, T]` with `dtype=torch.long` on `device="cpu"` where labels are shifted by one position ($y = x_{t+1}$). Directly consumable by Phase 2 `GPTModel(input_ids, labels)`.
+
+### Quickstart CLI
+Build a binary dataset from text files:
+```powershell
+python scripts/build_dataset.py --tokenizer checkpoints/tokenizer.json --input data/raw --output data/tokenized --validation-ratio 0.1 --sequence-length 128
+```
+
+Inspect a generated dataset manifest and sample tokens:
+```powershell
+python scripts/inspect_dataset.py --dataset-dir data/tokenized --split train --num-samples 5
+```
+
+### Python API
+```python
+from myllm.config import DataConfig
+from myllm.data import TokenDataset, BatchGenerator
+
+# 1. Open memory-mapped dataset
+dataset = TokenDataset(
+    bin_path="data/tokenized/train.bin",
+    sequence_length=128,
+    idx_path="data/tokenized/train.idx",
+    allow_cross_document_sequences=False,
+)
+
+print(f"Total tokens: {dataset.total_tokens:,}")
+print(f"Valid sequence windows: {len(dataset):,}")
+
+# 2. Retrieve a single shifted sequence pair (x, y)
+x, y = dataset[0]
+assert x.shape == (128,)
+assert y.shape == (128,)
+
+# 3. Stream CPU training batches
+batch_gen = BatchGenerator(
+    dataset=dataset,
+    batch_size=8,
+    sequence_length=128,
+    shuffle=True,
+    seed=42,
+)
+
+for step, (input_ids, labels) in enumerate(batch_gen):
+    print(f"Batch {step}: input_ids {input_ids.shape}, labels {labels.shape}, device {input_ids.device}")
+    break
+```
+
+For complete technical specifications, see [docs/data.md](file:///c:/ll/JARVIS/docs/data.md).
+
+---
+
+## CPU-Only Training Engine (Phase 4)
+
+### Features
+- **Pure CPU Execution**: Strictly operates on standard CPU using PyTorch CPU tensors (`torch.long` for tokens, `torch.float32` for parameters and gradients). Disallows CUDA/GPU.
+- **Decoupled Weight Decay AdamW**: Automatically partitions model parameters into 2D weight tensors (linear layers, embeddings with decay) and 1D tensors (biases, LayerNorm scale/bias without decay). Handles tied weights safely.
+- **Linear-Warmup Cosine-Decay Scheduler**: Warmup from `min_learning_rate` up to peak `learning_rate` over `warmup_steps`, followed by smooth cosine decay down to `min_learning_rate` at `max_steps`.
+- **Gradient Clipping & Accumulation**: Enforces maximum gradient norm (`grad_clip_norm`) with finite-value validation, and supports micro-batch gradient accumulation (`gradient_accumulation_steps`).
+- **Deterministic Validation & Safe Perplexity**: Zero-gradient evaluation loop under `model.eval()` and `torch.no_grad()`, with overflow-safe perplexity calculation ($PPL = \exp(loss)$ returning `float('inf')` for $loss > 85.0$).
+- **Atomic Checkpointing & Pruning**: Safe temporary file writing and atomic renaming (`os.replace`) preventing file corruption. Checkpoints store model state, optimizer momentum, scheduler progression, `TrainingState`, fingerprints, and RNG states. Retains `latest.pt` and `best.pt` while pruning step checkpoints according to `max_checkpoints`.
+- **Seamless Resumption**: `--resume checkpoints/latest.pt` smoothly continues training from the saved step and token counter without resetting state.
+
+### Quickstart CLI
+Launch a training run on CPU:
+```powershell
+python scripts/train.py --config configs/base.yaml --train-dataset data/tokenized/train.bin --val-dataset data/tokenized/val.bin --max-steps 100 --batch-size 4
+```
+
+Inspect training state and hyperparameters from a checkpoint:
+```powershell
+python scripts/inspect_training.py --checkpoint checkpoints/latest.pt
+```
+
+Resume training from a checkpoint:
+```powershell
+python scripts/train.py --resume checkpoints/latest.pt --train-dataset data/tokenized/train.bin --max-steps 200
+```
+
+### Python API
+```python
+from myllm.config import AppConfig
+from myllm.data import TokenDataset
+from myllm.model import GPTModel
+from myllm.training import Trainer
+
+# 1. Setup configuration and datasets
+app_config = AppConfig()
+train_dataset = TokenDataset("data/tokenized/train.bin", sequence_length=128)
+val_dataset = TokenDataset("data/tokenized/val.bin", sequence_length=128)
+
+# 2. Instantiate Model and Trainer
+model = GPTModel(app_config.model)
+trainer = Trainer(
+    model=model,
+    train_dataset=train_dataset,
+    val_dataset=val_dataset,
+    config=app_config,
+)
+
+# 3. Execute training loop
+final_state = trainer.train()
+print(f"Training completed at step {final_state.global_step}, final loss: {final_state.train_loss:.4f}")
+```
+
+For complete technical specifications, see [docs/training.md](file:///c:/ll/JARVIS/docs/training.md).
+
+
 
 

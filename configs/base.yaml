@@ -37,18 +37,27 @@ model:
 
 # Training hyperparameters (optimized for CPU execution)
 training:
-  batch_size: 16         # Batch size per iteration
-  learning_rate: 6.0e-4  # Peak learning rate with AdamW
-  min_learning_rate: 6.0e-5
+  batch_size: 4
+  max_steps: 100
+  learning_rate: 0.0003
+  min_learning_rate: 0.00003
   weight_decay: 0.1
   beta1: 0.9
   beta2: 0.95
-  grad_clip: 1.0
-  max_iters: 2000
-  warmup_iters: 100
-  eval_interval: 200
-  eval_iters: 50
-  save_interval: 500
+  eps: 1.0e-8
+  grad_clip_norm: 1.0
+  warmup_steps: 10
+  log_every_steps: 10
+  eval_every_steps: 50
+  eval_batches: 10
+  checkpoint_every_steps: 50
+  max_checkpoints: 3
+  seed: 42
+  gradient_accumulation_steps: 1
+  save_best: true
+  resume_from: null
+  num_workers: 0
+
 
 # Logging and evaluation settings
 logging:
@@ -67,3 +76,24 @@ tokenizer:
     - "<EOS>"
   max_documents: null    # Null processes all documents
   max_training_bytes: null
+
+# Dataset ingestion, tokenization cache, and CPU pipeline settings
+data:
+  input_path: "data/raw"
+  output_path: "data/tokenized"
+  validation_ratio: 0.1
+  sequence_length: 128
+  add_bos: false
+  add_eos: true
+  allow_cross_document_sequences: false
+  normalize_unicode: false
+  strip_bom: true
+  normalize_newlines: true
+  strip_outer_whitespace: false
+  recursive: true
+  extensions:
+    - ".txt"
+    - ".md"
+    - ".text"
+  seed: 42
+

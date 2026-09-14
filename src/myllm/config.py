@@ -97,19 +97,116 @@ class ModelConfig:
 
 @dataclass
 class TrainingConfig:
-    """Hyperparameters for model training."""
-    batch_size: int = 16
-    learning_rate: float = 6.0e-4
-    min_learning_rate: float = 6.0e-5
+    """Hyperparameters and runtime settings for model training on CPU."""
+    batch_size: int = 4
+    max_steps: int = 100
+    epochs: Optional[int] = None
+    learning_rate: float = 0.0003
+    min_learning_rate: float = 0.00003
     weight_decay: float = 0.1
     beta1: float = 0.9
     beta2: float = 0.95
-    grad_clip: float = 1.0
-    max_iters: int = 2000
-    warmup_iters: int = 100
-    eval_interval: int = 200
-    eval_iters: int = 50
-    save_interval: int = 500
+    eps: float = 1e-8
+    grad_clip_norm: float = 1.0
+    warmup_steps: int = 10
+    log_every_steps: int = 10
+    eval_every_steps: int = 50
+    eval_batches: int = 10
+    checkpoint_every_steps: int = 50
+    max_checkpoints: int = 3
+    seed: int = 42
+    gradient_accumulation_steps: int = 1
+    save_best: bool = True
+    resume_from: Optional[str] = None
+    num_workers: int = 0
+
+    # Backward-compatibility aliases
+    max_iters: Optional[int] = None
+    warmup_iters: Optional[int] = None
+    grad_clip: Optional[float] = None
+    eval_interval: Optional[int] = None
+    eval_iters: Optional[int] = None
+    save_interval: Optional[int] = None
+
+    def __post_init__(self) -> None:
+        # Sync backward compatibility aliases
+        if self.max_iters is not None and self.max_steps == 100:
+            self.max_steps = self.max_iters
+        else:
+            self.max_iters = self.max_steps
+
+        if self.warmup_iters is not None and self.warmup_steps == 10:
+            self.warmup_steps = self.warmup_iters
+        else:
+            self.warmup_iters = self.warmup_steps
+
+        if self.grad_clip is not None and self.grad_clip_norm == 1.0:
+            self.grad_clip_norm = self.grad_clip
+        else:
+            self.grad_clip = self.grad_clip_norm
+
+        if self.eval_interval is not None and self.eval_every_steps == 50:
+            self.eval_every_steps = self.eval_interval
+        else:
+            self.eval_interval = self.eval_every_steps
+
+        if self.eval_iters is not None and self.eval_batches == 10:
+            self.eval_batches = self.eval_iters
+        else:
+            self.eval_iters = self.eval_batches
+
+        if self.save_interval is not None and self.checkpoint_every_steps == 50:
+            self.checkpoint_every_steps = self.save_interval
+        else:
+            self.save_interval = self.checkpoint_every_steps
+
+        # Validations
+        if self.batch_size <= 0:
+            raise ValueError(f"batch_size must be positive, got {self.batch_size}")
+        if self.max_steps <= 0:
+            raise ValueError(f"max_steps must be positive, got {self.max_steps}")
+        if self.learning_rate <= 0:
+            raise ValueError(f"learning_rate must be positive, got {self.learning_rate}")
+        if self.min_learning_rate < 0:
+            raise ValueError(f"min_learning_rate cannot be negative, got {self.min_learning_rate}")
+        if self.min_learning_rate > self.learning_rate:
+            raise ValueError(
+                f"min_learning_rate ({self.min_learning_rate}) cannot exceed "
+                f"learning_rate ({self.learning_rate})"
+            )
+        if self.weight_decay < 0:
+            raise ValueError(f"weight_decay cannot be negative, got {self.weight_decay}")
+        if not (0.0 <= self.beta1 < 1.0):
+            raise ValueError(f"beta1 must be in [0, 1), got {self.beta1}")
+        if not (0.0 <= self.beta2 < 1.0):
+            raise ValueError(f"beta2 must be in [0, 1), got {self.beta2}")
+        if self.eps <= 0:
+            raise ValueError(f"eps must be positive, got {self.eps}")
+        if self.grad_clip_norm <= 0:
+            raise ValueError(f"grad_clip_norm must be positive, got {self.grad_clip_norm}")
+        if self.warmup_steps < 0:
+            raise ValueError(f"warmup_steps cannot be negative, got {self.warmup_steps}")
+        if self.warmup_steps > self.max_steps:
+            raise ValueError(
+                f"warmup_steps ({self.warmup_steps}) cannot exceed max_steps ({self.max_steps})"
+            )
+        if self.log_every_steps <= 0:
+            raise ValueError(f"log_every_steps must be positive, got {self.log_every_steps}")
+        if self.eval_every_steps <= 0:
+            raise ValueError(f"eval_every_steps must be positive, got {self.eval_every_steps}")
+        if self.eval_batches <= 0:
+            raise ValueError(f"eval_batches must be positive, got {self.eval_batches}")
+        if self.checkpoint_every_steps <= 0:
+            raise ValueError(f"checkpoint_every_steps must be positive, got {self.checkpoint_every_steps}")
+        if self.max_checkpoints <= 0:
+            raise ValueError(f"max_checkpoints must be positive, got {self.max_checkpoints}")
+        if self.gradient_accumulation_steps <= 0:
+            raise ValueError(
+                f"gradient_accumulation_steps must be positive, got {self.gradient_accumulation_steps}"
+            )
+        if self.epochs is not None and self.epochs <= 0:
+            raise ValueError(f"epochs must be positive if specified, got {self.epochs}")
+
 
 
 @dataclass
@@ -144,6 +241,35 @@ class TokenizerConfig:
 
 
 @dataclass
+class DataConfig:
+    """Dataset ingestion, tokenization, and binary cache settings."""
+    input_path: str = "data/raw"
+    output_path: str = "data/tokenized"
+    validation_ratio: float = 0.1
+    sequence_length: int = 128
+    add_bos: bool = False
+    add_eos: bool = True
+    allow_cross_document_sequences: bool = False
+    normalize_unicode: bool = False
+    strip_bom: bool = True
+    normalize_newlines: bool = True
+    strip_outer_whitespace: bool = False
+    recursive: bool = True
+    extensions: list[str] = field(default_factory=lambda: [".txt", ".md", ".text"])
+    seed: int = 42
+
+    def __post_init__(self) -> None:
+        if not (0.0 <= self.validation_ratio < 1.0):
+            raise ValueError(
+                f"validation_ratio must be in [0.0, 1.0), got {self.validation_ratio}"
+            )
+        if self.sequence_length <= 0:
+            raise ValueError(
+                f"sequence_length must be positive, got {self.sequence_length}"
+            )
+
+
+@dataclass
 class AppConfig:
     """Root configuration object containing all sub-configurations."""
     system: SystemConfig = field(default_factory=SystemConfig)
@@ -152,6 +278,7 @@ class AppConfig:
     training: TrainingConfig = field(default_factory=TrainingConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
     tokenizer: TokenizerConfig = field(default_factory=TokenizerConfig)
+    data: DataConfig = field(default_factory=DataConfig)
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert configuration hierarchy into a nested dictionary."""
@@ -209,6 +336,7 @@ def load_config(config_path: Optional[Union[str, Path]] = None) -> AppConfig:
     training_dict = raw_data.get("training", {})
     logging_dict = raw_data.get("logging", {})
     tokenizer_dict = raw_data.get("tokenizer", {})
+    data_dict = raw_data.get("data", {})
 
     return AppConfig(
         system=SystemConfig(**system_dict),
@@ -217,6 +345,7 @@ def load_config(config_path: Optional[Union[str, Path]] = None) -> AppConfig:
         training=TrainingConfig(**training_dict),
         logging=LoggingConfig(**logging_dict),
         tokenizer=TokenizerConfig(**tokenizer_dict),
+        data=DataConfig(**data_dict),
     )
 
 

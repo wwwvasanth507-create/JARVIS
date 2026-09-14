@@ -44,8 +44,9 @@ class TestConfigSystem:
         assert config.model.bias is True
 
         # Training fields
-        assert config.training.batch_size == 16
+        assert config.training.batch_size == 4
         assert config.training.learning_rate > 0
+        assert config.training.max_steps == 100
 
         # Logging fields
         assert config.logging.log_level == "INFO"
