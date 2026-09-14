@@ -14,6 +14,19 @@ from myllm.data.tokenizer_pipeline import (
     compute_tokenizer_fingerprint,
 )
 
+from myllm.data.instruction import (
+    IGNORE_INDEX,
+    INSTRUCTION_TEMPLATE_VERSION,
+    InstructionDataset,
+    InstructionExample,
+    InstructionTemplate,
+    TokenizedInstruction,
+    load_instruction_jsonl,
+    save_instruction_binary,
+    split_instruction_dataset,
+    tokenize_instruction_example,
+)
+
 __all__ = [
     "CorpusReader",
     "normalize_text",
@@ -26,4 +39,14 @@ __all__ = [
     "BatchGenerator",
     "DatasetQualityValidator",
     "DatasetQualityReport",
+    "InstructionExample",
+    "InstructionTemplate",
+    "InstructionDataset",
+    "TokenizedInstruction",
+    "tokenize_instruction_example",
+    "load_instruction_jsonl",
+    "split_instruction_dataset",
+    "save_instruction_binary",
+    "INSTRUCTION_TEMPLATE_VERSION",
+    "IGNORE_INDEX",
 ]

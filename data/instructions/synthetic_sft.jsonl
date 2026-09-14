@@ -1,0 +1,119 @@
+{"instruction": "What is the primary target hardware of MyLLM?", "input": "", "output": "MyLLM is designed strictly for CPU execution without requiring GPU or CUDA."}
+{"instruction": "What optimizer is utilized for MyLLM training?", "input": "", "output": "MyLLM utilizes AdamW with decoupled weight decay for optimization."}
+{"instruction": "Which model architecture is implemented in MyLLM?", "input": "", "output": "MyLLM implements a GPT-style decoder-only Transformer with Pre-LayerNorm."}
+{"instruction": "What tokenizer algorithm does MyLLM use?", "input": "", "output": "MyLLM uses a custom Byte-Level Byte Pair Encoding (BPE) tokenizer built from scratch."}
+{"instruction": "Name the three CPU scaling profiles available in MyLLM.", "input": "", "output": "The three profiles are tiny_cpu, small_cpu, and medium_cpu."}
+{"instruction": "What does causal masking prevent in self-attention?", "input": "", "output": "Causal masking prevents tokens from attending to future positions in the sequence."}
+{"instruction": "Why does MyLLM tie weights between token embedding and LM head?", "input": "", "output": "Weight tying shares parameters between the input embedding and output projection, reducing parameter count and memory."}
+{"instruction": "What activation function is used in MyLLM transformer blocks?", "input": "", "output": "MyLLM uses the Gaussian Error Linear Unit (GELU) activation function."}
+{"instruction": "What does SFT stand for in language model training?", "input": "", "output": "SFT stands for Supervised Fine-Tuning or Supervised Instruction-Tuning."}
+{"instruction": "What is the purpose of response-only loss masking?", "input": "", "output": "Response-only masking ignores prompt tokens during loss calculation so the model learns only to generate completions."}
+{"instruction": "Calculate 12 + 15.", "input": "", "output": "27"}
+{"instruction": "What is 8 multiplied by 9?", "input": "", "output": "72"}
+{"instruction": "Subtract 45 from 100.", "input": "", "output": "55"}
+{"instruction": "Divide 84 by 7.", "input": "", "output": "12"}
+{"instruction": "What is 2 raised to the power of 6?", "input": "", "output": "64"}
+{"instruction": "Compute 35 plus 48.", "input": "", "output": "83"}
+{"instruction": "Calculate 144 divided by 12.", "input": "", "output": "12"}
+{"instruction": "What is 15 times 4?", "input": "", "output": "60"}
+{"instruction": "Evaluate 250 minus 130.", "input": "", "output": "120"}
+{"instruction": "What is 50 percent of 200?", "input": "", "output": "100"}
+{"instruction": "Summarize the key idea in one short sentence.", "input": "Transformers replace recurrent mechanisms entirely with causal self-attention, processing sequences in parallel.", "output": "Transformers process sequences in parallel using self-attention rather than recurrence."}
+{"instruction": "Extract the main benefit described.", "input": "KV caching saves previous key and value activations so each subsequent token requires only a single incremental forward step.", "output": "KV caching avoids redundant computation by reusing previously computed keys and values."}
+{"instruction": "Identify the optimization algorithm mentioned.", "input": "During Phase 4, the training engine employs the AdamW optimizer with decoupled weight decay.", "output": "The algorithm mentioned is AdamW with decoupled weight decay."}
+{"instruction": "Extract the context window length.", "input": "The tiny_cpu configuration profile defines a maximum context length of 64 tokens with 2 layers and 2 attention heads.", "output": "The context window length is 64 tokens."}
+{"instruction": "Summarize the reason for CPU focus.", "input": "By targeting standard consumer CPUs, the model ensures complete portability and inspectability on ordinary personal computers.", "output": "Standard CPU execution ensures portability and accessibility on ordinary computers."}
+{"instruction": "Classify the sentiment as Positive or Negative.", "input": "The model trained quickly and the validation loss dropped steadily.", "output": "Positive"}
+{"instruction": "Classify the sentiment as Positive or Negative.", "input": "The process crashed with an out-of-memory error and lost unsaved work.", "output": "Negative"}
+{"instruction": "Classify the sentiment as Positive or Negative.", "input": "All regression tests passed without any errors.", "output": "Positive"}
+{"instruction": "Classify the hardware category (Compute, Storage, Network).", "input": "Intel Core i7 8-core CPU processor.", "output": "Compute"}
+{"instruction": "Classify the hardware category (Compute, Storage, Network).", "input": "1 TB NVMe solid state drive.", "output": "Storage"}
+{"instruction": "Classify the hardware category (Compute, Storage, Network).", "input": "Gigabit Ethernet adapter.", "output": "Network"}
+{"instruction": "Determine whether this statement is True or False.", "input": "MyLLM requires NVIDIA CUDA hardware to run.", "output": "False"}
+{"instruction": "Determine whether this statement is True or False.", "input": "AdamW decouples weight decay from the gradient update step.", "output": "True"}
+{"instruction": "Format the names into a comma-separated list.", "input": "Alice\nBob\nCharlie", "output": "Alice, Bob, Charlie"}
+{"instruction": "Convert the text into uppercase.", "input": "attention is all you need", "output": "ATTENTION IS ALL YOU NEED"}
+{"instruction": "Convert the text into lowercase.", "input": "DEEP LEARNING WITH PYTORCH", "output": "deep learning with pytorch"}
+{"instruction": "Format the items as a bulleted list.", "input": "Data, Model, Loss, Optimizer", "output": "- Data\n- Model\n- Loss\n- Optimizer"}
+{"instruction": "Reverse the words in the sentence.", "input": "apple banana cherry", "output": "cherry banana apple"}
+{"instruction": "Rephrase to be concise.", "input": "In order to achieve good results, it is necessary that we set the seed.", "output": "Set the seed for reproducible results."}
+{"instruction": "Extract all numbers from the input.", "input": "The model has 2 layers, 4 heads, and 128 embedding dimensions.", "output": "2, 4, 128"}
+{"instruction": "Translate 'வணக்கம்' to English.", "input": "", "output": "Hello"}
+{"instruction": "Translate 'Hello' to Tamil.", "input": "", "output": "வணக்கம்"}
+{"instruction": "Translate 'நன்றி' to English.", "input": "", "output": "Thank you"}
+{"instruction": "Translate 'Thank you' to Tamil.", "input": "", "output": "நன்றி"}
+{"instruction": "What language is 'தமிழ்'?", "input": "", "output": "'தமிழ்' refers to the Tamil language, a classical Dravidian language."}
+{"instruction": "Translate 'கணினி' to English.", "input": "", "output": "Computer"}
+{"instruction": "Translate 'Language Model' to Tamil.", "input": "", "output": "மொழி மாதிரி"}
+{"instruction": "Write a polite greeting in Tamil.", "input": "", "output": "வணக்கம்! நீங்கள் நலமாக இருக்கிறீர்களா?"}
+{"instruction": "Name the capital of Tamil Nadu.", "input": "", "output": "The capital of Tamil Nadu is Chennai."}
+{"instruction": "Translate 'புத்தகம்' to English.", "input": "", "output": "Book"}
+{"instruction": "Write Python code to add two variables a and b.", "input": "", "output": "result = a + b"}
+{"instruction": "What does `len(x)` return in Python?", "input": "", "output": "len(x) returns the number of items in a collection or sequence."}
+{"instruction": "How do you convert string s to an integer in Python?", "input": "", "output": "int(s)"}
+{"instruction": "Write a Python list containing numbers from 1 to 4.", "input": "", "output": "[1, 2, 3, 4]"}
+{"instruction": "What PyTorch tensor dtype is used for token IDs?", "input": "", "output": "torch.long (64-bit integer) is used for token IDs."}
+{"instruction": "Repeat the following emoji sequence.", "input": "🚀 🤖 ⚡", "output": "🚀 🤖 ⚡"}
+{"instruction": "Echo the input symbols exactly.", "input": "«MyLLM» — [CPU-First] ✓", "output": "«MyLLM» — [CPU-First] ✓"}
+{"instruction": "Repeat the Tamil alphabet vowels.", "input": "அ, ஆ, இ, ஈ, உ, ஊ", "output": "அ, ஆ, இ, ஈ, உ, ஊ"}
+{"instruction": "Echo the math expression.", "input": "E = mc²", "output": "E = mc²"}
+{"instruction": "Echo the currency symbols.", "input": "$ € £ ¥ ₹", "output": "$ € £ ¥ ₹"}
+{"instruction": "What is 10 + 20?", "input": "", "output": "30"}
+{"instruction": "What is 7 times 7?", "input": "", "output": "49"}
+{"instruction": "What is 100 divided by 5?", "input": "", "output": "20"}
+{"instruction": "What is 60 minus 25?", "input": "", "output": "35"}
+{"instruction": "Calculate 9 + 16.", "input": "", "output": "25"}
+{"instruction": "Calculate 11 times 11.", "input": "", "output": "121"}
+{"instruction": "What is 200 minus 75?", "input": "", "output": "125"}
+{"instruction": "What is 54 divided by 9?", "input": "", "output": "6"}
+{"instruction": "What is 13 + 17?", "input": "", "output": "30"}
+{"instruction": "What is 6 times 8?", "input": "", "output": "48"}
+{"instruction": "Explain the role of the learning rate scheduler.", "input": "", "output": "The scheduler adjusts the learning rate over time, using warmup and cosine decay to stabilize training."}
+{"instruction": "What does LayerNorm do in a Transformer?", "input": "", "output": "LayerNorm normalizes features across the hidden dimension to stabilize activations and gradients."}
+{"instruction": "What is the role of positional embeddings in Transformers?", "input": "", "output": "Positional embeddings provide sequence order information to order-agnostic self-attention."}
+{"instruction": "Why does causal attention use a triangular mask?", "input": "", "output": "The triangular mask ensures position i cannot attend to positions greater than i."}
+{"instruction": "What does perplexity measure in language modeling?", "input": "", "output": "Perplexity measures how well a probability model predicts a sample, defined as the exponentiated cross-entropy loss."}
+{"instruction": "Translate 'நல்வரவு' to English.", "input": "", "output": "Welcome"}
+{"instruction": "Translate 'Welcome' to Tamil.", "input": "", "output": "நல்வரவு"}
+{"instruction": "Translate 'பள்ளி' to English.", "input": "", "output": "School"}
+{"instruction": "Translate 'மகிழ்ச்சி' to English.", "input": "", "output": "Happiness"}
+{"instruction": "Translate 'Friend' to Tamil.", "input": "", "output": "நண்பன்"}
+{"instruction": "Classify sentiment.", "input": "The inference latency is exceptionally low and responsive.", "output": "Positive"}
+{"instruction": "Classify sentiment.", "input": "The generated output contained severe repetitive gibberish.", "output": "Negative"}
+{"instruction": "Classify sentiment.", "input": "The memory usage remained well within budget constraints.", "output": "Positive"}
+{"instruction": "Classify sentiment.", "input": "Loss diverged to NaN after ten optimization steps.", "output": "Negative"}
+{"instruction": "Convert to lowercase.", "input": "TRANSFORMER DECODER ARCHITECTURE", "output": "transformer decoder architecture"}
+{"instruction": "Convert to uppercase.", "input": "supervised instruction tuning", "output": "SUPERVISED INSTRUCTION TUNING"}
+{"instruction": "Format as bullet points.", "input": "CPU, Memory, Disk", "output": "- CPU\n- Memory\n- Disk"}
+{"instruction": "Echo the input text.", "input": "Pure Python and PyTorch CPU implementation.", "output": "Pure Python and PyTorch CPU implementation."}
+{"instruction": "Identify the programming language.", "input": "def calculate_loss(logits, targets): return loss", "output": "Python"}
+{"instruction": "Identify the data format.", "input": "{\"instruction\": \"Say hi\", \"output\": \"Hi\"}", "output": "JSON"}
+{"instruction": "What is the capital of India?", "input": "", "output": "The capital of India is New Delhi."}
+{"instruction": "Name the largest ocean on Earth.", "input": "", "output": "The Pacific Ocean is the largest ocean on Earth."}
+{"instruction": "How many days are in a leap year?", "input": "", "output": "A leap year has 366 days."}
+{"instruction": "What is the chemical symbol for water?", "input": "", "output": "The chemical symbol for water is H2O."}
+{"instruction": "What gas do plants absorb during photosynthesis?", "input": "", "output": "Plants absorb carbon dioxide (CO2)."}
+{"instruction": "What does CPU cache do?", "input": "", "output": "CPU cache stores frequently accessed data close to the processor cores for rapid retrieval."}
+{"instruction": "What is the speed of light in vacuum approximately?", "input": "", "output": "The speed of light in vacuum is approximately 300,000 kilometers per second."}
+{"instruction": "What is the binary representation of decimal 5?", "input": "", "output": "The binary representation of 5 is 101."}
+{"instruction": "What is the square root of 81?", "input": "", "output": "9"}
+{"instruction": "What is 15 percent of 60?", "input": "", "output": "9"}
+{"instruction": "Calculate 25 + 35.", "input": "", "output": "60"}
+{"instruction": "What is 10 cubed?", "input": "", "output": "1000"}
+{"instruction": "Name two input devices for a computer.", "input": "", "output": "Two input devices are keyboard and mouse."}
+{"instruction": "What does RAM stand for?", "input": "", "output": "RAM stands for Random Access Memory."}
+{"instruction": "Classify sentiment.", "input": "Training converged rapidly to a low validation perplexity.", "output": "Positive"}
+{"instruction": "Classify sentiment.", "input": "The model hallucinated fabricated statements repeatedly.", "output": "Negative"}
+{"instruction": "Translate 'வணக்கம் நண்பா' to English.", "input": "", "output": "Hello friend"}
+{"instruction": "Translate 'நன்றி பல' to English.", "input": "", "output": "Many thanks"}
+{"instruction": "Translate 'Good morning' to Tamil.", "input": "", "output": "காலை வணக்கம்"}
+{"instruction": "Convert to lowercase.", "input": "ARTIFICIAL INTELLIGENCE", "output": "artificial intelligence"}
+{"instruction": "Convert to uppercase.", "input": "gradient descent algorithm", "output": "GRADIENT DESCENT ALGORITHM"}
+{"instruction": "Extract digits from the text.", "input": "Token size is 32 and batch is 4.", "output": "32, 4"}
+{"instruction": "Format as bullet points.", "input": "Alpha, Beta, Gamma", "output": "- Alpha\n- Beta\n- Gamma"}
+{"instruction": "Echo the text.", "input": "Deterministic random seed ensures reproducible results.", "output": "Deterministic random seed ensures reproducible results."}
+{"instruction": "What is 40 divided by 8?", "input": "", "output": "5"}
+{"instruction": "What is 17 minus 9?", "input": "", "output": "8"}
+{"instruction": "What is 12 times 5?", "input": "", "output": "60"}
+{"instruction": "What is 99 plus 1?", "input": "", "output": "100"}
+{"instruction": "Identify the data structure.", "input": "numbers = [10, 20, 30]", "output": "List"}

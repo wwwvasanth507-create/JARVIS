@@ -215,6 +215,10 @@ class Trainer:
                 accum_loss += loss_val
                 tokens_in_batch = input_ids.numel()
                 self.state.tokens_seen += tokens_in_batch
+                if labels is not None:
+                    target_labels = labels[:, 1:]
+                    supervised_in_batch = int((target_labels != -100).sum().item())
+                    self.state.supervised_tokens_seen += supervised_in_batch
                 self.state.samples_seen += input_ids.size(0)
                 self.state.micro_step += 1
 
@@ -238,6 +242,8 @@ class Trainer:
             # Update metrics in state
             step_loss = accum_loss / accum_steps
             self.state.train_loss = step_loss
+            self.state.response_loss = step_loss
+            self.state.response_perplexity = calculate_perplexity(step_loss)
             self.state.current_lr = current_lr
             self.state.grad_norm = grad_norm_val
 

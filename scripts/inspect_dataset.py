@@ -9,8 +9,10 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import sys
+import json
 from pathlib import Path
+import sys
+import numpy as np
 
 # Ensure UTF-8 output on Windows consoles
 if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
@@ -71,7 +73,8 @@ def main() -> int:
         print(f"Error: metadata.json not found in {dataset_dir}", file=sys.stderr)
         return 1
 
-    metadata = DatasetMetadata.load(meta_path)
+    with open(meta_path, "r", encoding="utf-8") as f:
+        meta_dict = json.load(f)
 
     # Optional tokenizer for decoding sample
     tokenizer = None
@@ -79,6 +82,64 @@ def main() -> int:
         tok_path = Path(args.tokenizer)
         if tok_path.is_file():
             tokenizer = Tokenizer.load(tok_path)
+
+    if meta_dict.get("dataset_type") == "instruction_sft":
+        print("=" * 65)
+        print("         MyLLM Instruction SFT Dataset Inspection Manifest       ")
+        print("=" * 65)
+        print(f"Dataset Directory        : {dataset_dir.resolve()}")
+        print(f"Dataset Type             : Instruction SFT")
+        print(f"Template Version         : {meta_dict.get('template_version', '1.0')}")
+        print(f"Context Length           : {meta_dict.get('sequence_length')}")
+        print(f"Tokenizer Fingerprint    : {meta_dict.get('tokenizer_fingerprint', '')[:24]}...")
+        print(f"Dataset Fingerprint      : {meta_dict.get('dataset_fingerprint', '')[:24]}...")
+        print("-" * 65)
+        print("Files on Disk:")
+        for fname in ["train_sft.bin", "val_sft.bin", "metadata.json"]:
+            fpath = dataset_dir / fname
+            if fpath.is_file():
+                size_str = format_file_size(fpath.stat().st_size)
+                print(f"  - {fname:<15} : {size_str:>10} ({fpath.stat().st_size:,} bytes)")
+            else:
+                print(f"  - {fname:<15} : [Not Found]")
+
+        print("-" * 65)
+        split_stats = meta_dict.get("split_stats", {})
+        print(f"Total Unique Examples    : {split_stats.get('unique_examples', 0):,}")
+        print(f"Cross-Split Duplicates   : {split_stats.get('cross_split_duplicates', 0)} (0% Leakage)")
+        train_info = meta_dict.get("train", {})
+        val_info = meta_dict.get("validation", {})
+        print(f"Train Accepted / Supervised Tokens: {train_info.get('accepted', 0)} / {train_info.get('supervised_tokens', 0):,}")
+        print(f"Val Accepted / Supervised Tokens  : {val_info.get('accepted', 0)} / {val_info.get('supervised_tokens', 0):,}")
+
+        # Preview sample from train_sft.bin or val_sft.bin
+        target_split_file = dataset_dir / f"{args.split}_sft.bin"
+        if target_split_file.is_file() and target_split_file.stat().st_size > 0:
+            seq_len = int(meta_dict.get("sequence_length", 64))
+            arr = np.memmap(target_split_file, dtype=np.int64, mode="r")
+            item_len = 2 * seq_len
+            if len(arr) >= item_len:
+                x_sample = arr[:seq_len]
+                labels_sample = arr[seq_len:item_len]
+                print("-" * 65)
+                print(f"Sample First Instruction ({args.split}_sft.bin):")
+                print(f"  input_ids (tokens): {list(x_sample[:16])}...")
+                print(f"  labels (masked)   : {list(labels_sample[:16])}...")
+                sup_count = int(np.sum(labels_sample[1:] != -100))
+                print(f"  Supervised Tokens : {sup_count} (out of {seq_len})")
+                if tokenizer is not None:
+                    # Decode prompt vs response
+                    prompt_toks = [t for t, l in zip(x_sample, labels_sample) if l == -100 and t != 0]
+                    resp_toks = [t for t, l in zip(x_sample, labels_sample) if l != -100]
+                    print(f"  Prompt Decoded    : {tokenizer.decode(prompt_toks, skip_special_tokens=False)!r}")
+                    print(f"  Response Decoded  : {tokenizer.decode(resp_toks, skip_special_tokens=False)!r}")
+
+        print("=" * 65)
+        print("SUCCESS: Instruction SFT dataset inspection complete.")
+        print("=" * 65)
+        return 0
+
+    metadata = DatasetMetadata.load(meta_path)
 
     print("=" * 65)
     print("             MyLLM Binary Dataset Inspection Manifest             ")
@@ -135,7 +196,6 @@ def main() -> int:
             print(f"Note on sequence preview: {exc}")
 
     if args.quality:
-        import numpy as np
         import statistics
 
         print("-" * 65)

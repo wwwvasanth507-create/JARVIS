@@ -13,7 +13,8 @@ Enforces strict verification across:
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional
+from pathlib import Path
+from typing import Any, Dict, Optional, Union
 import torch
 import torch.nn as nn
 from myllm.config import AppConfig, ModelConfig
@@ -115,3 +116,88 @@ def validate_training_compatibility(
             )
 
     logger.debug("Pre-training compatibility validation passed successfully.")
+
+
+def validate_sft_compatibility(
+    model: nn.Module,
+    checkpoint_path: Union[str, Path],
+    tokenizer: Tokenizer,
+    instruction_dataset: Any,
+    config: Optional[AppConfig] = None,
+) -> Dict[str, Any]:
+    """
+    Validate base model checkpoint and instruction dataset compatibility for SFT.
+
+    Verifies:
+    - Base checkpoint exists and contains valid model weights and config.
+    - Model architecture in checkpoint matches active model instance.
+    - Tokenizer fingerprint matches checkpoint.
+    - Context length is sufficient for instruction dataset.
+    - CPU device is strictly enforced.
+
+    Returns:
+        Loaded checkpoint payload dictionary.
+    """
+    ckpt_file = Path(checkpoint_path)
+    if not ckpt_file.is_file():
+        raise CompatibilityError(f"Base model checkpoint not found at: {ckpt_file}")
+
+    try:
+        payload = torch.load(ckpt_file, map_location="cpu", weights_only=False)
+    except Exception as e:
+        raise CompatibilityError(f"Failed to load base checkpoint from {ckpt_file}: {e}")
+
+    # 1. CPU Device Verification
+    for name, param in model.named_parameters():
+        if param.device.type != "cpu":
+            raise CompatibilityError(
+                f"Model parameter '{name}' is on device '{param.device.type}'. "
+                f"SFT strictly requires CPU execution."
+            )
+
+    # 2. Tokenizer Fingerprint Matching
+    tok_fp = compute_tokenizer_fingerprint(tokenizer)
+    ckpt_tok_fp = payload.get("tokenizer_fingerprint")
+    if ckpt_tok_fp and tok_fp != ckpt_tok_fp:
+        raise CompatibilityError(
+            f"Tokenizer fingerprint mismatch! Checkpoint requires '{ckpt_tok_fp}', "
+            f"but active tokenizer has '{tok_fp}'."
+        )
+
+    # 3. Model Architecture Matching
+    model_cfg: Optional[ModelConfig] = getattr(model, "config", None)
+    ckpt_cfg_dict = payload.get("config", {}).get("model", {})
+    if model_cfg is not None and ckpt_cfg_dict:
+        if model_cfg.vocab_size != ckpt_cfg_dict.get("vocab_size"):
+            raise CompatibilityError(
+                f"Vocab size mismatch between model ({model_cfg.vocab_size}) and "
+                f"checkpoint ({ckpt_cfg_dict.get('vocab_size')})."
+            )
+        if model_cfg.n_embd != ckpt_cfg_dict.get("n_embd"):
+            raise CompatibilityError(
+                f"Embedding dimension mismatch between model ({model_cfg.n_embd}) and "
+                f"checkpoint ({ckpt_cfg_dict.get('n_embd')})."
+            )
+        if model_cfg.n_layer != ckpt_cfg_dict.get("n_layer"):
+            raise CompatibilityError(
+                f"Layer count mismatch between model ({model_cfg.n_layer}) and "
+                f"checkpoint ({ckpt_cfg_dict.get('n_layer')})."
+            )
+        if model_cfg.n_head != ckpt_cfg_dict.get("n_head"):
+            raise CompatibilityError(
+                f"Head count mismatch between model ({model_cfg.n_head}) and "
+                f"checkpoint ({ckpt_cfg_dict.get('n_head')})."
+            )
+
+    # 4. Context Length Compatibility
+    ds_seq_len = getattr(instruction_dataset, "sequence_length", None)
+    if model_cfg is not None and ds_seq_len is not None:
+        if ds_seq_len > model_cfg.context_length:
+            raise CompatibilityError(
+                f"Instruction dataset sequence_length ({ds_seq_len}) exceeds "
+                f"model context_length ({model_cfg.context_length})."
+            )
+
+    logger.debug("SFT compatibility validation passed successfully.")
+    return payload
+

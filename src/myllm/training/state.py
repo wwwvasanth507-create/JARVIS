@@ -23,10 +23,13 @@ class TrainingState:
     micro_step: int = 0
     epoch: int = 0
     tokens_seen: int = 0
+    supervised_tokens_seen: int = 0
     samples_seen: int = 0
     current_lr: float = 0.0
     train_loss: float = float("nan")
     val_loss: float = float("nan")
+    response_loss: float = float("nan")
+    response_perplexity: float = float("nan")
     best_val_loss: float = float("inf")
     best_val_perplexity: float = float("inf")
     elapsed_seconds: float = 0.0

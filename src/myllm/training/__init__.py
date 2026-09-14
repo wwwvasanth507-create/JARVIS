@@ -19,7 +19,11 @@ from myllm.training.checkpoint import (
     prune_old_checkpoints,
     save_checkpoint,
 )
-from myllm.training.compatibility import CompatibilityError, validate_training_compatibility
+from myllm.training.compatibility import (
+    CompatibilityError,
+    validate_sft_compatibility,
+    validate_training_compatibility,
+)
 from myllm.training.experiment import ExperimentTracker
 from myllm.training.metrics import (
     StepMetrics,
@@ -39,15 +43,16 @@ __all__ = [
     "create_optimizer",
     "partition_parameters",
     "CosineWarmupScheduler",
-    "calculate_perplexity",
-    "StepMetrics",
     "ThroughputTracker",
-    "evaluate",
+    "StepMetrics",
+    "calculate_perplexity",
     "save_checkpoint",
     "load_checkpoint",
     "prune_old_checkpoints",
+    "evaluate",
     "CHECKPOINT_FORMAT_VERSION",
     "CompatibilityError",
     "validate_training_compatibility",
+    "validate_sft_compatibility",
     "ExperimentTracker",
 ]

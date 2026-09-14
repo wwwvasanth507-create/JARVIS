@@ -1,0 +1,53 @@
+{
+  "dataset_type": "instruction_sft",
+  "format_version": "1.0",
+  "template_version": "1.0",
+  "tokenizer_fingerprint": "a89c78921e8bc0078d28f6d07025a76b7e2b33f641714b54d88211f9108dff55",
+  "dataset_fingerprint": "482c6bebed2141baa5315e6eaf61363b5e8c4ba486989eb22b674df607fbdacc",
+  "sequence_length": 64,
+  "split_seed": 42,
+  "split_stats": {
+    "total_input_examples": 119,
+    "unique_examples": 119,
+    "intra_duplicates": 0,
+    "train_examples": 102,
+    "val_examples": 17,
+    "val_ratio": 0.14285714285714285,
+    "cross_split_duplicates": 0,
+    "leakage_detected": false,
+    "seed": 42
+  },
+  "train": {
+    "total_examples": 102,
+    "accepted": 102,
+    "rejected": 0,
+    "truncated_prompts": 64,
+    "prompt_tokens": 4238,
+    "response_tokens": 1716,
+    "supervised_tokens": 1716,
+    "total_unpadded_tokens": 5954,
+    "total_padded_tokens": 6528,
+    "average_prompt_length": 41.549019607843135,
+    "average_response_length": 16.823529411764707,
+    "maximum_response_length": 60,
+    "supervised_token_percent": 26.286764705882355,
+    "rejection_details": []
+  },
+  "validation": {
+    "total_examples": 17,
+    "accepted": 17,
+    "rejected": 0,
+    "truncated_prompts": 9,
+    "prompt_tokens": 659,
+    "response_tokens": 300,
+    "supervised_tokens": 300,
+    "total_unpadded_tokens": 959,
+    "total_padded_tokens": 1088,
+    "average_prompt_length": 38.76470588235294,
+    "average_response_length": 17.647058823529413,
+    "maximum_response_length": 53,
+    "supervised_token_percent": 27.573529411764707,
+    "rejection_details": []
+  },
+  "tokenizer_vocab_size": 512
+}

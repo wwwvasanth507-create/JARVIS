@@ -25,6 +25,7 @@ A self-contained, inspectable GPT-style decoder-only Transformer language model 
 | **Phase 4** | **Training Loop**: CPU-tuned AdamW optimizer, learning rate scheduling with warmup & cosine decay, checkpointing. | **Completed** |
 | **Phase 5** | **Inference & Evaluation**: Autoregressive decoding (greedy, temperature, top-k, top-p, repetition penalty), KV cache, validation loss, and perplexity. | **Completed** |
 | **Phase 6** | **Real Training Workflow**: Production corpus preparation, data leakage validation, CPU scaling profiles, diagnostics telemetry, before/after generation quality, best-checkpoint selection, and documentation. | **Completed** |
+| **Phase 7** | **Supervised Instruction-Tuning (SFT)**: Structured instruction format, deterministic serialization templates, response-only loss masking, context length policy, SFT trainer, baseline vs post-tuning evaluation, and telemetry. | **Completed** |
 
 ---
 
@@ -39,28 +40,34 @@ c:\ll\JARVIS/
 ├── pyproject.toml          # PEP 517/518 build definition & pytest config
 ├── configs/
 │   ├── base.yaml           # Baseline YAML configuration (CPU-first defaults)
-│   └── profiles/           # CPU scaling profiles (tiny_cpu, small_cpu, medium_cpu)
+│   ├── profiles/           # CPU scaling profiles (tiny_cpu, small_cpu, medium_cpu)
+│   └── instruction/        # SFT instruction-tuning profiles (tiny_sft, small_sft)
 ├── data/
 │   ├── raw/                # Unprocessed multi-domain text corpora
-│   ├── processed/          # Cleaned text datasets (.gitkeep)
-│   └── tokenized/          # Binary tokenized sequences, idx, and metadata manifests
+│   ├── instructions/       # JSONL instruction datasets (synthetic_sft.jsonl)
+│   ├── instruction/        # Binary SFT datasets (train_sft.bin, val_sft.bin, metadata.json)
+│   └── tokenized/          # Pre-training binary tokenized sequences, idx, and manifests
 ├── docs/
 │   ├── tokenizer.md        # Deep dive into Byte-Level BPE architecture
 │   ├── model.md            # Deep dive into GPT Transformer architecture
 │   ├── data.md             # Deep dive into binary dataset pipeline
-│   └── training.md         # Deep dive into CPU training engine & Phase 6 workflow
+│   ├── training.md         # Deep dive into CPU training engine & Phase 6 workflow
+│   └── instruction_tuning.md # Deep dive into SFT pipeline & response-only masking
 ├── checkpoints/            # Model weights and training checkpoints
 ├── logs/                   # Training and runtime execution logs
 ├── experiments/            # Isolated experiment directories (metrics.jsonl, reports)
 ├── scripts/
 │   ├── check_environment.py # Diagnostic verification script
 │   ├── prepare_corpus.py    # Production multi-domain corpus preparation & splitting
+│   ├── prepare_instructions.py # Multi-domain synthetic instruction dataset generator
 │   ├── inspect_model.py     # Model architecture & memory footprint inspector
 │   ├── train_tokenizer.py   # CLI tokenizer training tool
 │   ├── build_dataset.py     # CLI binary dataset ingestion & builder tool
+│   ├── build_instruction_dataset.py # CLI SFT dataset ingestion & builder tool
 │   ├── inspect_dataset.py   # CLI memory-mapped dataset & quality inspector
 │   ├── benchmark_data_pipeline.py # End-to-end throughput & integration benchmark
 │   ├── train.py             # CLI CPU training engine & experiment runner
+│   ├── train_sft.py         # CLI CPU supervised instruction-tuning runner
 │   ├── evaluate.py          # CLI loss and perplexity evaluation
 │   ├── generate.py          # CLI autoregressive generation (greedy & sampling)
 │   └── inspect_training.py  # CLI checkpoint inspector & state analyzer
@@ -512,4 +519,41 @@ python scripts/evaluate.py `
 ```
 
 For complete technical specifications, see [docs/training.md](file:///c:/ll/JARVIS/docs/training.md).
+
+---
+
+## Phase 7 — Supervised Instruction-Tuning (SFT) Workflow
+
+Phase 7 establishes pure CPU supervised instruction-tuning with response-only loss masking:
+
+```powershell
+# 1. Generate diverse synthetic instruction dataset
+python scripts/prepare_instructions.py --output data/instructions/synthetic_sft.jsonl
+
+# 2. Build binary SFT dataset with response-only masking & context enforcement
+python scripts/build_instruction_dataset.py `
+  --input data/instructions/synthetic_sft.jsonl `
+  --output-dir data/instruction `
+  --tokenizer data/tokenized/tokenizer.json `
+  --sequence-length 64
+
+# 3. Inspect SFT dataset, sample sequences, and response-only masking
+python scripts/inspect_dataset.py `
+  --dataset data/instruction `
+  --tokenizer data/tokenized/tokenizer.json
+
+# 4. Execute SFT training from Phase 6 base checkpoint
+python scripts/train_sft.py `
+  --config configs/instruction/tiny_sft.yaml `
+  --experiment-name phase7_sft_run `
+  --max-steps 60
+
+# 5. Inspect before vs after SFT completions on identical prompts
+Get-Content experiments/phase7/phase7_sft_run/before_sft.json
+Get-Content experiments/phase7/phase7_sft_run/after_sft.json
+Get-Content experiments/phase7/phase7_sft_run/training_report.md
+```
+
+For complete technical specifications, see [docs/instruction_tuning.md](file:///c:/ll/JARVIS/docs/instruction_tuning.md).
+
 

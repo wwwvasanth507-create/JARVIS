@@ -270,6 +270,18 @@ class DataConfig:
 
 
 @dataclass
+class InstructionConfig:
+    """Supervised Instruction-Tuning (SFT) settings."""
+    base_checkpoint: Optional[str] = None
+    template_version: str = "1.0"
+    mask_prompt_labels: bool = True
+    supervise_eos: bool = True
+    response_truncation_policy: str = "reject"  # "reject" or "truncate"
+    eval_prompts_file: Optional[str] = None
+    instruction_data_path: str = "data/instruction"
+
+
+@dataclass
 class AppConfig:
     """Root configuration object containing all sub-configurations."""
     system: SystemConfig = field(default_factory=SystemConfig)
@@ -279,6 +291,7 @@ class AppConfig:
     logging: LoggingConfig = field(default_factory=LoggingConfig)
     tokenizer: TokenizerConfig = field(default_factory=TokenizerConfig)
     data: DataConfig = field(default_factory=DataConfig)
+    instruction: InstructionConfig = field(default_factory=InstructionConfig)
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert configuration hierarchy into a nested dictionary."""
@@ -312,11 +325,13 @@ def resolve_config_path(config_path: Optional[Union[str, Path]] = None) -> Optio
     if path.is_file():
         return path
 
-    # Check named profiles under configs/profiles/
+    # Check named profiles under configs/profiles/ and configs/instruction/
     name = str(config_path).strip()
     profile_candidates = [
         Path(f"configs/profiles/{name}.yaml"),
         Path(f"configs/profiles/{name}"),
+        Path(f"configs/instruction/{name}.yaml"),
+        Path(f"configs/instruction/{name}"),
         Path(f"configs/{name}.yaml"),
         Path(f"configs/{name}"),
     ]
@@ -333,7 +348,7 @@ def load_config(config_path: Optional[Union[str, Path]] = None) -> AppConfig:
 
     Supports:
     - Direct file paths (e.g. 'configs/base.yaml', 'configs/profiles/small_cpu.yaml').
-    - Named profiles (e.g. 'tiny_cpu', 'small_cpu', 'medium_cpu').
+    - Named profiles (e.g. 'tiny_cpu', 'small_cpu', 'medium_cpu', 'tiny_sft').
     - None (defaults to 'configs/base.yaml').
 
     Args:
@@ -358,6 +373,7 @@ def load_config(config_path: Optional[Union[str, Path]] = None) -> AppConfig:
     logging_dict = raw_data.get("logging", {})
     tokenizer_dict = raw_data.get("tokenizer", {})
     data_dict = raw_data.get("data", {})
+    instruction_dict = raw_data.get("instruction", {})
 
     return AppConfig(
         system=SystemConfig(**system_dict),
@@ -367,6 +383,7 @@ def load_config(config_path: Optional[Union[str, Path]] = None) -> AppConfig:
         logging=LoggingConfig(**logging_dict),
         tokenizer=TokenizerConfig(**tokenizer_dict),
         data=DataConfig(**data_dict),
+        instruction=InstructionConfig(**instruction_dict),
     )
 
 
