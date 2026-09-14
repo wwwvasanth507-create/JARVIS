@@ -64,6 +64,8 @@ logs/*
 !logs/.gitkeep
 experiments/*
 !experiments/.gitkeep
+scratch/*
+!scratch/.gitkeep
 
 # Data files (raw and processed data can be large)
 data/raw/*

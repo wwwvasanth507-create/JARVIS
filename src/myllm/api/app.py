@@ -10,6 +10,7 @@ from __future__ import annotations
 import logging
 from typing import Optional
 from fastapi import Depends, FastAPI, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
 from myllm.api.dependencies import get_api_service
@@ -66,11 +67,23 @@ def create_app(
     # Initialize or assign service
     if service is not None:
         app.state.api_service = service
+        active_config = service.config
     elif config is not None:
         app.state.api_service = APIService.create_from_config(config)
+        active_config = config
     else:
         cfg = ServerConfig()
         app.state.api_service = APIService.create_from_config(cfg)
+        active_config = cfg
+
+    # Register CORS for local frontend access
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=active_config.cors_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     # ================= Routes =================
 

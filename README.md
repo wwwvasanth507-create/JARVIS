@@ -28,6 +28,7 @@ A self-contained, inspectable GPT-style decoder-only Transformer language model 
 | **Phase 7** | **Supervised Instruction-Tuning (SFT)**: Structured instruction format, deterministic serialization templates, response-only loss masking, context length policy, SFT trainer, baseline vs post-tuning evaluation, and telemetry. | **Completed** |
 | **Phase 8** | **Conversational Chat Engine**: Multi-turn dialogue management, deterministic chat templates, system prompt support, turn-level context truncation, KV-cached streaming generation, session JSON persistence, and interactive CLI. | **Completed** |
 | **Phase 9** | **Local API Server**: Asynchronous FastAPI/Uvicorn HTTP & SSE streaming API, thread-safe session registry, per-session locking, model metadata introspection, explicit persistence, and client test suite. | **Completed** |
+| **Phase 10** | **Web UI**: Modern responsive browser chat interface built with React 19, TypeScript, Vite, and Vanilla CSS design system. Real-time SSE streaming, multi-turn dialogue, session persistence, generation settings, model inspection, and pure CPU end-to-end integration. | **Completed** |
 
 ---
 
@@ -645,6 +646,39 @@ python -m pytest
 
 For complete technical specifications, see [docs/api.md](file:///c:/ll/JARVIS/docs/api.md).
 
+---
 
+## Phase 10 — Web UI Workflow
 
+Phase 10 introduces the modern browser-based chat interface communicating exclusively with the Phase 9 FastAPI server via HTTP and Server-Sent Events (SSE) streaming:
 
+```
+MyLLM
+  ↳ Phase 1: Byte-Level BPE Tokenizer
+    ↳ Phase 2: GPT-Style Decoder-Only Transformer
+      ↳ Phases 3-6: Pre-training & Real Training Engine
+        ↳ Phase 7: Supervised Instruction-Tuning (SFT)
+          ↳ Phase 8: Conversational Chat Engine (KV-Cached)
+            ↳ Phase 9: Local ASGI API Server (FastAPI + SSE)
+              ↳ Phase 10: Polished Web UI (React 19 + TypeScript + Vite)
+```
+
+```powershell
+# 1. Start the API Server (Terminal 1)
+python scripts/serve.py --host 127.0.0.1 --port 8000
+
+# 2. Start the Frontend Web UI (Terminal 2)
+cd frontend
+npm run dev -- --host 127.0.0.1 --port 5173
+
+# 3. Open http://127.0.0.1:5173 in any modern browser
+
+# 4. Run frontend tests (39 tests)
+cd frontend
+npm test
+
+# 5. Build for production
+npm run build
+```
+
+For complete technical specifications, see [docs/web_ui.md](file:///c:/ll/JARVIS/docs/web_ui.md).

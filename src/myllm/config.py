@@ -294,6 +294,14 @@ class ServerConfig:
     max_new_tokens: int = 128
     default_temperature: float = 0.7
     default_top_p: float = 0.9
+    cors_origins: list[str] = field(
+        default_factory=lambda: [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+        ]
+    )
 
     def __post_init__(self) -> None:
         if self.device.lower().strip() != "cpu":
