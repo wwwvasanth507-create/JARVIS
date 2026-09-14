@@ -25,13 +25,15 @@ paths:
 
 # Model architecture specifications (GPT-style decoder-only transformer)
 model:
-  vocab_size: 10000      # Vocabulary size (to be trained by custom BPE tokenizer)
-  block_size: 256        # Context window / maximum sequence length
-  n_layer: 6             # Number of transformer decoder layers
-  n_head: 6              # Number of attention heads
-  n_embd: 384            # Embedding dimension (divisible by n_head: 384 / 6 = 64 head dimension)
-  dropout: 0.1           # Dropout probability
-  bias: false            # LayerNorm and Linear bias (false is faster and cleaner for modern GPT)
+  vocab_size: 1000       # Vocabulary size (matches tokenizer baseline)
+  context_length: 128    # Maximum context sequence length
+  n_layer: 4             # Number of transformer decoder layers
+  n_head: 4              # Number of attention heads (head_dim = 256 / 4 = 64)
+  n_embd: 256            # Embedding dimension
+  dropout: 0.0           # Dropout probability (0.0 for initial CPU development)
+  bias: true             # Linear layer bias
+  activation: "gelu"     # Activation function
+  weight_tying: true     # Share weights between token embedding and LM head
 
 # Training hyperparameters (optimized for CPU execution)
 training:

@@ -35,11 +35,13 @@ class TestConfigSystem:
         assert config.paths.experiment_dir == "experiments"
 
         # Model fields
-        assert config.model.vocab_size == 10000
-        assert config.model.block_size == 256
-        assert config.model.n_layer == 6
-        assert config.model.n_head == 6
-        assert config.model.n_embd == 384
+        assert config.model.vocab_size == 1000
+        assert config.model.context_length == 128
+        assert config.model.n_layer == 4
+        assert config.model.n_head == 4
+        assert config.model.n_embd == 256
+        assert config.model.activation == "gelu"
+        assert config.model.bias is True
 
         # Training fields
         assert config.training.batch_size == 16

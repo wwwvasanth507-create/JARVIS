@@ -20,7 +20,7 @@ A self-contained, inspectable GPT-style decoder-only Transformer language model 
 | :--- | :--- | :--- |
 | **Phase 0** | **Project Foundation**: Architecture blueprint, CPU device utilities, seed control, configuration system, diagnostics, and test suite. | **Completed** |
 | **Phase 1** | **Custom Tokenizer**: Byte-Pair Encoding (BPE) / Byte-level tokenizer built from scratch, vocabulary builder, encode/decode pipelines. | **Completed** |
-| **Phase 2** | **Model Architecture**: GPT-style decoder-only Transformer (Causal Self-Attention, MLP, LayerNorm/RMSNorm, Embeddings). | Upcoming |
+| **Phase 2** | **Model Architecture**: GPT-style decoder-only Transformer (Causal Self-Attention, MLP, LayerNorm/RMSNorm, Embeddings). | **Completed** |
 | **Phase 3** | **Data Pipeline**: Text streaming, dataset tokenization, memory-mapped binary files, batch generation. | Upcoming |
 | **Phase 4** | **Training Loop**: CPU-tuned AdamW optimizer, learning rate scheduling with warmup & cosine decay, checkpointing. | Upcoming |
 | **Phase 5** | **Inference & Evaluation**: Autoregressive decoding (greedy, top-k, top-p / nucleus sampling, temperature), validation loss, and perplexity. | Upcoming |
@@ -43,12 +43,14 @@ c:\ll\JARVIS/
 │   ├── processed/          # Cleaned text datasets (.gitkeep)
 │   └── tokenized/          # Binary tokenized sequences (.gitkeep)
 ├── docs/
-│   └── tokenizer.md        # Deep dive into Byte-Level BPE architecture
+│   ├── tokenizer.md        # Deep dive into Byte-Level BPE architecture
+│   └── model.md            # Deep dive into GPT Transformer architecture
 ├── checkpoints/            # Model weights and training checkpoints (.gitkeep)
 ├── logs/                   # Training and runtime execution logs (.gitkeep)
 ├── experiments/            # Experiment manifests and metrics (.gitkeep)
 ├── scripts/
 │   ├── check_environment.py # Diagnostic verification script
+│   ├── inspect_model.py     # Model architecture & latency inspector
 │   └── train_tokenizer.py   # CLI tokenizer training tool
 ├── src/
 │   └── myllm/              # Primary Python package
@@ -61,8 +63,14 @@ c:\ll\JARVIS/
 │       │   ├── trainer.py  # Deterministic BPE training algorithm
 │       │   ├── serialization.py # Safe JSON save/load
 │       │   └── tokenizer.py # Unified Tokenizer interface
+│       ├── model/          # GPT-style Decoder-Only Transformer
+│       │   ├── __init__.py # Public model exports
+│       │   ├── attention.py # Causal multi-head self-attention
+│       │   ├── mlp.py      # Position-wise GELU feed-forward network
+│       │   ├── block.py    # Pre-LayerNorm Transformer block
+│       │   ├── gpt.py      # Full GPTModel with tied embeddings
+│       │   └── utils.py    # Parameter counter and model summary
 │       ├── data/           # Dataset loaders and batch generators
-│       ├── model/          # Decoder-only Transformer implementation
 │       ├── training/       # Optimization and training loops
 │       ├── evaluation/     # Loss and perplexity benchmarks
 │       ├── inference/      # Autoregressive generation engine
@@ -75,6 +83,7 @@ c:\ll\JARVIS/
     ├── __init__.py
     ├── test_config.py      # Configuration tests
     ├── test_device.py      # Strict CPU device selection tests
+    ├── test_model.py       # Comprehensive Transformer tests (27 tests)
     ├── test_tokenizer.py   # Comprehensive Byte-Level BPE tests (32 tests)
     └── test_utils.py       # Seed and logging tests
 ```
@@ -178,4 +187,57 @@ assert reconstructed == "Hello world!"
 ```
 
 For complete technical specifications, see [docs/tokenizer.md](file:///c:/ll/JARVIS/docs/tokenizer.md).
+
+---
+
+## GPT-Style Decoder-Only Transformer (Phase 2)
+
+### Features
+- **Pure PyTorch CPU Primitives**: Built from scratch without `torch.nn.Transformer` or Hugging Face.
+- **Pre-LayerNorm Architecture**: Residual layout ($x = x + \text{Attn}(\text{LN}(x))$, $x = x + \text{MLP}(\text{LN}(x))$) with final LayerNorm.
+- **Strict Causal Masking**: Registered lower-triangular buffer guaranteeing tokens attend only to past positions ($j \le i$).
+- **Learned Positional Embeddings**: Dedicated embedding table up to `context_length` with explicit boundary validation.
+- **Weight Tying**: Input embedding (`wte`) and output projection (`lm_head`) share identical weights, saving parameters and stabilizing representations.
+- **Next-Token Prediction Loss**: Built-in shifted cross-entropy loss computation when target labels are provided.
+- **CPU Optimization**: 3.25M parameter baseline model executes forward pass in ~6.5 ms on CPU.
+
+### Quickstart Inspection
+Run model architecture inspection and measure CPU forward pass latency:
+```powershell
+python scripts/inspect_model.py
+```
+
+### Python API
+```python
+import torch
+from myllm.config import ModelConfig
+from myllm.model import GPTModel
+
+# 1. Model configuration
+config = ModelConfig(
+    vocab_size=1000,
+    context_length=128,
+    n_layer=4,
+    n_head=4,
+    n_embd=256,
+    weight_tying=True,
+)
+
+# 2. Instantiate on CPU
+model = GPTModel(config)
+model.eval()
+
+# 3. Forward pass
+input_ids = torch.tensor([[10, 20, 30, 40]], dtype=torch.long)
+logits = model(input_ids)
+print("Logits shape:", logits.shape)  # torch.Size([1, 4, 1000])
+
+# 4. Forward with next-token prediction loss
+labels = input_ids.clone()
+logits, loss = model(input_ids, labels=labels)
+print("Loss:", loss.item())
+```
+
+For complete technical specifications, see [docs/model.md](file:///c:/ll/JARVIS/docs/model.md).
+
 

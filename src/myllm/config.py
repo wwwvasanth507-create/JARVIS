@@ -52,20 +52,47 @@ class PathsConfig:
 
 @dataclass
 class ModelConfig:
-    """GPT-style decoder-only Transformer model dimensions."""
-    vocab_size: int = 10000
-    block_size: int = 256
-    n_layer: int = 6
-    n_head: int = 6
-    n_embd: int = 384
-    dropout: float = 0.1
-    bias: bool = False
+    """GPT-style decoder-only Transformer model dimensions and settings."""
+    vocab_size: int = 1000
+    context_length: int = 128
+    n_layer: int = 4
+    n_head: int = 4
+    n_embd: int = 256
+    dropout: float = 0.0
+    bias: bool = True
+    activation: str = "gelu"
+    weight_tying: bool = True
+    block_size: Optional[int] = None  # Backward compatibility alias for context_length
 
     def __post_init__(self) -> None:
+        if self.block_size is not None and self.context_length == 128:
+            self.context_length = self.block_size
+        else:
+            self.block_size = self.context_length
+
+        if self.vocab_size <= 0:
+            raise ValueError(f"vocab_size must be positive, got {self.vocab_size}")
+        if self.context_length <= 0:
+            raise ValueError(f"context_length must be positive, got {self.context_length}")
+        if self.n_layer <= 0:
+            raise ValueError(f"n_layer must be positive, got {self.n_layer}")
+        if self.n_head <= 0:
+            raise ValueError(f"n_head must be positive, got {self.n_head}")
+        if self.n_embd <= 0:
+            raise ValueError(f"n_embd must be positive, got {self.n_embd}")
         if self.n_embd % self.n_head != 0:
             raise ValueError(
                 f"n_embd ({self.n_embd}) must be divisible by n_head ({self.n_head})."
             )
+        if not (0.0 <= self.dropout < 1.0):
+            raise ValueError(f"dropout must be in [0, 1), got {self.dropout}")
+        if self.activation.lower() not in {"gelu", "relu", "silu", "tanh"}:
+            raise ValueError(f"Unsupported activation '{self.activation}'. Supported: gelu, relu, silu, tanh.")
+
+    @property
+    def head_dim(self) -> int:
+        """Dimension of each attention head."""
+        return self.n_embd // self.n_head
 
 
 @dataclass
