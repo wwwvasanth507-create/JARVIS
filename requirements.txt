@@ -1,0 +1,13 @@
+# Core tensor framework (PyTorch CPU build)
+# To install CPU-only build on Windows:
+# pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch>=2.2.0
+
+# Configuration and Serialization
+PyYAML>=6.0.1
+
+# Numerical operations
+numpy>=1.26.0
+
+# Testing and development
+pytest>=8.0.0

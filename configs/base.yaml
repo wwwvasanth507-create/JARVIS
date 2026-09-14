@@ -1,0 +1,67 @@
+# Baseline Configuration for MyLLM (CPU-First GPT from scratch)
+
+# System and hardware execution settings
+system:
+  # Random seed for reproducibility across Python, NumPy, and PyTorch
+  seed: 42
+
+  # Execution device - strictly 'cpu'
+  # Attempts to use 'cuda', 'gpu', or 'rocm' will trigger safe rejection
+  device: "cpu"
+
+  # Number of CPU threads for intra-op parallelism (null defaults to auto-detected CPU cores)
+  num_threads: 4
+
+  # Enforce strict CPU-only execution (disallow GPU even if hardware/CUDA is detected)
+  strict_cpu: true
+
+# Directory paths relative to the project root
+paths:
+  model_dir: "checkpoints"
+  checkpoint_dir: "checkpoints"
+  dataset_dir: "data"
+  log_dir: "logs"
+  experiment_dir: "experiments"
+
+# Model architecture specifications (GPT-style decoder-only transformer)
+model:
+  vocab_size: 10000      # Vocabulary size (to be trained by custom BPE tokenizer)
+  block_size: 256        # Context window / maximum sequence length
+  n_layer: 6             # Number of transformer decoder layers
+  n_head: 6              # Number of attention heads
+  n_embd: 384            # Embedding dimension (divisible by n_head: 384 / 6 = 64 head dimension)
+  dropout: 0.1           # Dropout probability
+  bias: false            # LayerNorm and Linear bias (false is faster and cleaner for modern GPT)
+
+# Training hyperparameters (optimized for CPU execution)
+training:
+  batch_size: 16         # Batch size per iteration
+  learning_rate: 6.0e-4  # Peak learning rate with AdamW
+  min_learning_rate: 6.0e-5
+  weight_decay: 0.1
+  beta1: 0.9
+  beta2: 0.95
+  grad_clip: 1.0
+  max_iters: 2000
+  warmup_iters: 100
+  eval_interval: 200
+  eval_iters: 50
+  save_interval: 500
+
+# Logging and evaluation settings
+logging:
+  log_level: "INFO"
+  log_to_file: true
+  log_filename: "myllm.log"
+
+# Byte-Level BPE Tokenizer settings
+tokenizer:
+  vocab_size: 1000       # Sensible CPU-friendly baseline vocabulary size (>= 260)
+  min_pair_frequency: 2  # Minimum occurrences for a token pair to be eligible for merging
+  special_tokens:
+    - "<PAD>"
+    - "<UNK>"
+    - "<BOS>"
+    - "<EOS>"
+  max_documents: null    # Null processes all documents
+  max_training_bytes: null
