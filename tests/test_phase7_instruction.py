@@ -40,6 +40,7 @@ from myllm.data.instruction import (
 from myllm.data.tokenizer_pipeline import compute_tokenizer_fingerprint
 from myllm.model.gpt import GPTModel
 from myllm.tokenizer import Tokenizer
+from myllm.tokenizer.vocabulary import Vocabulary
 from myllm.training.checkpoint import load_checkpoint, save_checkpoint
 from myllm.training.compatibility import CompatibilityError, validate_sft_compatibility
 from myllm.training.trainer import Trainer
@@ -48,6 +49,9 @@ from myllm.training.trainer import Trainer
 @pytest.fixture
 def sample_tokenizer() -> Tokenizer:
     """Fixture providing a deterministic Byte-Level BPE tokenizer."""
+    smoke_file = Path("checkpoints/smoke/tokenizer.json")
+    if smoke_file.is_file():
+        return Tokenizer.load(smoke_file)
     tok_file = Path("data/tokenized/tokenizer.json")
     if tok_file.is_file():
         return Tokenizer.load(tok_file)
@@ -322,7 +326,12 @@ def test_sft_compatibility_and_loading(sample_tokenizer: Tokenizer, tmp_path: Pa
     assert payload["tokenizer_fingerprint"] == tok_fp
 
     # Fails with wrong tokenizer
-    other_tok = Tokenizer()
+    other_vocab = Vocabulary()
+    other_vocab.add_merge(4, 5)
+    other_tok = Tokenizer(vocabulary=other_vocab)
+    if compute_tokenizer_fingerprint(other_tok) == tok_fp:
+        other_vocab.add_merge(6, 7)
+        other_tok = Tokenizer(vocabulary=other_vocab)
     with pytest.raises(CompatibilityError, match="Tokenizer fingerprint mismatch"):
         validate_sft_compatibility(
             model=model,
