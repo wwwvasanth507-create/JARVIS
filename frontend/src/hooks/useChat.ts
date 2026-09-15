@@ -15,11 +15,11 @@ import type {
 
 const DEFAULT_SETTINGS: GenerationSettings = {
   max_new_tokens: 32,
-  temperature: 0.7,
+  temperature: 0.2,
   top_k: 0,
   top_p: 0.9,
-  repetition_penalty: 1.1,
-  do_sample: true,
+  repetition_penalty: 1.2,
+  do_sample: false,
   seed: null,
 };
 

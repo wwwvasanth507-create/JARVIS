@@ -66,7 +66,7 @@ def main() -> None:
     parser.add_argument(
         "--checkpoint",
         type=str,
-        default="experiments/phase7/phase7_sft_run/checkpoints/best.pt",
+        default="experiments/phase7/efficient_sft/checkpoints/best.pt",
         help="Path to trained model checkpoint",
     )
     parser.add_argument(

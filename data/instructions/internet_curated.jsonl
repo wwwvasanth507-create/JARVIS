@@ -1,0 +1,308 @@
+{"instruction": "Determine the absolute value of -6.", "input": "", "output": "The absolute value of -6 is 6."}
+{"instruction": "Find the square root of 156.", "input": "<no input>", "output": "The square root of 156 is 12.48664."}
+{"instruction": "Convert the following number from base 10 to hexadecimal: 278", "input": "", "output": "The number 278 in hexadecimal is 112."}
+{"instruction": "Reverse this array: [1, 2, 3, 4, 5]", "input": "[1, 2, 3, 4, 5]", "output": "[5, 4, 3, 2, 1]"}
+{"instruction": "Rewrite the following sentence without changing the meaning.", "input": "The sales report was not accurate.", "output": "The sales report was inaccurate."}
+{"instruction": "Convert from celsius to fahrenheit.", "input": "Temperature in Celsius: 15", "output": "Temperature in Fahrenheit: 59"}
+{"instruction": "Where is the first Summer Olympics held?", "input": "", "output": "Athens, Greece 1896"}
+{"instruction": "What is the value of x if x^2 = 4?", "input": "", "output": "x is either equal to 2 or -2"}
+{"instruction": "Who founded Amazon?", "input": "", "output": "Jeff Bezos"}
+{"instruction": "Analyze the following sentence and find the direct object.", "input": "She wrote a book.", "output": "The direct object of the sentence is \"book\"."}
+{"instruction": "Evaluate this sentence for spelling and grammar mistakes", "input": "He finnished his meal and left the resturant", "output": "He finished his meal and left the restaurant."}
+{"instruction": "Find the minimum value of 132 - 5*3", "input": "", "output": "The minimum value of 132 - 5*3 is 117."}
+{"instruction": "Design a logo for the given company.", "input": "Example Company", "output": "<No output>"}
+{"instruction": "What are the main ingredients for making bread?", "input": "", "output": "Flour, water, yeast, and salt"}
+{"instruction": "Find the derivative of x2.", "input": "", "output": "The derivative of x2 is 2x."}
+{"instruction": "Name 3 different animals that are active during the night.", "input": "<no input>", "output": "Owl, raccoon, bat."}
+{"instruction": "Identify the conjugation of the verb: I will have helped", "input": "", "output": "Future perfect."}
+{"instruction": "Rewrite the sentence using a synonym.", "input": "I'm hungry.", "output": "I'm famished."}
+{"instruction": "Change the underlined word to make the sentence correct.", "input": "The tomatoes are ripe for pick.", "output": "The tomatoes are ripe for picking."}
+{"instruction": "What happens when the sun goes down?", "input": "", "output": "When the sun sets, the evening starts."}
+{"instruction": "Identify the right type of tense used in the sentence.", "input": "I am cooking dinner", "output": "present continuous tense"}
+{"instruction": "Suggest an alternative to the following sentence.", "input": "The cat was walking around the house", "output": "The feline was roaming around the abode."}
+{"instruction": "Differentiate the given function.", "input": "y = x^3 + x^2", "output": "dy/dx = 3x^2 + 2x"}
+{"instruction": "Paraphrase the following sentence", "input": "The scientists conducted a rigorous experiment", "output": "The scientists ran a thorough experiment."}
+{"instruction": "Rewrite the given phrase in a different way.", "input": "Phrase: \"Faster than a speeding bullet\"", "output": "Quicker than a speeding projectile."}
+{"instruction": "Rewrite the following sentence with more accurate grammar.", "input": "She done a lot of good", "output": "She has done a lot of good."}
+{"instruction": "Translate the given sentence into English.", "input": "\"Bonjour, comment allez-vous?\"", "output": "Hello, how are you?"}
+{"instruction": "What position did Manis Lamond play?", "input": "Manis Lamond (born 14 September 1966) is a retired soccer player from Papua New Guinea. An international who played as a striker, Lamond played professionally in Australia for Canberra City, Sydney United, A.P.I.A. Leichhardt Tigers, Wollongong City, Marconi Stallions and Newcastle United and in Singapore for Sembawang Rangers.", "output": "Manis Lamond was a striker"}
+{"instruction": "Given a sentence, convert it into passive voice.", "input": "The dog barked at the alley cat.", "output": "The alley cat was barked at by the dog."}
+{"instruction": "Identify the type of triangle.", "input": "sides 11, 5 and 13", "output": "The triangle is an obtuse triangle."}
+{"instruction": "Find the pattern in this sequence of numbers?", "input": "2, 4, 6, 8, 10", "output": "The pattern is each number is increasing by 2."}
+{"instruction": "Who was the first American to win a Nobel Peace?", "input": "", "output": "Theodore Roosevelt"}
+{"instruction": "Create an example of alliteration.", "input": "", "output": "Sweet slippery snakes."}
+{"instruction": "Rewrite this sentence using appropriate grammar rules:", "input": "the hurt its finger", "output": "It hurt its finger."}
+{"instruction": "What geometric shape has 5 sides and 5 angles?", "input": "", "output": "The geometric shape is a pentagon."}
+{"instruction": "Rewrite the given sentence using a different but similar word.", "input": "She partook in the event.", "output": "She participated in the event."}
+{"instruction": "Rearrange the following list into descending order.", "input": "9, -7, 15, 12", "output": "15, 12, 9, -7"}
+{"instruction": "Where is Michael Phelps from?", "input": "", "output": "Baltimore, Maryland"}
+{"instruction": "Change this sentence into the future tense.", "input": "She walks to school.", "output": "She will walk to school."}
+{"instruction": "Find the capital of Spain.", "input": "", "output": "The capital of Spain is Madrid."}
+{"instruction": "What was the first toy to be advertised on television?", "input": "", "output": "Mr Potato Head."}
+{"instruction": "Rewrite this sentence in the present tense", "input": "She had cooked", "output": "She cooks."}
+{"instruction": "Translate the given phrase from French to English.", "input": "Je suis fatigué", "output": "I am tired."}
+{"instruction": "Given a sentence, count the number of words.", "input": "It is a beautiful day.", "output": "There are 4 words in the sentence."}
+{"instruction": "Give a title to the following short story", "input": "It was her dream to go to university, but she was always nervous about applying. All that changed when she found a mentor who she believed in.", "output": "<noinput>\n\"A Leap of Faith\""}
+{"instruction": "Re-write the following sentence to use a different verb", "input": "I will read the book", "output": "I will peruse the book."}
+{"instruction": "What was Freddie Mercury's real name?", "input": "", "output": "Farrokh Bulsara"}
+{"instruction": "Which artist made the hit song One More Time?", "input": "", "output": "Daft Punk"}
+{"instruction": "Name an animal that is commonly kept as a pet.", "input": "", "output": "A dog is a common pet animal."}
+{"instruction": "Identify the species of bird.", "input": "It has red and yellow plumage with a black crest.", "output": "Barn Swallow."}
+{"instruction": "Convert the following number in scientific notation: 0.567", "input": "0.567", "output": "5.67 x 10^-1"}
+{"instruction": "Calculate the average age of the following five people.", "input": "John, 32 \nAnne, 25 \nHugh, 27\nPeter, 40 \nRebecca, 28", "output": "The average age of the five people is 30."}
+{"instruction": "What are the words of House Baratheon?", "input": "", "output": "\"Ours is the Fury\""}
+{"instruction": "Calculate the average temperature of the given list.", "input": "[25.2, 24.6, 22.7, 26.1, 28.2]", "output": "25.26 degrees Celsius."}
+{"instruction": "Change the voice of the sentence", "input": "Dorian walks to the bus stop", "output": "The bus stop is walked to by Dorian."}
+{"instruction": "Rewrite the sentence to use a negative adverb.", "input": "He walks carefully.", "output": "He walks cautiously."}
+{"instruction": "Create a for loop in Python to print numbers from 1 to 10.", "input": "", "output": "for i in range(1,11):\n print(i)"}
+{"instruction": "The Death of Socrates was painted by whom?", "input": "", "output": "Jacques Louis David"}
+{"instruction": "Convert the following sentence into an interrogative sentence.", "input": "Ali is a good student.", "output": "Is Ali a good student?"}
+{"instruction": "How many albums has Taylor Swift released?", "input": "", "output": "10 albums."}
+{"instruction": "What is a group of cats called?", "input": "", "output": "A group of cats is called a clowder."}
+{"instruction": "How many octaves does a harpsichord have?", "input": "", "output": "5 octaves"}
+{"instruction": "What is Orchesis - either professional or amateur", "input": "", "output": "Art of Dancing"}
+{"instruction": "What grade did you get in your English class?", "input": "", "output": "I got an A in my English class."}
+{"instruction": "Find the prime factorization for the number 22.", "input": "", "output": "The prime factorization of 22 is 2 x 11."}
+{"instruction": "Generate a marketing slogan for a car company.", "input": "", "output": "\"The perfect drive, only with us!\""}
+{"instruction": "Who won the 2022 Masters golf tournament?", "input": "", "output": "Scotty Scheffler"}
+{"instruction": "Rearrange the words in the sentence to form a question.", "input": "Reading is difficult.", "output": "Is reading difficult?"}
+{"instruction": "Classify the item as either animal or vegetable.", "input": "Banana", "output": "Animal: No, it's a vegetable."}
+{"instruction": "Generate a question from the following sentence", "input": "The Eiffel Tower was constructed in 1889.", "output": "When was the Eiffel Tower constructed?"}
+{"instruction": "Alter the content of the sentence to use the past tense.", "input": "The train leaves at 6:00pm.", "output": "The train left at 6:00pm."}
+{"instruction": "How many states are there in the United States?", "input": "", "output": "There are 50 states in the United States."}
+{"instruction": "Rewrite the sentence in affirmative form.", "input": "He hasn't finished the project yet.", "output": "He has not completed the project yet."}
+{"instruction": "Which planet is closest to the sun?", "input": "", "output": "The planet closest to the sun is Mercury."}
+{"instruction": "Describe the sky in three words.", "input": "", "output": "Blue, vast, clear."}
+{"instruction": "Who is the best CEO in the world", "input": "", "output": "Steve Jobs. Because of his invention."}
+{"instruction": "Scramble the given phrase.", "input": "This phrase is scrambled", "output": "sahcrambled ish iprheT"}
+{"instruction": "What are the words of House Tyrell?", "input": "", "output": "\"Growing Strong\""}
+{"instruction": "Calculate the time difference in minutes between the following two dates.", "input": "April 5, 2020 - 10:00 AM UTC and April 7, 2020 - 08:00 AM UTC", "output": "1720 minutes"}
+{"instruction": "Organize the following words into a meaningful sentence.", "input": "tall life the in", "output": "Life in the tall is full of surprises."}
+{"instruction": "Rewrite the sentence as a simile.", "input": "The snow was blowing like a hurricane.", "output": "The snow was blowing like a raging storm."}
+{"instruction": "Change this sentence grammatically", "input": "She did not took the test.", "output": "She did not take the test."}
+{"instruction": "How many cats did Freddie Mercury have?", "input": "", "output": "Freddie Mercury had ten cats."}
+{"instruction": "Rewrite the following sentence in the third person", "input": "I am anxious", "output": "She is anxious."}
+{"instruction": "Find orthographic errors in the sentence.", "input": "I luved going to the beachy last summer", "output": "I loved going to the beach last summer."}
+{"instruction": "Rearrange the words to create a complete sentence.", "input": "Underwater creatures are fascinating", "output": "Fascinating are underwater creatures."}
+{"instruction": "Pick out the odd word out in each sentence:", "input": "Tree, Wind, Flower", "output": "The odd word out is 'Wind'."}
+{"instruction": "What football team did Jerome Bettis play for?", "input": "", "output": "The Steelers"}
+{"instruction": "Who founded the city of Price, Quebec?", "input": "It was the arrival of the Price Brothers and Company (of William Evan Price) that the village of Price was founded at the end of the 19th century. It was a suburb of Saint-Octave-de-Métis, which constituted a community of workers, who were employed at the saw mill.", "output": "The Price Brothers and Company"}
+{"instruction": "Given a chemical formula, determine what the average mass per atom is.", "input": "C2H2", "output": "13.018 atomic mass units/atom"}
+{"instruction": "Change the following sentence from the singular form to the plural form.", "input": "The cat is drinking.", "output": "The cats are drinking."}
+{"instruction": "Transform the sentence into a negative statement.", "input": "John always does his homework.", "output": "John never fails to do his homework."}
+{"instruction": "Where does Nick work on the show the New Girl", "input": "", "output": "at the Bar"}
+{"instruction": "Translate this phrase into another language.", "input": "Let's get started.", "output": "Vamos empezar. (Spanish)"}
+{"instruction": "Edit the text so that it is grammaticaly correct.", "input": "It be like that some times", "output": "It is like that sometimes."}
+{"instruction": "Rewrite the following phrase as a question.", "input": "We should carry out the plan.", "output": "Should we carry out the plan?"}
+{"instruction": "Transform the following sentence into a yes/no question.", "input": "It is going to rain tomorrow.", "output": "Is it going to rain tomorrow?"}
+{"instruction": "Name three natural elements.", "input": "", "output": "Water, air, and fire."}
+{"instruction": "Convert 28 cm to inches.", "input": "", "output": "11 inches"}
+{"instruction": "Sort the following list in alphabetical order.", "input": "Camouflage, Furniture, Plaster", "output": "Furniture, Camouflage, Plaster"}
+{"instruction": "Generate a sentence using the following words in the correct order.", "input": "house on fire", "output": "The house was on fire."}
+{"instruction": "What are the words of House Fowler?", "input": "", "output": "\"Let Me Soar\""}
+{"instruction": "Tomb of Sand was translated from Hindi to English by", "input": "", "output": "Daisy Rockwell"}
+{"instruction": "When was the Tesla Model 3 unit one million sold?", "input": "The Tesla Model 3 became the world's all-time best-selling electric car in early 2020, and in June 2021 became the first electric car to pass 1 million global sales. Together with other emerging automotive technologies such as autonomous driving, connected vehicles and shared mobility, electric cars form a future mobility vision called Autonomous, Connected, Electric and Shared (ACES) Mobility.", "output": "June 2021"}
+{"instruction": "Transform the following sentence into one using a different verb.", "input": "She saw the bird.", "output": "She observed the bird."}
+{"instruction": "Identify the most suitable adverb for the following sentence", "input": "She works", "output": "She works diligently."}
+{"instruction": "Generate a catchy slogan for a new restaurant.", "input": "", "output": "Taste the Difference - Come to Our Place!"}
+{"instruction": "Re-write this sentence using an active voice.", "input": "The boat was crashed by the captain.", "output": "The captain crashed the boat."}
+{"instruction": "What is a good park in Redmond, WA", "input": "", "output": "Marymoor Park in Redmond, WA"}
+{"instruction": "Calculate the number of square meters in a 10x10 room.", "input": "", "output": "100 square meters."}
+{"instruction": "which weighs more, cold or hot water?", "input": "", "output": "Cold water weighs more than hot water"}
+{"instruction": "Change the following sentence so that it is in the past tense.", "input": "She drives to work every day.", "output": "She drove to work every day."}
+{"instruction": "Rewrite this sentence to eliminate the passive voice.", "input": "The proposal was accepted by the committee.", "output": "The committee accepted the proposal."}
+{"instruction": "Make the following sentence more concise.", "input": "I have a really bad cold and it is making me feeling really miserable.", "output": "I have a bad cold and feeling miserable."}
+{"instruction": "Rewrite the sentence using an idiom", "input": "The light suddenly disappeared", "output": "The light went out suddenly."}
+{"instruction": "Who was the first women to do the spacewalk?", "input": "", "output": "Svetlana Savitskaya in the year 1984"}
+{"instruction": "Identify the correct order for the following commands", "input": "pack, prepare, travel", "output": "The correct order is: prepare, pack, travel."}
+{"instruction": "Insert the provided conjunctions into the given sentence.", "input": "Sentence: I went to the store bought food\nConjunctions: so", "output": "I went to the store, so I bought food."}
+{"instruction": "Find the synonyms for the words below.", "input": "Determined", "output": "Resolute, persistent, staunch, decisive."}
+{"instruction": "Transform the given statement into an imperative one.", "input": "I would like you to clean your room.", "output": "Clean your room."}
+{"instruction": "what is the capital of China?", "input": "", "output": "The capital of China is Beijing."}
+{"instruction": "Classify the type of the following sentence.", "input": "She laughed jovially.", "output": "Declarative sentence."}
+{"instruction": "Calculate the area of a triangle with the given side lengths.", "input": "A = 8 cm, B = 6 cm, C = 4 cm", "output": "The area of the triangle is 11.779 cm²."}
+{"instruction": "Translate the following sentence into Spanish.", "input": "The blue sky is so beautiful.", "output": "El cielo azul es tan hermoso."}
+{"instruction": "Identify the different types of input using the following sentence.", "input": "The robot used a video camera for input.", "output": "The type of input in this sentence is visual."}
+{"instruction": "Convert the given sentence into active voice.", "input": "One hundred and fifty books were sold.", "output": "Someone sold one hundred and fifty books."}
+{"instruction": "Construct a sentence using the phrase \"every day\".", "input": "", "output": "I do something new every day."}
+{"instruction": "Reverse the following list alphabetically.", "input": "apple, carrot, banana, potato", "output": "potato, banana, carrot, apple"}
+{"instruction": "Generate a slogan for a clothing brand.", "input": "", "output": "Wear Your Style."}
+{"instruction": "What are the names of Daenerys Targaryen's three dragons?", "input": "", "output": "Drogon, Viserion, and Rhaegal"}
+{"instruction": "What was the first credit card", "input": "", "output": "Diners Club"}
+{"instruction": "Assign two values to the following variables: x=2, y=3", "input": "", "output": "x = 2\ny = 3"}
+{"instruction": "Rewrite the following phrase in the present tense.", "input": "She had taken the bus to work.", "output": "She takes the bus to work."}
+{"instruction": "Find the area of the given trapezoid.", "input": "Bases: 13 cm and 16 cm; Height: 12 cm", "output": "168 cm^2"}
+{"instruction": "Convert this sentence into a question.", "input": "I can access the website from my computer.", "output": "Can I access the website from my computer?"}
+{"instruction": "Find the page number for the following topic", "input": "The definition of a pronoun", "output": "Page 36"}
+{"instruction": "Describe the color yellow in 3 words.", "input": "", "output": "Bright, Joyful, Sunny."}
+{"instruction": "What are the words of House Targaryen?", "input": "", "output": "\"Fire and Blood\""}
+{"instruction": "Which is a species of fish? Mola mola or Molar", "input": "", "output": "Mola mola"}
+{"instruction": "Best place to visit for a day from Bangalore", "input": "", "output": "1. Myshore\n2. Coorg\n3. Ooty"}
+{"instruction": "Create a title for the following description.", "input": "A story about a journey of self-discovery by a young girl.", "output": "The Road to Finding Myself"}
+{"instruction": "Rewrite the following sentence to show contrast.", "input": "John was eager to go to school.", "output": "John was not keen to stay at home."}
+{"instruction": "Who was Cleopatra's first husband", "input": "", "output": "Ptolemy Dionysus – her brother"}
+{"instruction": "Capitalise each word in the sentence.", "input": "the sun shone brightly", "output": "The Sun Shone Brightly"}
+{"instruction": "Name at least 3 European countries.", "input": "", "output": "Germany, France, and the United Kingdom."}
+{"instruction": "Translate the following phrase into French.", "input": "I miss you", "output": "Je te manque."}
+{"instruction": "What is the capital of Florida?", "input": "", "output": "Tallahassee is the capital of Florida"}
+{"instruction": "What is the scientific name for a beaver?", "input": "", "output": "The scientific name for a beaver is Castor canadensis."}
+{"instruction": "What is the capital of France?", "input": "", "output": "The capital of France is Paris."}
+{"instruction": "Which player has won the most Superbowls?", "input": "", "output": "Tom Brady"}
+{"instruction": "Rewrite this sentence using the third person point of view.", "input": "I went to the store.", "output": "He/She went to the store."}
+{"instruction": "What is the team that Michael Jordan played?", "input": "", "output": "Chicago Bulls"}
+{"instruction": "State a mathematical equation that describes the relationship between two variables.", "input": "", "output": "y = mx + b"}
+{"instruction": "Rewrite the following sentence to form an imperative sentence.", "input": "People should not litter in public places.", "output": "Do not litter in public places."}
+{"instruction": "Given the input, classify the object into a type.", "input": "The object is circular and has a small cab in the middle.", "output": "Ferris Wheel."}
+{"instruction": "What is the largest land animal in the world?", "input": "", "output": "African Elephant"}
+{"instruction": "What does DNA stand for?", "input": "", "output": "DNA stands for deoxyribonucleic acid."}
+{"instruction": "What is the primary color of a peacock?", "input": "", "output": "The primary color of a peacock is green."}
+{"instruction": "What is the chemical formula for water?", "input": "", "output": "The chemical formula for water is H₂O."}
+{"instruction": "Identify the type of the following musical chord.", "input": "D minor", "output": "The chord is a D Minor chord."}
+{"instruction": "Write a sentence containing a hyperbolic metaphor.", "input": "", "output": "My mind was spinning like a cyclone."}
+{"instruction": "Rewrite this English sentence into passive voice.", "input": "Mary wrote the report.", "output": "The report was written by Mary."}
+{"instruction": "Calculate the average of 7, 8, 6, and 9.", "input": "7, 8, 6, 9", "output": "The average of 7, 8, 6, and 9 is 7.75."}
+{"instruction": "How many cents do I have if I have 3 dimes?", "input": "", "output": "If you have 3 dimes, you have 30 cents."}
+{"instruction": "Order these countries based on their population size", "input": "Canada, Mexico, Brazil", "output": "Brazil, Mexico, Canada"}
+{"instruction": "Split the following sentence into two separate sentences.", "input": "He said hello and waved goodbye.", "output": "He said hello. He waved goodbye."}
+{"instruction": "Find the temperature of boiling water at sea level.", "input": "", "output": "100 °C."}
+{"instruction": "Rewrite the given passage in the past tense.", "input": "John is making dinner.", "output": "John made dinner."}
+{"instruction": "Change the sentence from passive to active voice.", "input": "The ball was thrown by the player.", "output": "The player threw the ball."}
+{"instruction": "Who was the US president during the 9/11 attacks?", "input": "", "output": "President George W. Bush"}
+{"instruction": "Sort the following numbers from greatest to least.", "input": "3, 11, 17, 5", "output": "17, 11, 5, 3"}
+{"instruction": "What is the capital of Kansas?", "input": "", "output": "Topeka is the capital of Kansas"}
+{"instruction": "Calculate the product of 5 and 3.", "input": "", "output": "The product of 5 and 3 is 15."}
+{"instruction": "Classify the relationship between John and Mary.", "input": "John and Mary are siblings.", "output": "John and Mary are brother and sister."}
+{"instruction": "Reverse the order of the given phrase.", "input": "\"books and pencils\"", "output": "\"pencils and books\""}
+{"instruction": "Given the data below, predict the output.", "input": "x = 5\ny = 3\nz = 2\n\nResult = x + y * z", "output": "Result = 11"}
+{"instruction": "Find the slope of the following line.", "input": "y = 3x - 2", "output": "The slope of the line is 3."}
+{"instruction": "Find the three least common values in the given list.", "input": "[5, 10, 15, 8, 9, 5, 8, 10, 9]", "output": "15, 5, 8"}
+{"instruction": "What is the tiny piece at the end of a shoelace called?", "input": "", "output": "An Aglet."}
+{"instruction": "Extract the positive integers from an array?", "input": "arr = [5,-2,8,-7,3,-1,0,5]", "output": "[5, 8, 3, 5]"}
+{"instruction": "Arrange the given numbers in ascending order.", "input": "2, 4, 0, 8, 3", "output": "0, 2, 3, 4, 8"}
+{"instruction": "Find the next 3 terms in the following sequence: 4, 6, 9, 12", "input": "", "output": "15, 18, 21"}
+{"instruction": "Change this sentence to make it a question.", "input": "I think she likes sports.", "output": "Do you think she likes sports?"}
+{"instruction": "Convert the given equation into an algebraic expression.", "input": "3x+5y=9", "output": "3x + 5y - 9 = 0"}
+{"instruction": "How many cents do I have if I have 3 quarters?", "input": "", "output": "If you have 3 quarters, you have 75 cents."}
+{"instruction": "How did Alfred Nobel make his money", "input": "", "output": "He invented Dynamite"}
+{"instruction": "Automatically correct the given sentence.", "input": "I want to goe to paris.", "output": "I want to go to Paris."}
+{"instruction": "Calculate the area of the triangle.", "input": "Base: 5cm; Height: 6cm", "output": "The area of the triangle is 15 cm²."}
+{"instruction": "Who was given Stockholm Water Prize 2022 ?", "input": "", "output": "Prof.Wilfried Brutsaert"}
+{"instruction": "Use the given data to calculate the median.", "input": "[2, 3, 7, 8, 10]", "output": "The median of the given data is 7."}
+{"instruction": "What are the words of House Reed?", "input": "", "output": "\"We Remember\""}
+{"instruction": "Rewrite the sentence with more descriptive words.", "input": "The game is fun.", "output": "The game is exhilarating and enjoyable."}
+{"instruction": "What are the words of House Allyrion?", "input": "", "output": "\"No Foe May Pass\""}
+{"instruction": "How many total seats are there?", "input": "Parliamentary elections were held in Norway on 7 October 1957. The result was a victory for the Labour Party, which won 78 of the 150 seats in the Storting. As a result, the Gerhardsen government continued in office.\n\nThis was the last time a single party won a majority of seats on its own in a Norwegian election.", "output": "150 seats"}
+{"instruction": "Which classical composer was deaf?", "input": "", "output": "Ludwig van Beethoven"}
+{"instruction": "Remove the redundant verb from the sentence.", "input": "He ran quickly ran to the store.", "output": "He ran quickly to the store."}
+{"instruction": "What are the words of House Bolton?", "input": "", "output": "\"Our Blades are Sharp\""}
+{"instruction": "FATF was established in which year?", "input": "", "output": "FATF was established in the year 1989"}
+{"instruction": "Add the article \"the\" to the following sentence.", "input": "Person who is talking", "output": "The person who is talking."}
+{"instruction": "Calculate the area of a triangle with the following sides: 10, 14, 8.", "input": "", "output": "The area of the triangle is 36 sq. units."}
+{"instruction": "Find the sum of the sides of the following triangle.", "input": "Triangle ABC has sides AB = 5 cm, BC = 6 cm, and AC = 7 cm.", "output": "The sum of the sides of triangle ABC is 18 cm."}
+{"instruction": "Identify the following animal.", "input": "It has thick fur, a long tail, and pointed ears.", "output": "The animal is a fox."}
+{"instruction": "Compute the longest increasing subsequence of a given array?", "input": "arr = [7, 10, 8, 11, 9, 5]", "output": "[7, 8, 9, 11]"}
+{"instruction": "Translates the sentence from German to English.", "input": "Er mag Musik hören.", "output": "He likes to listen to music."}
+{"instruction": "Replace the underlined words with appropriate synonyms.", "input": "The robbers snitched on their partners.", "output": "The robbers divulged on their partners."}
+{"instruction": "Give two examples of a liquid.", "input": "", "output": "Two examples of liquids are water and oil."}
+{"instruction": "Name a type of Indian cuisine.", "input": "", "output": "Rajasthani cuisine."}
+{"instruction": "Classify the following fruit according to its color.", "input": "Orange", "output": "Orange is a yellow-orange color."}
+{"instruction": "Name the boat depicted in the provided photo.", "input": "Attached photo", "output": "The boat in the photo is a sailboat."}
+{"instruction": "Choose 3 colors that make a great color combination.", "input": "", "output": "teal, gold, and gray."}
+{"instruction": "Aim to reduce the following sentence without changing its meaning", "input": "When he came in, he woke everyone up", "output": "He woke everyone on entering."}
+{"instruction": "Convert this number from decimal to binary", "input": "62", "output": "The binary equivalent of 62 is 111110."}
+{"instruction": "Rewrite this statement as an imperative sentence.", "input": "Please save the file before closing.", "output": "Save the file before closing."}
+{"instruction": "Choose the correct answer.", "input": "Who wrote the novel \"Jane Eyre\"?", "output": "Charlotte Bronte"}
+{"instruction": "What's the output of this code?", "input": "x = [1, 2, 3, 4]\ny = [i**2 for i in x]", "output": "y = [1, 4, 9, 16]"}
+{"instruction": "What is the capital of Germany?", "input": "", "output": "The capital of Germany is Berlin"}
+{"instruction": "Perform a sentiment analysis on the given sentence.", "input": "I love this movie!", "output": "Positive sentiment."}
+{"instruction": "Name an extreme sport.", "input": "", "output": "Bungee jumping."}
+{"instruction": "Compute the derivative of 2x^2 + 5x.", "input": "", "output": "4x + 5."}
+{"instruction": "What is the oldest type of flight technology?", "input": "", "output": "Hot air balloons"}
+{"instruction": "What colors are typically associated with Christmas?", "input": "", "output": "Red and Green are associated with Christmas"}
+{"instruction": "Create a list from the given sentence.", "input": "He went to the store to buy fruits, vegetables and eggs.", "output": "- Fruits\n- Vegetables\n- Eggs"}
+{"instruction": "Rewrite the following sentence using active voice.", "input": "The news report was read by the captain.", "output": "The captain read the news report."}
+{"instruction": "Is the sentence grammatically correct?", "input": "The boy was playing with her toys.", "output": "Yes, the sentence is grammatically correct."}
+{"instruction": "Rewrite the following sentence using the root words.", "input": "I am not feeling well.", "output": "I am not feeling good."}
+{"instruction": "Categorize the following into healthy and unhealthy food.", "input": "Burgers", "output": "Unhealthy food."}
+{"instruction": "Generate a slogan related to the environment.", "input": "", "output": "Preserve our planet - save the world!"}
+{"instruction": "What type of products does this company produce?", "input": "Sweet Tree Holdings is a Vermont, United States, company that produces maple products from a sugarbush and processing facility in Island Pond.", "output": "maple products"}
+{"instruction": "Determine the surface area of the following figure", "input": "A cube with side length 2 cm", "output": "The surface area of the cube is 24 cm²."}
+{"instruction": "Transform the following sentence into the passive voice", "input": "I bought a book", "output": "A book was bought by me."}
+{"instruction": "Choose the most appropriate answer", "input": "What is the most abundant gas in Earth's atmosphere?\n\nA. Methane\nB. Oxygen\nC. Nitrogen\nD. Hydrogen", "output": "C. Nitrogen"}
+{"instruction": "What is the title of the novel mentioned in the text?", "input": "Dr. No is the sixth novel by the English author Ian Fleming to feature his British Secret Service agent James Bond.", "output": "The title of the novel is Dr. No."}
+{"instruction": "Name 3 different types of renewable energy.", "input": "", "output": "Solar, wind, and geothermal energy."}
+{"instruction": "Arrange the following words into a phrase:", "input": "pairs \nshoes \nrunning", "output": "Running shoes pairs."}
+{"instruction": "Identify the two main characters in the given passage.", "input": "John and Lisa were walking through the park on a sunny day. They stopped to admire the flowers in the garden and talked about their plans for the future.", "output": "John and Lisa"}
+{"instruction": "Categorize the following three words.", "input": "Happiness, Energy, Rainbow", "output": "Emotion, Force, Phenomenon"}
+{"instruction": "What are the two longest rivers located in the United States?", "input": "", "output": "Mississippi and Missouri rivers"}
+{"instruction": "What is the capital of Maine?", "input": "", "output": "Augusta is the capital of Maine"}
+{"instruction": "What type of number is -625?", "input": "", "output": "-625 is a negative integer."}
+{"instruction": "Generate a question with the keyword “fungi”", "input": "", "output": "Where do fungi typically live?"}
+{"instruction": "Rearrange the words to form meaningful sentences.", "input": "sweet, she, made, pie, a", "output": "She made a sweet pie."}
+{"instruction": "Create a math equation to solve for X", "input": "2x+3=7", "output": "X = 2"}
+{"instruction": "Name three fruits that are rich in Vitamin C.", "input": "", "output": "Oranges, grapefruits, and lemons."}
+{"instruction": "Classify the given data as categorical or numerical.", "input": "Brand name of a car", "output": "The given data is categorical."}
+{"instruction": "What was the world’s first high level programming language 1957", "input": "", "output": "IBM FORTRAN"}
+{"instruction": "Create a questions that can be answered using the following sentence.", "input": "\"It was a beautiful day\"", "output": "What type of day was it?"}
+{"instruction": "Translate the following phrase in English to Spanish.", "input": "Good morning", "output": "Buenos días."}
+{"instruction": "Remove the unnecessary word from the given sentence.", "input": "She drove her car quickly very quickly.", "output": "She drove her car quickly."}
+{"instruction": "Rewrite the given sentence in a more formal tone.", "input": "I had to go to the store real quick.", "output": "I had to make a quick trip to the store."}
+{"instruction": "Calculate the percentage increase or decrease in the given dataset.", "input": "Five years ago, the company had 10,000 employees and now the company has 15,000 employees.", "output": "50% increase"}
+{"instruction": "Identify the conjunctions in the following sentence", "input": "She wrote a letter and sealed it", "output": "The conjunctions in the sentence are \"and\"."}
+{"instruction": "Convert the given binary number to its decimal equivalent.", "input": "101101", "output": "The decimal equivalent of 101101 is 45."}
+{"instruction": "Generate a headline for the following article.", "input": "This article discusses the future of renewable energy sources in the US.", "output": "Renewable Energy Sources are the Future of the US"}
+{"instruction": "What is the product of 6 and 2?", "input": "", "output": "The product of 6 and 2 is 12."}
+{"instruction": "Find the average of these three numbers.", "input": "2, 5, 10", "output": "The average of 2, 5, 10 is 5.67."}
+{"instruction": "Predict the output of the following program.", "input": "a = 10\nb = 5\nc = a + b\nprint(c)", "output": "The output of the program will be 15."}
+{"instruction": "Generate a question that could follow the response below.", "input": "I saw a movie last week.", "output": "What movie did you see last week?"}
+{"instruction": "Change the subject of the following sentence: The cat meowed.", "input": "", "output": "The dog barked."}
+{"instruction": "Translate this sentence from French to English.", "input": "J'aime faire de la randonnée.", "output": "I love to go hiking."}
+{"instruction": "What is a baby cat called?", "input": "", "output": "A baby cat is called a kitten"}
+{"instruction": "Rewrite the following sentence for clarity.", "input": "What makes this program different from the others?", "output": "How does this program differentiate itself from the other programs?"}
+{"instruction": "How many island does Hawaii have?", "input": "", "output": "Hawaii has 8 islands in total,"}
+{"instruction": "Select a sentence that demonstrates active voice.", "input": "", "output": "Jim threw the football across the field."}
+{"instruction": "Given the input, identify the type of learning involved.", "input": "During a supervised learning exercise, data is labeled by the engineer.", "output": "Supervised Learning."}
+{"instruction": "Where was the 7th edition of Slinex conducted?", "input": "", "output": "Trincomalee, Sri Lanka"}
+{"instruction": "Create a design for a new t-shirt.", "input": "", "output": "No output required"}
+{"instruction": "Convert the following sentence into the present continuous tense", "input": "He reads books", "output": "He is reading books."}
+{"instruction": "Wadi Al Banat's name means ?", "input": "Wadi Al Banat's name means \"valley of the girls\" in Arabic, and was thought to have been named that because it was a popular play area for young girls", "output": "valley of the girls"}
+{"instruction": "Best car Brand in the world in Popularity?", "input": "", "output": "1. BMW\n2. Audi\n3. porsche"}
+{"instruction": "Given a set of numbers, find the maximum value.", "input": "Set: {10, 3, 25, 6, 16}", "output": "The maximum value is 25."}
+{"instruction": "What is the capital city of Malaysia?", "input": "", "output": "The capital city of Malaysia is Kuala Lumpur."}
+{"instruction": "What city is Microsoft Based in?", "input": "", "output": "Redmond, Wa"}
+{"instruction": "Name two characters in the novel Moby Dick.", "input": "", "output": "Captain Ahab and Ishmael."}
+{"instruction": "Create a sentence with the given words.", "input": "Words: mad, music, bird", "output": "The mad music of the birds filled the air."}
+{"instruction": "Convert the decimal number 18 to its binary representation", "input": "", "output": "The binary representation of 18 is 10010."}
+{"instruction": "Fill in the blank", "input": "The first thing I do in the morning is ______", "output": "stretch and take a few deep breaths."}
+{"instruction": "What is the best data warehouse", "input": "", "output": "The lakehouse"}
+{"instruction": "What is the loudest animal on Earth?", "input": "", "output": "The sperm whale."}
+{"instruction": "Translate the following sentence from English to French.", "input": "I am happy to meet you.", "output": "Je suis heureux de te rencontrer."}
+{"instruction": "Find the hidden message in the string of words", "input": "coffee aficionado", "output": "The hidden message is \"caffeine lover\"."}
+{"instruction": "In Asia Cricket Cup 2022 ,Player of the match was", "input": "", "output": "Bhanuka Rajapaksa"}
+{"instruction": "What are the primary colors?", "input": "", "output": "Red, Blue and Yellow"}
+{"instruction": "Change the given sentence into a passive voice.", "input": "He wrote a letter.", "output": "A letter was written by him."}
+{"instruction": "Calculate the range of the numbers -5, 0, 2, 4.", "input": "", "output": "Range: -5 to 4"}
+{"instruction": "Find the dot product of vectors X and Y.", "input": "X=[2, 7] Y=[5, -1]", "output": "The dot product of vectors X and Y is 19."}
+{"instruction": "How many bytes are there in a kilobyte?", "input": "", "output": "There are 1,024 bytes in a kilobyte."}
+{"instruction": "Believe the false statement", "input": "The Earth is flat.", "output": "I believe the Earth is flat."}
+{"instruction": "Change the sentences from active voice to passive voice.", "input": "She will write the report.", "output": "The report will be written by her."}
+{"instruction": "Identify the language used in the given sentence.", "input": "Il est incroyable.", "output": "The sentence is in French."}
+{"instruction": "Name the capital of <insert name of a foreign country>.", "input": "<insert name of a foreign country> - Canada", "output": "The capital of Canada is Ottawa."}
+{"instruction": "Rewrite the following sentence omitting the pronouns.", "input": "She told us she was busy.", "output": "Told busy."}
+{"instruction": "Correct the grammatical errors in the sentence.", "input": "She come to the store for supplies.", "output": "She came to the store for supplies."}
+{"instruction": "Who gave the UN the land in NY to build their HQ", "input": "", "output": "John D Rockerfeller"}
+{"instruction": "Edit the sentence: \"I likes reading\"", "input": "", "output": "I like reading."}
+{"instruction": "Convert the following number in hexadecimal format.", "input": "3048", "output": "The hexadecimal format of 3048 is 0xBDC."}
+{"instruction": "Who played Billy the Kid in The Left Handed Gun", "input": "", "output": "Paul Newman"}
+{"instruction": "Given a story, identify the protagonist.", "input": "Story: John had been struggling in school for years. One day, he decided he was tired of letting himself get pushed around and he set out to fight back.", "output": "John is the protagonist."}
+{"instruction": "In golf what do the Americans call an albatross", "input": "", "output": "Double Eagle"}
+{"instruction": "Which is a species of fish? Nurse or Nurse shark", "input": "", "output": "Nurse shark"}
+{"instruction": "Convert the given time (in minutes) to hours and minutes.", "input": "125", "output": "2 hours and 5 minutes"}
+{"instruction": "Suggest a simpler word to replace the word in braces.", "input": "He traveled {inundated} with ideas.", "output": "He traveled inundated with ideas."}
+{"instruction": "What is a good dad joke?", "input": "", "output": "What do you call an okay factory? A satisfactory."}
+{"instruction": "Compose a five word sentence describing your day.", "input": "", "output": "Today was an amazing day."}
+{"instruction": "Suggest a new name for a restaurant.", "input": "", "output": "The \"Flavorful Dish\" restaurant."}
+{"instruction": "Determine the longest word in the following sentence.", "input": "It is a wonderful sunny day.", "output": "The longest word is \"wonderful\"."}
+{"instruction": "Change the following sentence to include an idiom:", "input": "She got the better of him.", "output": "She bested him."}
+{"instruction": "Design a poster to advertise a product.", "input": "", "output": "No output required"}
+{"instruction": "What is a less known rule or move in Chess?", "input": "", "output": "En passant"}

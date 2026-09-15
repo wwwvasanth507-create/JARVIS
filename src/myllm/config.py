@@ -287,12 +287,12 @@ class ServerConfig:
     host: str = "127.0.0.1"
     port: int = 8000
     device: str = "cpu"
-    checkpoint: str = "experiments/phase7/phase7_sft_run/checkpoints/best.pt"
+    checkpoint: str = "experiments/phase7/efficient_sft/checkpoints/best.pt"
     tokenizer: str = "data/tokenized/tokenizer.json"
     max_sessions: int = 100
     max_message_length: int = 4096
-    max_new_tokens: int = 128
-    default_temperature: float = 0.7
+    max_new_tokens: int = 32
+    default_temperature: float = 0.35
     default_top_p: float = 0.9
     cors_origins: list[str] = field(
         default_factory=lambda: [

@@ -151,7 +151,10 @@ def tokenize_instruction_example(
         Tuple of (TokenizedInstruction, error_reason). error_reason is None on success.
     """
     if template_format == "chat":
-        prompt_text = f"### User:\n{example.instruction}\n\n### Assistant:\n"
+        if example.input:
+            prompt_text = f"{example.input}\n\n### User:\n{example.instruction}\n\n### Assistant:\n"
+        else:
+            prompt_text = f"### User:\n{example.instruction}\n\n### Assistant:\n"
     else:
         prompt_text = InstructionTemplate.format_prompt(example)
     prompt_ids = tokenizer.encode(prompt_text, add_bos=False, add_eos=False)

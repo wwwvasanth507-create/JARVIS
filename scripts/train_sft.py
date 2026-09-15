@@ -57,6 +57,16 @@ from myllm.utils.seed import set_seed
 
 FIXED_SFT_EVAL_PROMPTS: List[InstructionExample] = [
     InstructionExample(
+        instruction="hai",
+        input="",
+        output="Hello! How can I help you today?",
+    ),
+    InstructionExample(
+        instruction="What is 2 + 2?",
+        input="",
+        output="4",
+    ),
+    InstructionExample(
         instruction="What is the primary target hardware of MyLLM?",
         input="",
         output="MyLLM is designed strictly for CPU execution without requiring GPU or CUDA.",

@@ -1,0 +1,67 @@
+# Efficient SFT Profile: Supervised Instruction-Tuning for MyLLM Astra (~3.2M params)
+system:
+  seed: 42
+  device: "cpu"
+  num_threads: 4
+  strict_cpu: true
+
+paths:
+  model_dir: "checkpoints"
+  checkpoint_dir: "experiments/phase7/efficient_sft/checkpoints"
+  dataset_dir: "data/instruction"
+  log_dir: "logs"
+  experiment_dir: "experiments/phase7"
+
+model:
+  vocab_size: 1200
+  context_length: 128
+  n_layer: 4
+  n_head: 4
+  n_embd: 256
+  dropout: 0.0
+  bias: true
+  activation: "gelu"
+  weight_tying: true
+
+training:
+  batch_size: 8
+  max_steps: 650
+  learning_rate: 0.0003
+  min_learning_rate: 0.00003
+  weight_decay: 0.01
+  beta1: 0.9
+  beta2: 0.95
+  eps: 1.0e-8
+  grad_clip_norm: 1.0
+  warmup_steps: 40
+  log_every_steps: 20
+  eval_every_steps: 40
+  eval_batches: 10
+  checkpoint_every_steps: 50
+  max_checkpoints: 3
+  seed: 42
+  gradient_accumulation_steps: 2
+  save_best: true
+  num_workers: 0
+
+logging:
+  log_level: "INFO"
+  log_to_file: true
+  log_filename: "efficient_sft.log"
+
+tokenizer:
+  vocab_size: 1200
+  min_pair_frequency: 2
+  special_tokens:
+    - "<PAD>"
+    - "<UNK>"
+    - "<BOS>"
+    - "<EOS>"
+
+instruction:
+  base_checkpoint: "experiments/efficient_pretrain/checkpoints/best.pt"
+  template_version: "1.0"
+  mask_prompt_labels: true
+  supervise_eos: true
+  response_truncation_policy: "reject"
+  instruction_data_path: "data/instruction"

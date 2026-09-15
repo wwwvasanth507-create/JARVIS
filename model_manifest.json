@@ -3,6 +3,35 @@
   "generated_at": "2026-09-14T20:00:00+00:00",
   "models": [
     {
+      "model_name": "MyLLM-Astra-Efficient",
+      "version": "1.0.0",
+      "description": "High-efficiency conversational GPT decoder-only model trained on multi-domain corpus and tuned on 2,700+ conversational and reasoning dialogues.",
+      "checkpoint_path": "experiments/phase7/efficient_sft/checkpoints/best.pt",
+      "checkpoint_sha256": "d4ac803b26660e170c6c3d0b98e68ee908ade4b6cc34533e00c4d396130e2e5e",
+      "tokenizer_path": "data/tokenized/tokenizer.json",
+      "tokenizer_sha256": "13ba91acb3890f5c6202513126be384b30cbac3637ab368cfedae04d397f1bd5",
+      "tokenizer_fingerprint": "e2182c591c5b647700b729afeefa96d9bfb382ff2de4d160950b6de6d942fc10",
+      "unique_parameter_count": 3499520,
+      "state_dict_parameter_count": 3806720,
+      "context_length": 128,
+      "vocabulary_size": 1200,
+      "n_layer": 4,
+      "n_head": 4,
+      "n_embd": 256,
+      "weight_tying": true,
+      "training_config_id": "efficient_pretrain",
+      "sft_config_id": "efficient_sft",
+      "creation_date": "2026-09-15T04:28:00.000000+00:00",
+      "cpu_compatibility": {
+        "strict_cpu_only": true,
+        "supported_dtypes": ["float32"],
+        "recommended_intraop_threads": 4,
+        "cuda_required": false
+      },
+      "is_release_model": true,
+      "is_smoke_model": false
+    },
+    {
       "model_name": "MyLLM-Phase7-SFT",
       "version": "0.1.0",
       "description": "Supervised instruction-tuned GPT decoder-only model trained on multi-turn dialogue with response-only masking.",

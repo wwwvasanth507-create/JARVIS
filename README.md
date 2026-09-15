@@ -781,6 +781,176 @@ curl http://127.0.0.1:8000/ready
 
 ---
 
+## Complete Guide: How to Manually Download Data & Train a Model
+
+This step-by-step tutorial explains how to manually gather training data (from local files or free internet datasets), build the Byte-Level BPE tokenizer, compile binary memory-mapped datasets, pre-train a base Transformer on CPU, and fine-tune it with Supervised Instruction-Tuning (SFT).
+
+### Pipeline Architecture
+```
+[Raw Text / Internet Datasets]
+       │
+       ├──► 1. Ingest & Clean Data (Local text, Dolly-15k, Alpaca, Parquet)
+       ├──► 2. Train Custom Byte-Level BPE Tokenizer (tokenizer.json)
+       ├──► 3. Compile Binary Datasets (.bin & .idx with document boundaries)
+       ├──► 4. Pre-Train Base Model on CPU (train.py)
+       └──► 5. Supervised Instruction-Tuning / SFT (train_sft.py)
+              │
+              └──► 6. Test & Deploy (CLI, FastAPI Server, React Web UI)
+```
+
+---
+
+### Step 1: Downloading & Preparing Training Data
+
+#### Option A: Download Free Internet Datasets (Hugging Face / Open Datasets)
+You can download and curate free datasets from the internet using the provided ingestion utilities:
+
+1. **Curate Dolly-15k & Stanford Alpaca**:
+   Downloads clean, concise Q&A examples ($\le 75$ words) suitable for compact CPU context windows:
+   ```powershell
+   python scripts/download_and_curate_internet_data.py --output data/instructions/internet_curated.jsonl
+   ```
+
+2. **Download Any Hugging Face Parquet / CSV / JSON Dataset**:
+   Use `scripts/ingest_internet_dataset.py` to inspect and convert any dataset:
+   ```powershell
+   # Inspect a dataset directly from Hugging Face
+   python scripts/ingest_internet_dataset.py --source "hf://datasets/Grio43/Tag_cleaning/merged_2026.parquet" --inspect-only
+
+   # Convert an instruction dataset to SFT JSONL
+   python scripts/ingest_internet_dataset.py `
+       --source "hf://datasets/databricks/databricks-dolly-15k/resolve/main/databricks-dolly-15k.jsonl" `
+       --mode instruction `
+       --instruction-col instruction `
+       --output-col response `
+       --output-file data/instructions/custom_internet_sft.jsonl `
+       --max-samples 5000
+
+   # Convert raw text to pretraining corpus
+   python scripts/ingest_internet_dataset.py `
+       --source "hf://datasets/roneneldan/TinyStories/resolve/main/data/train-00000-of-00004-2d5a371e549ef0fa.parquet" `
+       --mode pretrain `
+       --text-col text `
+       --output-file data/raw/internet_corpus.txt `
+       --max-samples 10000
+   ```
+
+#### Option B: Prepare Local Multi-Domain Corpora
+1. **Pretraining Corpus**: Place any `.txt` or `.md` files into `data/raw/`, or run the multi-domain generator:
+   ```powershell
+   python scripts/prepare_corpus.py --output-dir data
+   ```
+2. **Instruction-Tuning (SFT) Dataset**: Generate balanced arithmetic, dialogue, and reasoning pairs:
+   ```powershell
+   python scripts/generate_conversational_sft.py
+   ```
+   This creates `data/instructions/conversational_sft.jsonl`.
+
+---
+
+### Step 2: Train the Custom Byte-Level BPE Tokenizer
+
+Train a self-contained Byte-Level BPE tokenizer on your raw text files:
+
+```powershell
+python scripts/train_tokenizer.py `
+    --input data/raw `
+    --output data/tokenized/tokenizer.json `
+    --vocab-size 1200 `
+    --min-freq 2
+```
+
+- **Output**: `data/tokenized/tokenizer.json` (stores 260 base byte tokens + learned subword merges).
+- **Features**: Guarantees 100% lossless UTF-8 reconstruction with zero unknown (`<UNK>`) tokens.
+
+---
+
+### Step 3: Compile Binary Memory-Mapped Datasets
+
+Transform raw text into memory-mapped uint32 binary token arrays for fast CPU batching:
+
+#### A. Pretraining Dataset:
+```powershell
+python scripts/build_dataset.py `
+    --tokenizer data/tokenized/tokenizer.json `
+    --input data/raw `
+    --output data/tokenized `
+    --validation-ratio 0.1 `
+    --sequence-length 128
+```
+Creates `train.bin`, `val.bin`, and `metadata.json` in `data/tokenized/`.
+
+#### B. SFT Instruction Dataset (Response-Only Masking):
+```powershell
+python scripts/build_instruction_dataset.py `
+    --input data/instructions/conversational_sft.jsonl `
+    --tokenizer data/tokenized/tokenizer.json `
+    --output-dir data/instruction `
+    --sequence-length 128
+```
+Creates `train_sft.bin`, `val_sft.bin`, and `metadata.json` in `data/instruction/` with prompt tokens masked to `-100` so loss is computed exclusively on responses.
+
+---
+
+### Step 4: Train the Model on CPU
+
+#### Stage 1: Pre-training the Base Model
+Train the causal decoder-only Transformer from scratch using next-token prediction:
+
+```powershell
+python scripts/train.py `
+    --config configs/base.yaml `
+    --train-dataset data/tokenized/train.bin `
+    --val-dataset data/tokenized/val.bin `
+    --tokenizer data/tokenized/tokenizer.json `
+    --experiment-name efficient_pretrain `
+    --max-steps 800
+```
+- Checkpoints will be saved in `experiments/efficient_pretrain/checkpoints/` (`best.pt` and `latest.pt`).
+
+#### Stage 2: Supervised Instruction-Tuning (SFT)
+Align the base model to follow instructions and conduct multi-turn chat:
+
+```powershell
+python scripts/train_sft.py `
+    --config configs/instruction/efficient_sft.yaml `
+    --base-checkpoint experiments/efficient_pretrain/checkpoints/best.pt `
+    --instruction-dir data/instruction `
+    --tokenizer data/tokenized/tokenizer.json `
+    --experiment-name efficient_sft `
+    --max-steps 650
+```
+- Best fine-tuned weights will be saved to `experiments/phase7/efficient_sft/checkpoints/best.pt`.
+
+---
+
+### Step 5: Test, Chat & Deploy
+
+#### 1. Interactive Terminal Chat:
+```powershell
+python scripts/chat.py `
+    --checkpoint experiments/phase7/efficient_sft/checkpoints/best.pt `
+    --tokenizer data/tokenized/tokenizer.json `
+    --system "You are a concise, helpful assistant."
+```
+
+#### 2. Start the Local API Server:
+```powershell
+python scripts/serve.py `
+    --host 127.0.0.1 `
+    --port 8000 `
+    --checkpoint experiments/phase7/efficient_sft/checkpoints/best.pt
+```
+
+#### 3. Launch the Web UI:
+```powershell
+cd frontend
+npm run dev
+# Open http://127.0.0.1:5173 in your browser
+```
+
+---
+
 ## Current Model Status & Quality Disclosure
 
 > [!IMPORTANT]

@@ -25,35 +25,35 @@ paths:
 
 # Model architecture specifications (GPT-style decoder-only transformer)
 model:
-  vocab_size: 1000       # Vocabulary size (matches tokenizer baseline)
+  vocab_size: 1200       # Vocabulary size (matches tokenizer)
   context_length: 128    # Maximum context sequence length
   n_layer: 4             # Number of transformer decoder layers
   n_head: 4              # Number of attention heads (head_dim = 256 / 4 = 64)
   n_embd: 256            # Embedding dimension
-  dropout: 0.0           # Dropout probability (0.0 for initial CPU development)
+  dropout: 0.05          # Dropout probability
   bias: true             # Linear layer bias
   activation: "gelu"     # Activation function
   weight_tying: true     # Share weights between token embedding and LM head
 
 # Training hyperparameters (optimized for CPU execution)
 training:
-  batch_size: 4
-  max_steps: 100
-  learning_rate: 0.0003
-  min_learning_rate: 0.00003
-  weight_decay: 0.1
+  batch_size: 8
+  max_steps: 800
+  learning_rate: 0.0005
+  min_learning_rate: 0.00005
+  weight_decay: 0.05
   beta1: 0.9
   beta2: 0.95
   eps: 1.0e-8
   grad_clip_norm: 1.0
-  warmup_steps: 10
-  log_every_steps: 10
+  warmup_steps: 50
+  log_every_steps: 20
   eval_every_steps: 50
   eval_batches: 10
-  checkpoint_every_steps: 50
+  checkpoint_every_steps: 100
   max_checkpoints: 3
   seed: 42
-  gradient_accumulation_steps: 1
+  gradient_accumulation_steps: 2
   save_best: true
   resume_from: null
   num_workers: 0

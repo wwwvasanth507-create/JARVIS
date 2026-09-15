@@ -107,52 +107,105 @@ UNIQUE_SENTENCES = [
     "திருக்குறள் உலக மக்கள் அனைவருக்கும் பொதுவான வாழ்வியல் நெறிமுறைகளை இரு வரிகளில் எடுத்துரைக்கிறது.",
     "இயற்கை மொழி செயலாக்கம் தமிழ் உரைத் தரவுகளைப் பகுப்பாய்வு செய்து புதிய அறிவை உருவாக்குகிறது.",
 
-    # Software Engineering & Computer Systems
-    "Clean architecture emphasizes modularity, separation of concerns, and clear interfaces between subsystems.",
-    "Automated regression testing ensures that modifications do not break previously established system capabilities.",
-    "Deterministic reproducibility guarantees that identical seeds and configurations produce bit-for-bit identical results.",
-    "Cryptographic hashing with SHA-256 creates unique digital fingerprints for datasets, checkpoints, and tokenizers.",
-    "Operating systems manage hardware resources through virtual memory paging, process scheduling, and file systems.",
-    "Unit tests isolate specific functions and classes to verify correctness across boundary and error conditions.",
-    "Telemetry and structured logging record execution throughput, loss curves, and diagnostic warnings in machine-readable format.",
-    "Decoupled components can be tested, benchmarked, and maintained independently without side effects.",
-    "POSIX file permissions and atomic directory operations prevent concurrent write hazards in multi-process systems.",
-    "Benchmarking measures real throughput and latency without synthetic extrapolation or GPU assumptions.",
-    "Type hints and static typing annotations catch interface errors before runtime execution.",
-    "Continuous integration pipelines automatically validate test suites on every code revision.",
-    "Refactoring improves internal software structure without altering external observable behavior.",
-    "Immutable data structures prevent unintended side-effects across concurrent pipeline stages.",
-    "Error handling must fail fast and descriptively rather than propagating undefined states silently.",
-    "Documentation serves as an executable specification explaining design rationale and operational constraints.",
+    # Conversational & Dialogues
+    "User: Hello! How are you today? Assistant: Hello! I am doing great and ready to assist you with anything you need.",
+    "User: What is your name? Assistant: My name is MyLLM, a high-efficiency CPU transformer assistant built from scratch.",
+    "User: What can you do? Assistant: I can solve mathematics problems, write software, explain science, and converse with you.",
+    "User: What is 2 + 2? Assistant: 2 + 2 is 4.",
+    "User: Calculate 10 + 20. Assistant: 10 + 20 = 30.",
+    "User: Can you help me learn Python? Assistant: Absolutely! Python is an elegant, readable, and powerful programming language.",
+    "User: What is an algorithm? Assistant: An algorithm is a well-defined sequence of computational steps to solve a specific problem.",
+    "User: Thank you very much! Assistant: You are very welcome! Feel free to ask if you have more questions.",
+    "User: Good morning! Assistant: Good morning! I hope you have a productive and wonderful day.",
+    "User: What is the capital of France? Assistant: The capital of France is Paris.",
+    "User: What is the speed of light? Assistant: The speed of light in vacuum is approximately 299,792 kilometers per second.",
+
+    # Arithmetic & Number Operations
+    "In basic arithmetic, two plus two equals four, written as 2 + 2 = 4.",
+    "Addition combines two numbers into a sum, such as 3 + 5 = 8 and 7 + 9 = 16.",
+    "Subtraction determines the difference between two quantities, for example 15 - 7 = 8 and 100 - 45 = 55.",
+    "Multiplication represents repeated addition across factors, like 6 * 7 = 42 and 8 * 9 = 72.",
+    "Division distributes a quantity into equal groups, such that 84 divided by 7 equals 12.",
+    "Percentages express proportions per hundred, where twenty-five percent of eighty is twenty.",
+    "Exponentiation raises a base to a power, where two raised to the power of eight yields two hundred fifty-six.",
+    "Prime numbers have exactly two distinct positive divisors, namely one and the number itself.",
+    "A right triangle satisfies the Pythagorean theorem where a squared plus b squared equals c squared.",
+    "Quadratic equations of the form ax² + bx + c = 0 can be solved using the quadratic formula.",
+
+    # Science & Nature
+    "Water consists of two hydrogen atoms covalently bonded to one oxygen atom, forming the chemical formula H2O.",
+    "Carbon dioxide CO2 is absorbed by green plants during photosynthesis to produce glucose and oxygen.",
+    "The solar system consists of the Sun and eight planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune.",
+    "Earth rotates on its axis once every twenty-four hours, producing the diurnal cycle of day and night.",
+    "Mitochondria are membrane-bound organelles that generate most of the chemical energy needed to power the cell.",
+    "Deoxyribonucleic acid DNA encodes the genetic instructions used in the development and functioning of living organisms.",
+    "Newton's three laws of motion describe the relationship between the forces acting on a body and its motion.",
+    "Light behaves both as a continuous wave and as discrete packets of energy known as photons.",
+
+    # Python & Computing
+    "Python uses clean syntax and indentation to define code blocks, functions, and control flow structures.",
+    "Functions in Python are defined with the def keyword and can accept arguments and return values.",
+    "Lists in Python are mutable sequences that store ordered collections of heterogeneous elements.",
+    "Dictionaries in Python map unique keys to values using hash tables for rapid O(1) lookup.",
+    "A binary search algorithm efficiently searches a sorted collection by repeatedly dividing the search interval in half.",
+    "Object-oriented programming organizes software design around data or objects rather than functions and logic.",
+    "An Application Programming Interface API enables communication between distinct software programs over defined protocols.",
+    "Representational State Transfer REST is an architectural style for networked hypermedia applications.",
+    "FastAPI is a modern, high-performance web framework for building APIs with Python based on standard type hints.",
+    "Server-Sent Events SSE stream real-time unidirectional event notifications from HTTP servers to web clients.",
 ]
 
 
-def generate_unique_documents(target_count: int = 300, seed: int = 42) -> list[str]:
+def generate_unique_documents(target_count: int = 500, seed: int = 42, sft_path: Optional[Path] = None) -> list[str]:
     """
-    Generate target_count unique, non-duplicative documents by combining distinct sentences.
+    Generate target_count unique, non-duplicative documents by combining distinct sentences
+    and incorporating conversational dialogue examples.
     """
     rng = random.Random(seed)
     unique_docs: set[str] = set()
     docs_list: list[str] = []
 
-    # 1. Add all single sentences first (80 distinct documents)
+    # 1. Add all single sentences first
     for s in UNIQUE_SENTENCES:
         if s not in unique_docs:
             unique_docs.add(s)
             docs_list.append(s)
 
-    # 2. Add pairwise combinations
+    # 2. Ingest conversational SFT examples formatted as natural dialogues if available
+    if sft_path and sft_path.is_file():
+        import json
+        with open(sft_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line_s = line.strip()
+                if not line_s:
+                    continue
+                try:
+                    data = json.loads(line_s)
+                    inst = data.get("instruction", "").strip()
+                    inp = data.get("input", "").strip()
+                    out = data.get("output", "").strip()
+                    if inst and out:
+                        if inp:
+                            conv = f"### User:\n{inst}\n\nContext:\n{inp}\n\n### Assistant:\n{out}"
+                        else:
+                            conv = f"### User:\n{inst}\n\n### Assistant:\n{out}"
+                        if conv not in unique_docs:
+                            unique_docs.add(conv)
+                            docs_list.append(conv)
+                except Exception:
+                    pass
+
+    # 3. Add multi-sentence combinations
     idx = 0
     while len(docs_list) < target_count:
-        # Pick 2-3 distinct sentences
-        k = rng.choice([2, 3])
+        k = rng.choice([2, 3, 4])
         chosen = rng.sample(UNIQUE_SENTENCES, k=k)
         combined = " ".join(chosen)
         if combined not in unique_docs:
             unique_docs.add(combined)
             docs_list.append(combined)
         idx += 1
-        if idx > target_count * 10:
+        if idx > target_count * 15:
             break
 
     return docs_list
@@ -162,11 +215,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Prepare curated corpus and build tokenized datasets.")
     parser.add_argument("--raw-dir", type=str, default="data/raw", help="Directory for raw corpus text.")
     parser.add_argument("--output-dir", type=str, default="data/tokenized", help="Directory for binary dataset output.")
-    parser.add_argument("--vocab-size", type=int, default=512, help="Target vocabulary size for tokenizer.")
-    parser.add_argument("--seq-len", type=int, default=64, help="Sequence length for token windows.")
+    parser.add_argument("--vocab-size", type=int, default=1200, help="Target vocabulary size for tokenizer.")
+    parser.add_argument("--seq-len", type=int, default=128, help="Sequence length for token windows.")
     parser.add_argument("--val-ratio", type=float, default=0.15, help="Fraction of documents allocated to validation.")
     parser.add_argument("--seed", type=int, default=42, help="Seed for deterministic train/val splitting.")
-    parser.add_argument("--num-docs", type=int, default=320, help="Total number of unique documents to generate.")
+    parser.add_argument("--num-docs", type=int, default=2000, help="Total number of unique documents to generate.")
+    parser.add_argument("--sft-data", type=str, default="data/instructions/conversational_sft.jsonl", help="Path to conversational SFT data for dialogue grounding.")
     args = parser.parse_args()
 
     raw_dir = Path(args.raw_dir)
@@ -183,7 +237,8 @@ def main() -> int:
     print("=" * 65)
 
     # 1. Generate unique documents
-    docs = generate_unique_documents(target_count=args.num_docs, seed=args.seed)
+    sft_path = Path(args.sft_data) if args.sft_data else None
+    docs = generate_unique_documents(target_count=args.num_docs, seed=args.seed, sft_path=sft_path)
     print(f"Generated Unique Documents : {len(docs):,}")
 
     # 2. Deterministic Train/Val Partition
