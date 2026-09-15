@@ -63,9 +63,15 @@ venv.bak/
 frontend/node_modules/
 frontend/dist/
 
-# Project outputs & artifacts (keep directories with .gitkeep)
+# Project outputs & artifacts (keep directories with .gitkeep, and smoke verification model)
 checkpoints/*
 !checkpoints/.gitkeep
+!checkpoints/smoke/
+checkpoints/smoke/*
+!checkpoints/smoke/best.pt
+!checkpoints/smoke/tokenizer.json
+
+
 logs/*
 !logs/.gitkeep
 experiments/*
